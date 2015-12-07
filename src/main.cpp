@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
         std::vector<std::string> filenames;
         if (argc > 3)
         {
-            filenames.assign(&argv[3], &argv[argc-1]);
+            filenames.assign(&argv[3], &argv[argc]);
         }
         
         auto num_files = filenames.size();
