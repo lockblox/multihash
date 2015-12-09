@@ -9,8 +9,9 @@ include_directories(${cpp-multihash_SOURCE_DIR}/include)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #create compilation database for clang
 set(Boost_USE_STATIC_LIBS ON)
 
-find_package(Boost REQUIRED COMPONENTS filesystem system unit_test_framework 
-             program_options )
+find_package (
+    Boost REQUIRED COMPONENTS filesystem system unit_test_framework program_options 
+)
 include_directories (${Boost_INCLUDE_DIRS})
 
 add_library(libmultihash STATIC src/Multihash.cpp src/Type.cpp)
@@ -25,9 +26,23 @@ file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/*.cpp)
 
 unset(Boost_LIBRARIES)
 set(Boost_USE_STATIC_LIBS OFF)
-find_package(Boost REQUIRED COMPONENTS filesystem unit_test_framework 
-             program_options )
-# Compile and run all tests
+
+find_package (
+    Boost REQUIRED COMPONENTS filesystem unit_test_framework program_options 
+)
+
+# Component test for whole executable
+add_test (
+    NAME sha1sum_file WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin
+    COMMAND multihash --hash-type sha1 ${CMAKE_CURRENT_SOURCE_DIR}/test/foo
+)
+set_tests_properties (
+    sha1sum_file PROPERTIES PASS_REGULAR_EXPRESSION
+    "^1114f1d2d2f924e986ac86fdf7b36c94bcdf32beec15\ .*\/test\/foo\n$"
+    TIMEOUT 1
+)
+
+# Compile and run all unit tests
 foreach(testSrc ${TEST_SRCS})
         #Extract the filename without an extension (NAME_WE)
         get_filename_component(testName ${testSrc} NAME_WE)
@@ -37,9 +52,9 @@ foreach(testSrc ${TEST_SRCS})
         target_link_libraries(${testName} ${Boost_LIBRARIES} libmultihash crypto)
 
         set_target_properties(${testName} PROPERTIES
-            RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+            RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/test)
 
         add_test(NAME ${testName}
-                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin
+                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
                  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/bin/${testName} )
 endforeach(testSrc)
