@@ -42,6 +42,22 @@ set_tests_properties (
     TIMEOUT 1
 )
 
+# Search OpenSSL
+find_package(PkgConfig REQUIRED)
+pkg_search_module(OPENSSL REQUIRED openssl)
+
+if( OPENSSL_FOUND )
+    include_directories(${OPENSSL_INCLUDE_DIRS})
+    message(STATUS "Using OpenSSL ${OPENSSL_VERSION}")
+else()
+    # Error; with REQUIRED, pkg_search_module() will throw an error by it's own
+endif()
+
+# Search OpenSSL not working for brew ( OSX )
+if(APPLE)
+    include_directories("/usr/local/Cellar/openssl/1.0.2/include")
+endif()
+
 # Compile and run all unit tests
 foreach(testSrc ${TEST_SRCS})
         #Extract the filename without an extension (NAME_WE)
