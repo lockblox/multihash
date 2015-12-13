@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MULTIHASH_H
+#define MULTIHASH_H
 
 #include <cstdint>
 #include <exception>
@@ -131,3 +132,5 @@ private:
 std::ostream& operator<<(std::ostream& os, const multihash::HashCode& hash_code);
 std::ostream& operator<<(std::ostream& os, const multihash::HashType& hash_type);
 std::ostream& operator<<(std::ostream& os, const multihash::Hash& hash);
+
+#endif // MULTIHASH_H

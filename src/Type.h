@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MULTIHASH_TYPE_H
+#define MULTIHASH_TYPE_H
 
 #include <multihash/multihash.h>
 
@@ -36,3 +37,5 @@ private:
 };
 
 } // namespace multihash
+
+#endif // MULTIHASH_TYPE_H
