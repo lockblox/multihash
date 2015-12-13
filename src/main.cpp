@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
                               << std::endl;
                     continue;
                 }
-                auto filestream = std::ifstream(filename);
+                std::ifstream filestream(filename);
                 if (filestream.good())
                 {
                     auto hash = hash_function(filestream);

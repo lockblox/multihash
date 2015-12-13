@@ -1,8 +1,17 @@
+sudo: false
 language: cpp
 compiler: gcc
 before_install: 
 - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get update && sudo apt-get install libssl-dev cmake libboost-all-dev; fi
-- if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install openssl boost cmake; fi
+- if [ $TRAVIS_OS_NAME == osx ]; then 
+       brew update 
+    && brew unlink  boost 
+    && brew install boost 
+    && brew unlink  openssl 
+    && brew install openssl 
+    && brew unlink  cmake
+    && brew install cmake; 
+  fi
 script: cd build && cmake .. && make
 branches:
     only:
