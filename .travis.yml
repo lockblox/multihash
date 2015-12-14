@@ -7,7 +7,7 @@ before_install:
   fi
 install:
 - if [ $TRAVIS_OS_NAME == linux ]; then 
-       sudo apt-get install g++-4.8 libssl-dev cmake libboost-all-dev
+       sudo apt-get install g++-4.8 libssl-dev cmake libboost1.55-all-dev
     && export CXX="g++-4.8";
   fi
 - if [ $TRAVIS_OS_NAME == osx ]; then 
@@ -22,7 +22,7 @@ install:
     && brew install cmake 
     && brew link --force cmake;
   fi
-script: cd build && cmake .. && make
+script: cd build && cmake .. && make && make test
 branches:
     only:
     - master
