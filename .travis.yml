@@ -3,7 +3,7 @@ compiler: g++
 before_install:
 - if [ $TRAVIS_OS_NAME == linux ]; then 
        sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-    && sudo apt-get update
+    && sudo apt-get update;
   fi
 install:
 - if [ $TRAVIS_OS_NAME == linux ]; then 
@@ -20,7 +20,7 @@ install:
     && brew link --force openssl
     && brew unlink  cmake
     && brew install cmake 
-    && brew link --force cmake
+    && brew link --force cmake;
   fi
 script: cd build && cmake .. && make
 branches:
