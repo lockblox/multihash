@@ -9,7 +9,8 @@ RUN apt-get update \
             libboost-all-dev \
             cmake \
             build-essential \
-            libssl-dev
+            libssl-dev \
+            pkg-config
 
 WORKDIR /home/cpp-multihash
 

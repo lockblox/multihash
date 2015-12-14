@@ -24,13 +24,6 @@ enable_testing()
 
 file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/*.cpp)
 
-unset(Boost_LIBRARIES)
-set(Boost_USE_STATIC_LIBS OFF)
-
-find_package (
-    Boost REQUIRED COMPONENTS filesystem unit_test_framework program_options 
-)
-
 # Component test for whole executable
 add_test (
     NAME BinTest WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin
