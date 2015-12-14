@@ -1,4 +1,3 @@
-#define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE "Multihash"
 #include <boost/test/unit_test.hpp>
 #include <cstdlib>
@@ -50,7 +49,7 @@ BOOST_AUTO_TEST_CASE(conversions)
     }
 
     /** Failing to look up a hash type */
-    BOOST_CHECK_THROW(multihash::HashType("unknown_hash"), multihash::Exception)
+    BOOST_CHECK_THROW(multihash::HashType("unknown_hash"), multihash::Exception);
     BOOST_CHECK_THROW(multihash::HashType(
                           static_cast<multihash::HashCode>(0x84)),
                       multihash::Exception);
