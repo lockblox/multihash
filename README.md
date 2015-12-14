@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jbrooker/cpp-multihash.svg?branch=master)](https://travis-ci.org/jbrooker/cpp-multihash)
+
 # cpp-multihash
 
 [multihash](//github.com/jbenet/multihash) implementation in c++.

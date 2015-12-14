@@ -1,16 +1,11 @@
-FROM ubuntu:14.04
+FROM centos:latest
 MAINTAINER Jonathan Brooker <jonathan.brooker@gmail.com>
 
 COPY . /home/cpp-multihash
 
-RUN apt-get update \
- && apt-get install -y \
-	    	gcc \
-            libboost-all-dev \
-            cmake \
-            build-essential \
-            libssl-dev \
-            pkg-config
+RUN yum update -y \
+ && yum group install -y "Development Tools" \
+ && yum install -y cmake boost-devel boost-static boost openssl-devel
 
 WORKDIR /home/cpp-multihash
 
