@@ -3,6 +3,7 @@ compiler: g++
 before_install:
 - if [ $TRAVIS_OS_NAME == linux ]; then 
        sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+    && sudo add-apt-repository -y ppa:boost-latest/ppa
     && sudo apt-get update;
   fi
 install:
