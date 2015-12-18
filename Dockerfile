@@ -1,11 +1,12 @@
-FROM centos:latest
+FROM jbrooker/clang-toolchain:latest
 MAINTAINER Jonathan Brooker <jonathan.brooker@gmail.com>
 
 COPY . /home/cpp-multihash
 
-RUN yum update -y \
- && yum group install -y "Development Tools" \
- && yum install -y cmake boost-devel boost-static boost openssl-devel
+RUN apt-get install -yy --no-install-recommends libboost-filesystem-dev \
+    libboost-system-dev libboost-test-dev libboost-program-options-dev
+ && apt-get -yy autoremove \
+ && apt-get -yy clean
 
 WORKDIR /home/cpp-multihash
 

@@ -49,7 +49,8 @@ BOOST_AUTO_TEST_CASE(conversions)
     }
 
     /** Failing to look up a hash type */
-    BOOST_CHECK_THROW(multihash::HashType("unknown_hash"), multihash::Exception);
+    BOOST_CHECK_THROW(multihash::HashType("unknown_hash"),
+                      multihash::Exception);
     BOOST_CHECK_THROW(multihash::HashType(
                           static_cast<multihash::HashCode>(0x84)),
                       multihash::Exception);
@@ -79,7 +80,8 @@ BOOST_AUTO_TEST_CASE(hashing)
         input_stream.clear();
         input_stream.seekg(0);
 
-        auto hash_function = multihash::HashFunction(multihash::HashCode::SHA2_256);
+        auto hash_function =
+            multihash::HashFunction(multihash::HashCode::SHA2_256);
         auto hash = hash_function(input_stream);
         {
             auto expected =
@@ -98,16 +100,17 @@ BOOST_AUTO_TEST_CASE(hashing)
         input_stream.clear();
         input_stream.seekg(0);
 
-        auto hash_function = multihash::HashFunction(multihash::HashCode::SHA2_512);
+        auto hash_function =
+            multihash::HashFunction(multihash::HashCode::SHA2_512);
         auto hash = hash_function(input_stream);
         {
-            auto expected = 
+            auto expected =
                 static_cast<unsigned char>(multihash::HashCode::SHA2_512);
             auto result = static_cast<unsigned char>(hash.type().code());
             BOOST_CHECK_EQUAL(expected, result);
         }
         {
-            auto expected = 
+            auto expected =
                 "1340f7fbba6e0636f890e56fbbf"
                 "3283e524c6fa3204ae298382d624741d0dc6638326e282c41be5"
                 "e4254d8820772c5518a2c5a8c0c7f7eda19594a7eb539453e1ed7";
