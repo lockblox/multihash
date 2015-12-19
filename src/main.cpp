@@ -15,10 +15,10 @@ int main(int argc, char* argv[])
        << "Print cryptographic digests.\n"
        << "With no FILE or when file is -, read standard input";
     po::options_description desc(os.str());
-    desc.add_options()
-        ("help", "display help message")
-        ("hash-type", po::value<std::string>(), "algorithm, e.g sha1")
-        ("list-hash-types", "list all available algorithms");
+    desc.add_options()("help", "display help message");
+    desc.add_options()("hash-type", po::value<std::string>(),
+                       "algorithm, e.g sha1");
+    desc.add_options()("list-hash-types", "list all available algorithms");
 
     po::variables_map vm;
 
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
         if ((num_files == 1 && (filenames.front() == "-")) or num_files == 0)
         {
             auto hash = hash_function(std::cin);
-            std::cout << hash << " -" << std::endl; 
+            std::cout << hash << " -" << std::endl;
         }
         else
         {

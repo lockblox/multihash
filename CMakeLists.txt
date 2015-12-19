@@ -36,12 +36,13 @@ set_tests_properties (
 )
 
 # Test code formatting obeys convention
-IF ($(CMAKE_SYSTEM_NAME) MATCHES "Linux")
-add_test ( 
-    NAME ClangFormat WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
-    COMMAND clang_format.sh
-)
-ENDIF ($(CMAKE_SYSTEM_NAME) MATCHES "Linux")
+string(COMPARE EQUAL "${CMAKE_SYSTEM_NAME}" "Linux" LINUX)
+if(LINUX)
+    add_test ( 
+        NAME ClangFormat WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
+        COMMAND clang_format.sh
+    )
+ENDIF(LINUX) 
 
 # Search OpenSSL
 find_package(PkgConfig REQUIRED)
