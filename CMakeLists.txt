@@ -35,6 +35,14 @@ set_tests_properties (
     TIMEOUT 1
 )
 
+# Test code formatting obeys convention
+IF ($(CMAKE_SYSTEM_NAME) MATCHES "Linux")
+add_test ( 
+    NAME ClangFormat WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
+    COMMAND clang_format.sh
+)
+ENDIF ($(CMAKE_SYSTEM_NAME) MATCHES "Linux")
+
 # Search OpenSSL
 find_package(PkgConfig REQUIRED)
 pkg_search_module(OPENSSL REQUIRED openssl)
@@ -53,17 +61,17 @@ endif()
 
 # Compile and run all unit tests
 foreach(testSrc ${TEST_SRCS})
-        #Extract the filename without an extension (NAME_WE)
-        get_filename_component(testName ${testSrc} NAME_WE)
+    #Extract the filename without an extension (NAME_WE)
+    get_filename_component(testName ${testSrc} NAME_WE)
 
-        add_executable(${testName} ${testSrc})
+    add_executable(${testName} ${testSrc})
 
-        target_link_libraries(${testName} ${Boost_LIBRARIES} libmultihash crypto)
+    target_link_libraries(${testName} ${Boost_LIBRARIES} libmultihash crypto)
 
-        set_target_properties(${testName} PROPERTIES
-            RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/test)
+    set_target_properties(${testName} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/test)
 
-        add_test(NAME ${testName}
-                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
-                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test/${testName} )
+    add_test(NAME ${testName}
+             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
+             COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test/${testName} )
 endforeach(testSrc)

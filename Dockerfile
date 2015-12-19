@@ -15,4 +15,4 @@ RUN cd build \
  && rm -rf * \
  && cmake .. \
  && make     \
- && make test
+ && make test CTEST_OUTPUT_ON_FAILURE=TRUE 
