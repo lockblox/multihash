@@ -16,7 +16,8 @@ int main(int argc, char* argv[])
        << "With no FILE or when file is -, read standard input";
     po::options_description desc(os.str());
     desc.add_options()("help", "display help message");
-    desc.add_options()("hash-type", po::value<std::string>(), "algorithm, e.g sha1");
+    desc.add_options()("hash-type", po::value<std::string>(),
+                       "algorithm, e.g sha1");
     desc.add_options()("list-hash-types", "list all available algorithms");
 
     po::variables_map vm;
