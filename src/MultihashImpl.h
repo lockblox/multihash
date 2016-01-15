@@ -1,5 +1,4 @@
-#ifndef MULTIHASH_IMPL_H
-#define MULTIHASH_IMPL_H
+#pragma once
 
 #include "Type.h"
 #include <openssl/evp.h>
@@ -33,7 +32,9 @@ struct Algorithm
     virtual int block_size() = 0;
     virtual void update(const Buffer& data) = 0;
     virtual Buffer digest() = 0;
-    virtual void reset() = 0;
+    virtual ~Algorithm()
+    {
+    }
 };
 
 class HashFunction::Impl
@@ -49,7 +50,6 @@ public:
 
 private:
     HashType hash_type_;
-    std::unique_ptr<Algorithm> algorithm_;
 };
 
 struct BufferEncoder::Impl
@@ -65,20 +65,52 @@ struct BufferDecoder::Impl
 class SslImpl : public Algorithm
 {
 public:
+    struct Cleanup
+    {
+        ~Cleanup();
+    };
+    class Context
+    {
+    public:
+        Context();
+        Context(const Context& rhs);
+        Context(Context&& rhs);
+        Context& operator=(Context rhs);
+        ~Context();
+
+        void swap(Context& rhs);
+        EVP_MD_CTX* get() const;
+
+    private:
+        EVP_MD_CTX* md_ctx_;
+    };
+
+    class DigestType
+    {
+    public:
+        explicit DigestType(const HashType& hash_type);
+        DigestType(const DigestType& rhs) = default;
+        DigestType& operator=(const DigestType& rhs) = default;
+
+        const EVP_MD* get() const;
+        int digest_size() const;
+        int block_size() const;
+
+    private:
+        const EVP_MD* evp_md_;
+    };
+
     explicit SslImpl(const HashType& hash_type);
     ~SslImpl();
     int block_size() override;
     void update(const Buffer& data) override;
     Buffer digest() override;
-    void reset() override;
-    void init();
 
 private:
-    const EVP_MD* evpmd(HashCode code) const;
-    const EVP_MD* evpmd_;
-    EVP_MD_CTX* mdctx_;
+    Context context_;
+    const DigestType type_;
+    static Cleanup cleanup_;
 };
 
 } // namespace multihash
 
-#endif

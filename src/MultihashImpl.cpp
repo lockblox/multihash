@@ -3,8 +3,17 @@
 #include <mutex> //for call_once
 #include <sstream>
 
+#include <iostream>
+
+namespace
+{
+
+} // anonymous namespace
+
 namespace multihash
 {
+
+SslImpl::Cleanup SslImpl::cleanup_ = SslImpl::Cleanup();
 
 Exception::Exception(std::string message) : message_(std::move(message))
 {
@@ -68,41 +77,40 @@ Hash HashFunction::operator()(std::istream& input)
     return (*pImpl)(input);
 }
 
-HashFunction::Impl::Impl(const HashType& hash_type)
-    : hash_type_(hash_type), algorithm_(nullptr)
+HashFunction::Impl::Impl(const HashType& hash_type) : hash_type_(hash_type)
 {
-    switch (hash_type.code())
-    {
-        case HashCode::SHA1:
-        case HashCode::SHA2_256:
-        case HashCode::SHA2_512:
-            algorithm_.reset(new SslImpl(hash_type_));
-            break;
-        case HashCode::SHA3:
-        case HashCode::BLAKE2B:
-        case HashCode::BLAKE2S:
-            throw Exception("No hash function for " + hash_type.name());
-            break;
-    }
 }
 
 Hash HashFunction::Impl::operator()(std::istream& input)
 {
+    std::unique_ptr<Algorithm> algorithm(nullptr);
+    switch (hash_type_.code())
+    {
+        case HashCode::SHA1:
+        case HashCode::SHA2_256:
+        case HashCode::SHA2_512:
+            algorithm.reset(new SslImpl(hash_type_));
+            break;
+        case HashCode::SHA3:
+        case HashCode::BLAKE2B:
+        case HashCode::BLAKE2S:
+            throw Exception("No hash function for " + hash_type_.name());
+            break;
+    }
+
     if (!input.good())
     {
         throw Exception("HashFunction input is not good");
     }
-    auto block_size(algorithm_->block_size());
+    auto block_size(algorithm->block_size());
     if (!(block_size > 0))
     {
         throw Exception("Block size of 0");
     }
 
     Buffer buffer(block_size);
-    algorithm_->reset();
     auto begin = buffer.begin();
     auto end = buffer.end();
-    auto it = begin;
 
     while (!input.eof())
     {
@@ -111,67 +119,117 @@ Hash HashFunction::Impl::operator()(std::istream& input)
         if (!input.eof())
         {
             // filled the buffer so update the hash
-            algorithm_->update(buffer);
+            algorithm->update(buffer);
         }
     }
     // final update to hash with partially filled vector
     auto chars_read(input.gcount());
     std::advance(begin, chars_read);
     buffer.erase(begin, end);
-    algorithm_->update(buffer);
-    return Hash(hash_type_, algorithm_->digest());
+    algorithm->update(buffer);
+    return Hash(hash_type_, algorithm->digest());
 }
 
-SslImpl::SslImpl(const HashType& hash_type)
-    : evpmd_(evpmd(hash_type.code())), mdctx_(nullptr)
+SslImpl::Cleanup::~Cleanup()
 {
-    if (evpmd_ == nullptr)
+    EVP_cleanup();
+}
+
+SslImpl::Context::Context() : md_ctx_(EVP_MD_CTX_create())
+{
+}
+
+SslImpl::Context::Context(const Context& rhs) : md_ctx_(EVP_MD_CTX_create())
+{
+    if (EVP_MD_CTX_copy(md_ctx_, rhs.get()) != 1)
     {
-        throw Exception("Invalid hash type: " + hash_type.name());
+        EVP_MD_CTX_destroy(md_ctx_);
+        throw Exception("Unable to copy hash context");
     }
-    init();
 }
 
-SslImpl::~SslImpl()
+SslImpl::Context::Context(Context&& rhs) : md_ctx_(rhs.md_ctx_)
 {
-    EVP_MD_CTX_destroy(mdctx_);
+    rhs.md_ctx_ = nullptr;
 }
 
-const EVP_MD* SslImpl::evpmd(HashCode code) const
+SslImpl::Context& SslImpl::Context::operator=(Context rhs)
 {
-    switch (code)
+    this->swap(rhs);
+    return *this;
+}
+
+SslImpl::Context::~Context()
+{
+    EVP_MD_CTX_destroy(md_ctx_);
+}
+
+void SslImpl::Context::swap(Context& rhs)
+{
+    std::swap(md_ctx_, rhs.md_ctx_);
+}
+
+EVP_MD_CTX* SslImpl::Context::get() const
+{
+    return md_ctx_;
+}
+
+SslImpl::DigestType::DigestType(const HashType& hash_type) : evp_md_(nullptr)
+{
+    switch (hash_type.code())
     {
         case HashCode::SHA1:
         {
-            return EVP_sha1();
+            evp_md_ = EVP_sha1();
+            break;
         }
         case HashCode::SHA2_256:
         {
-            return EVP_sha256();
+            evp_md_ = EVP_sha256();
+            break;
         }
         case HashCode::SHA2_512:
         {
-            return EVP_sha512();
+            evp_md_ = EVP_sha512();
+            break;
         }
         default:
         {
-            return nullptr;
+            throw Exception("Invalid hash type: " + hash_type.name());
         }
     }
 }
 
-void SslImpl::init()
+const EVP_MD* SslImpl::DigestType::get() const
 {
-    mdctx_ = EVP_MD_CTX_create();
-    if (EVP_DigestInit_ex(mdctx_, evpmd_, nullptr) != 1)
+    return evp_md_;
+}
+
+int SslImpl::DigestType::digest_size() const
+{
+    return EVP_MD_size(evp_md_);
+}
+
+int SslImpl::DigestType::block_size() const
+{
+    return EVP_MD_block_size(evp_md_);
+}
+
+SslImpl::SslImpl(const HashType& hash_type) : type_(DigestType(hash_type))
+{
+    if (EVP_DigestInit_ex(context_.get(), type_.get(), nullptr) != 1)
     {
         throw Exception("Unable to initialise hash digest function");
     }
 }
 
+SslImpl::~SslImpl()
+{
+}
+
 void SslImpl::update(const Buffer& data)
 {
-    if (EVP_DigestUpdate(mdctx_, &data[0], data.size()) != 1)
+    if (EVP_DigestUpdate(context_.get(), &data[0], data.size()) != 1)
     {
         throw Exception("Failed to update digest");
     }
@@ -179,18 +237,10 @@ void SslImpl::update(const Buffer& data)
 
 Buffer SslImpl::digest()
 {
-    Buffer output(EVP_MD_size(evpmd_));
-    EVP_MD_CTX* mdctx_copy(EVP_MD_CTX_create());
-    if (mdctx_copy == nullptr)
-    {
-        throw Exception("Unable to create context copy");
-    }
-    if (EVP_MD_CTX_copy_ex(mdctx_copy, mdctx_) != 1)
-    {
-        throw Exception("Unable to backup hash context");
-    }
+    Context context(context_);
+    Buffer output(type_.digest_size());
     unsigned int digest_size;
-    if (EVP_DigestFinal_ex(mdctx_copy, &output[0], &digest_size) != 1)
+    if (EVP_DigestFinal_ex(context.get(), &output[0], &digest_size) != 1)
     {
         throw Exception("Unable to get digest");
     }
@@ -199,12 +249,6 @@ Buffer SslImpl::digest()
         throw Exception("Unexpected digest size");
     }
     return output;
-}
-
-void SslImpl::reset()
-{
-    EVP_MD_CTX_destroy(mdctx_);
-    init();
 }
 
 Hash BufferDecoder::Impl::decode(const Buffer& raw_bytes)
@@ -270,7 +314,7 @@ Buffer BufferEncoder::Impl::encode(const Hash& hash)
 
 int SslImpl::block_size()
 {
-    return EVP_MD_block_size(evpmd_);
+    return type_.block_size();
 }
 
 } // namespace multihash

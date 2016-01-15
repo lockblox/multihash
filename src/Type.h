@@ -1,5 +1,4 @@
-#ifndef MULTIHASH_TYPE_H
-#define MULTIHASH_TYPE_H
+#pragma once
 
 #include <multihash/multihash.h>
 
@@ -24,12 +23,16 @@ public:
         return size_;
     }
 
-    typedef std::shared_ptr<HashType::Impl> Shp;
-    typedef std::set<Shp> ShpSet;
-    static const ShpSet& all_types();
+    bool operator<(const Impl& rhs) const;
+
+    typedef std::set<const Impl*> Set;
+    static const Set& all_types();
 
 private:
-    const static ShpSet all_types_;
+    const static Impl sha1_;
+    const static Impl sha2_256_;
+    const static Impl sha2_512_;
+    const static Set all_types_;
 
     const HashCode code_;
     const std::string name_;
@@ -38,4 +41,3 @@ private:
 
 } // namespace multihash
 
-#endif // MULTIHASH_TYPE_H
