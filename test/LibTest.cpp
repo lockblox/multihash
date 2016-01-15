@@ -43,8 +43,8 @@ BOOST_AUTO_TEST_CASE(conversions)
     }
 
     {
-        auto expected = 64;
-        auto result = multihash::HashType("sha3").size();
+        auto expected = 32;
+        auto result = multihash::HashType("sha2-256").size();
         BOOST_CHECK_EQUAL(expected, result);
     }
 
