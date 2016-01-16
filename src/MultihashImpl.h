@@ -52,13 +52,15 @@ private:
     HashType hash_type_;
 };
 
-struct BufferEncoder::Impl
+class BufferEncoder::Impl
 {
+public:
     Buffer encode(const Hash& hash);
 };
 
-struct BufferDecoder::Impl
+class BufferDecoder::Impl
 {
+public:
     Hash decode(const Buffer& raw_bytes);
 };
 
@@ -113,4 +115,3 @@ private:
 };
 
 } // namespace multihash
-

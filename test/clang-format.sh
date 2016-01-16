@@ -19,7 +19,7 @@ TEST_DIR=`dirname $0`
 BUILD_DIR="$TEST_DIR"/../build
 SOURCE_DIR="$TEST_DIR"/../src
 TMP_FILENAME=`cat /dev/urandom | tr -dc [:alnum:] | fold -w 10 | head -n 1`
-TMP_FILENAME="$TEST_DIR/$TMP_FILENAME"
+TMP_FILENAME="$BUILD_DIR/$TMP_FILENAME"
 
 RETURN_CODE=0
 
@@ -35,7 +35,7 @@ do
     fi
 
     clang-format -style=file "$SOURCE_FILE" > "$TMP_FILENAME"
-    diff "$SOURCE_FILE" "$TMP_FILENAME" > /dev/null
+    diff "$SOURCE_FILE" "$TMP_FILENAME"
     if [ $? -ne 0 ]; then
         FILEPATH=`echo "$SOURCE_FILE" | sed "s/.*\.\.\///g"`
       echo "$FILEPATH" 1>&2

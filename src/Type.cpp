@@ -28,9 +28,6 @@ const HashType::Impl::Set HashType::Impl::all_types_{&HashType::Impl::sha1_,
 
 namespace
 {
-std::set<HashType> all_hash_types{HashType{HashCode::SHA1},
-                                  HashType{HashCode::SHA2_256},
-                                  HashType{HashCode::SHA2_512}};
 } // anonymous namespace
 
 HashType::HashType(const std::string& name)
@@ -113,6 +110,11 @@ bool HashType::operator<(const HashType& rhs) const
 
 std::set<HashType> hashTypes()
 {
+
+    static std::set<HashType> all_hash_types{HashType{HashCode::SHA1},
+                                             HashType{HashCode::SHA2_256},
+                                             HashType{HashCode::SHA2_512}};
+
     return all_hash_types;
 }
 
