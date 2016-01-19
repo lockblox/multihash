@@ -14,5 +14,4 @@ RUN cd build \
  && rm -rf * \
  && cmake -DCMAKE_BUILD_TYPE=Release .. \
  && scan-build make \
- && make \
  && make test CTEST_OUTPUT_ON_FAILURE=TRUE 
