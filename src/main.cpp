@@ -90,8 +90,8 @@ int main(int argc, char* argv[])
                 }
                 else if (boost::filesystem::is_directory(filename))
                 {
-                    std::cerr << "multihash: " << filename << ": Is a directory"
-                              << std::endl;
+                    std::cerr << "multihash: " << filename
+                              << ": Is a directory" << std::endl;
                     continue;
                 }
                 std::ifstream filestream(filename);

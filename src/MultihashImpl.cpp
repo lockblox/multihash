@@ -66,7 +66,8 @@ HashFunction::HashFunction(HashFunction&& rhs) noexcept
 }
 
 /** Though the destructor is trivial, we must define it separately since the
- * default destructor of unique_ptr would require a complete declaration of Impl
+ * default destructor of unique_ptr would require a complete declaration of
+ * Impl
  */
 HashFunction::~HashFunction()
 {
