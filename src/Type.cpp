@@ -22,9 +22,9 @@ const HashType::Impl HashType::Impl::sha2_256_ =
 const HashType::Impl HashType::Impl::sha2_512_ =
     HashType::Impl(HashCode::SHA2_512, "sha2-512", 64);
 
-const HashType::Impl::Set HashType::Impl::all_types_{&HashType::Impl::sha1_,
-                                                     &HashType::Impl::sha2_256_,
-                                                     &HashType::Impl::sha2_512_};
+const HashType::Impl::Set HashType::Impl::all_types_{
+    &HashType::Impl::sha1_, &HashType::Impl::sha2_256_,
+    &HashType::Impl::sha2_512_};
 
 namespace
 {
@@ -120,13 +120,15 @@ std::set<HashType> hashTypes()
 
 } // namespace multihash
 
-std::ostream& operator<<(std::ostream& os, const multihash::HashType& hash_type)
+std::ostream&
+operator<<(std::ostream& os, const multihash::HashType& hash_type)
 {
     os << hash_type.name();
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const multihash::HashCode& hash_code)
+std::ostream&
+operator<<(std::ostream& os, const multihash::HashCode& hash_code)
 {
     os << std::hex << static_cast<int>(hash_code);
     return os;
