@@ -32,15 +32,13 @@ struct Algorithm
     virtual int block_size() = 0;
     virtual void update(const Buffer& data) = 0;
     virtual Buffer digest() = 0;
-    virtual ~Algorithm()
-    {
-    }
+    virtual ~Algorithm() = default;
 };
 
 class HashFunction::Impl
 {
 public:
-    explicit Impl(const HashType& hash_type);
+    explicit Impl(HashType hash_type);
     ~Impl() = default;
     const HashType& type() const
     {
@@ -76,7 +74,7 @@ public:
     public:
         Context();
         Context(const Context& rhs);
-        Context(Context&& rhs);
+        Context(Context&& rhs) noexcept;
         Context& operator=(Context rhs);
         ~Context();
 
@@ -103,7 +101,7 @@ public:
     };
 
     explicit SslImpl(const HashType& hash_type);
-    ~SslImpl();
+    ~SslImpl() override = default;
     int block_size() override;
     void update(const Buffer& data) override;
     Buffer digest() override;

@@ -45,8 +45,8 @@ enum class HashCode : unsigned char
 class HashType
 {
 public:
-    HashType(const std::string& name);
-    HashType(HashCode code);
+    explicit HashType(const std::string& name);
+    explicit HashType(HashCode code);
     HashType(HashType&& rhs) noexcept;
     HashType(const HashType& rhs);
 
@@ -86,7 +86,9 @@ private:
 class HashFunction
 {
 public:
+    explicit HashFunction(HashCode code);
     explicit HashFunction(const HashType& hash_type);
+    explicit HashFunction(const std::string& hash_type);
     HashFunction(HashFunction&& rhs) noexcept;
     ~HashFunction();
 

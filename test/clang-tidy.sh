@@ -2,8 +2,8 @@
 
 # Find sources
 TEST_DIR=`dirname $0`
-BUILD_DIR="$TEST_DIR"/../build
-SOURCE_DIR="$TEST_DIR"/../src
+BUILD_DIR=$1
+PROJECT_DIR=`readlink -f $TEST_DIR/..`/
 TMP_FILENAME=`cat /dev/urandom | tr -dc [:alnum:] | fold -w 10 | head -n 1`
 TMP_FILENAME="$BUILD_DIR/$TMP_FILENAME"
 
@@ -20,8 +20,14 @@ else
     echo "Create $IGNORE_FILE with contents of errors you wish to supress"
 fi
 
+echo Project directory $PROJECT_DIR
+
 /opt/llvm/llvm/tools/clang/tools/extra/clang-tidy/tool/run-clang-tidy.py \
-    -p "$BUILD_DIR" -header-filter=".*" | egrep "\..*:[0-9]+:" \
+    -p "$BUILD_DIR" -header-filter=".*" -checks=*,-llvm-header-guard \
+    | egrep "\..*:[0-9]+:" \
+    | grep -v "note: " \
+    | sed 's/\ *clang-analyzer-securi//g' \
+    | sed "s|$PROJECT_DIR||g" \
     | grep -F -x -v -f "$TMP_FILENAME"
 
 RETURN_CODE=$?

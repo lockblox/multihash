@@ -64,7 +64,7 @@ HashType::HashType(HashCode code)
     pImpl = *it;
 }
 
-HashType::HashType(HashType&& rhs) noexcept : pImpl(std::move(rhs.pImpl))
+HashType::HashType(HashType&& rhs) noexcept : pImpl(rhs.pImpl)
 {
     rhs.pImpl = nullptr;
 }
