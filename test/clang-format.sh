@@ -16,8 +16,9 @@ done
 
 # Find sources
 TEST_DIR=`dirname $0`
-BUILD_DIR="$TEST_DIR"/../build
+BUILD_DIR="$PWD"
 SOURCE_DIR="$TEST_DIR"/../src
+INCLUDE_DIR="$TEST_DIR"/../include
 TMP_FILENAME=`cat /dev/urandom | tr -dc [:alnum:] | fold -w 10 | head -n 1`
 TMP_FILENAME="$BUILD_DIR/$TMP_FILENAME"
 

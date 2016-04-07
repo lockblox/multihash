@@ -60,6 +60,15 @@ HashFunction::HashFunction(const HashType& hash_type)
 {
 }
 
+HashFunction::HashFunction(HashCode code) : pImpl(new Impl(HashType(code)))
+{
+}
+
+HashFunction::HashFunction(const std::string& hash_type)
+    : pImpl(new Impl(HashType(hash_type)))
+{
+}
+
 HashFunction::HashFunction(HashFunction&& rhs) noexcept
     : pImpl(std::move(rhs.pImpl))
 {
@@ -78,7 +87,7 @@ Hash HashFunction::operator()(std::istream& input)
     return (*pImpl)(input);
 }
 
-HashFunction::Impl::Impl(const HashType& hash_type) : hash_type_(hash_type)
+HashFunction::Impl::Impl(HashType hash_type) : hash_type_(std::move(hash_type))
 {
 }
 
@@ -149,7 +158,7 @@ SslImpl::Context::Context(const Context& rhs) : md_ctx_(EVP_MD_CTX_create())
     }
 }
 
-SslImpl::Context::Context(Context&& rhs) : md_ctx_(rhs.md_ctx_)
+SslImpl::Context::Context(Context&& rhs) noexcept : md_ctx_(rhs.md_ctx_)
 {
     rhs.md_ctx_ = nullptr;
 }
@@ -222,10 +231,6 @@ SslImpl::SslImpl(const HashType& hash_type) : type_(DigestType(hash_type))
     {
         throw Exception("Unable to initialise hash digest function");
     }
-}
-
-SslImpl::~SslImpl()
-{
 }
 
 void SslImpl::update(const Buffer& data)
