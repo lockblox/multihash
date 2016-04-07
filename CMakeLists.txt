@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(cpp-multihash)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lib")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+project(cpp-multihash LANGUAGES CXX)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror")
 set(CMAKE_CXX_FLAGS_USAN "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
 set(CMAKE_CXX_FLAGS_MSAN "${CMAKE_CXX_FLAGS} -fsanitize=memory")
@@ -31,23 +31,25 @@ string(COMPARE EQUAL "${CMAKE_SYSTEM_NAME}" "Linux" LINUX)
 if(LINUX)
     # Test code formatting obeys convention
     add_test ( 
-        NAME ClangFormat WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
+        NAME ClangFormatMultihash 
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
         COMMAND clang-format.sh
     )
     # Test code style obeys convention
     add_test ( 
-        NAME ClangTidy WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
-        COMMAND clang-tidy.sh
+        NAME ClangTidyMultihash 
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
+        COMMAND clang-tidy.sh ${CMAKE_CURRENT_BINARY_DIR}
     )
 ENDIF(LINUX) 
 
 # Component test for whole executable
 add_test (
-    NAME BinTest WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin
+    NAME TestMultihashBin WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     COMMAND multihash --hash-type sha1 ${CMAKE_CURRENT_SOURCE_DIR}/test/foo
 )
 set_tests_properties (
-    BinTest PROPERTIES PASS_REGULAR_EXPRESSION
+    TestMultihashBin PROPERTIES PASS_REGULAR_EXPRESSION
     "^1114f1d2d2f924e986ac86fdf7b36c94bcdf32beec15\ .*/test/foo"
     TIMEOUT 1
 )
@@ -68,19 +70,12 @@ if(APPLE)
 endif()
 
 # Compile and run all unit tests
-file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/*.cpp)
-foreach(testSrc ${TEST_SRCS})
-    #Extract the filename without an extension (NAME_WE)
-    get_filename_component(testName ${testSrc} NAME_WE)
+add_executable(TestMultihash test/TestMultihash.cpp)
+target_link_libraries(TestMultihash ${Boost_LIBRARIES} libmultihash crypto)
 
-    add_executable(${testName} ${testSrc})
+set_target_properties(TestMultihash PROPERTIES RUNTIME_OUTPUT_DIRECTORY  
+                      ${CMAKE_CURRENT_BINARY_DIR}/test)
 
-    target_link_libraries(${testName} ${Boost_LIBRARIES} libmultihash crypto)
-
-    set_target_properties(${testName} PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/test)
-
-    add_test(NAME ${testName}
-             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
-             COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test/${testName} )
-endforeach(testSrc)
+add_test(NAME TestMultihash
+         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/test
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test/TestMultihash )
