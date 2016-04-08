@@ -7,11 +7,11 @@ RUN apt-get install -yy --no-install-recommends libboost-filesystem-dev \
  && apt-get -yy autoremove \
  && apt-get -yy clean
 
-COPY . /home/cpp-multihash
-WORKDIR /home/cpp-multihash
+COPY . /work/cpp-multihash
+WORKDIR /work/
 
-RUN cd build \
- && rm -rf * \
- && cmake -DCMAKE_BUILD_TYPE=Release .. \
+RUN mkdir multihash_build \
+ && cd multihash_build \
+ && cmake -DCMAKE_BUILD_TYPE=Release /work/cpp-multihash \
  && scan-build make \
  && make test CTEST_OUTPUT_ON_FAILURE=TRUE 

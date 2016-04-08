@@ -78,4 +78,4 @@ set_target_properties(TestMultihash PROPERTIES RUNTIME_OUTPUT_DIRECTORY
 
 add_test(NAME TestMultihash
          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/test
-         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test/TestMultihash )
+         COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test/TestMultihash )
