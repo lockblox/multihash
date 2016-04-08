@@ -22,7 +22,7 @@ fi
 
 echo Project directory $PROJECT_DIR
 
-/opt/llvm/llvm/tools/clang/tools/extra/clang-tidy/tool/run-clang-tidy.py \
+run-clang-tidy-3.8.py \
     -p "$BUILD_DIR" -header-filter=".*" -checks=*,-llvm-header-guard \
     | egrep "\..*:[0-9]+:" \
     | grep -v "note: " \

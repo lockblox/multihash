@@ -18,7 +18,7 @@ install:
       fi
 script: 
     - if [ $TRAVIS_OS_NAME == osx ]; then 
-          cd build && cmake .. && make && make test;
+          mkdir build && cd build && cmake .. && make && make test;
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then 
           docker build . ;
