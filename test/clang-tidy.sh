@@ -22,11 +22,11 @@ fi
 
 echo Project directory $PROJECT_DIR
 
-run-clang-tidy-3.8.py \
-    -p "$BUILD_DIR" -header-filter=".*" -checks=*,-llvm-header-guard \
+/usr/local/share/clang/run-clang-tidy.py \
+    -p "$BUILD_DIR" -header-filter=".*" -checks=*,-llvm-header-guard 2>/dev/null \
+    | egrep -o "\/.*" \
     | egrep "\..*:[0-9]+:" \
     | grep -v "note: " \
-    | sed 's/\ *clang-analyzer-securi//g' \
     | sed "s|$PROJECT_DIR||g" \
     | grep -F -x -v -f "$TMP_FILENAME"
 
