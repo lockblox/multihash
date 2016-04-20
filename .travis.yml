@@ -14,10 +14,9 @@ install:
         && brew link --force cmake;
       fi
 script: 
-    - test $TRAVIS_OS_NAME == osx \ 
-      && mkdir build && cd build && cmake .. && make && make test;
-    - test $TRAVIS_OS_NAME == linux \
-      && docker build -t cpp-multihash . \
+    - test $TRAVIS_OS_NAME = osx && mkdir build \
+      && cd build && cmake .. && make && make test;
+    - test $TRAVIS_OS_NAME = linux && docker build -t cpp-multihash . \
       && docker run -v $PWD:/work/source/ --privileged -it cpp-multihash;
 branches:
     only:
