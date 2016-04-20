@@ -1,10 +1,10 @@
 #pragma once
 
-#include <cstdint>
 #include <exception>
 #include <istream>
 #include <memory>
 #include <set>
+#include <stdint.h>
 #include <string>
 #include <vector>
 
