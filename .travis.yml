@@ -6,9 +6,6 @@ compiler: g++
 install:
     - if [ $TRAVIS_OS_NAME == osx ]; then 
            brew update 
-        && brew unlink  boost 
-        && brew install boost 
-        && brew link --force boost
         && brew unlink  openssl 
         && brew install openssl 
         && brew link --force openssl
@@ -21,7 +18,9 @@ script:
           mkdir build && cd build && cmake .. && make && make test;
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then 
-          docker build . ;
+          docker build -t jbrooker/cpp-multihash . \
+          && docker run -v $PWD:/work/source/ --privileged -it \
+             jbrooker/cpp-multihash;
       fi
 branches:
     only:
