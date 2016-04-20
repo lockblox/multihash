@@ -27,6 +27,7 @@ echo Project directory $PROJECT_DIR
     | egrep -o "\/.*" \
     | egrep "\..*:[0-9]+:" \
     | grep -v "note: " \
+    | grep -v "googletest-src" \
     | sed "s|$PROJECT_DIR||g" \
     | grep -F -x -v -f "$TMP_FILENAME"
 
