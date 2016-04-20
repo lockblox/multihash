@@ -26,13 +26,12 @@ public:
     bool operator<(const Impl& rhs) const;
 
     typedef std::set<const Impl*> Set;
-    static const Set& all_types();
+    static const Set all_types();
 
 private:
     const static Impl sha1_;
     const static Impl sha2_256_;
     const static Impl sha2_512_;
-    const static Set all_types_;
 
     const HashCode code_;
     const std::string name_;

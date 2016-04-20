@@ -22,10 +22,6 @@ const HashType::Impl HashType::Impl::sha2_256_ =
 const HashType::Impl HashType::Impl::sha2_512_ =
     HashType::Impl(HashCode::SHA2_512, "sha2-512", 64);
 
-const HashType::Impl::Set HashType::Impl::all_types_{
-    &HashType::Impl::sha1_, &HashType::Impl::sha2_256_,
-    &HashType::Impl::sha2_512_};
-
 namespace
 {
 } // anonymous namespace
@@ -88,9 +84,11 @@ size_t HashType::size() const
     return pImpl->size();
 }
 
-const HashType::Impl::Set& HashType::Impl::all_types()
+const HashType::Impl::Set HashType::Impl::all_types()
 {
-    return all_types_;
+    return HashType::Impl::Set{&HashType::Impl::sha1_,
+                               &HashType::Impl::sha2_256_,
+                               &HashType::Impl::sha2_512_};
 }
 
 bool HashType::Impl::operator<(const HashType::Impl& rhs) const
@@ -111,11 +109,9 @@ bool HashType::operator<(const HashType& rhs) const
 std::set<HashType> hashTypes()
 {
 
-    static std::set<HashType> all_hash_types{HashType{HashCode::SHA1},
-                                             HashType{HashCode::SHA2_256},
-                                             HashType{HashCode::SHA2_512}};
-
-    return all_hash_types;
+    return std::set<HashType>{HashType{HashCode::SHA1},
+                              HashType{HashCode::SHA2_256},
+                              HashType{HashCode::SHA2_512}};
 }
 
 } // namespace multihash
