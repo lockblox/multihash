@@ -15,11 +15,15 @@ install:
       fi
 script: 
     - if [ $TRAVIS_OS_NAME == osx ]; then 
-          mkdir build && cd build && cmake .. && make && make test;
+             mkdir build 
+          && cd build 
+          && cmake .. 
+          && make 
+          && make test;
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then 
-          docker build -t jbrooker/cpp-multihash . && docker run \
-          -v $PWD:/work/source/ --privileged -it jbrooker/cpp-multihash;
+             docker build -t jbrooker/cpp-multihash . 
+          && docker run -v $PWD:/work/source/ --privileged -it jbrooker/cpp-multihash;
       fi
 branches:
     only:
