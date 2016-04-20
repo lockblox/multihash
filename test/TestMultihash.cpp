@@ -1,5 +1,4 @@
-#define BOOST_TEST_MODULE "Multihash"
-#include <boost/test/unit_test.hpp>
+#include "gtest/gtest.h"
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
@@ -12,51 +11,49 @@ std::string toHexString(const multihash::Hash& hash)
     return os.str();
 }
 
-BOOST_AUTO_TEST_CASE(conversions)
+TEST(Multihash, conversions)
 {
     /** Looking up a hash type and querying properties */
     {
         auto expected("sha1");
         auto result(multihash::HashType("sha1").name());
-        BOOST_CHECK_EQUAL(expected, result);
+        EXPECT_EQ(expected, result);
     }
 
     {
         auto expected = static_cast<unsigned char>(multihash::HashCode::SHA1);
         auto result =
             static_cast<unsigned char>(multihash::HashType("sha1").code());
-        BOOST_CHECK_EQUAL(expected, result);
+        EXPECT_EQ(expected, result);
     }
 
     {
         auto expected = static_cast<unsigned char>(multihash::HashCode::SHA1);
         auto hash_type = multihash::HashType(multihash::HashCode::SHA1);
         auto result = static_cast<unsigned char>(hash_type.code());
-        BOOST_CHECK_EQUAL(expected, result);
+        EXPECT_EQ(expected, result);
     }
 
     {
         auto expected = static_cast<unsigned char>(multihash::HashCode::SHA1);
         auto hash_type = multihash::HashType("sha1");
         auto result = static_cast<unsigned char>(hash_type.code());
-        BOOST_CHECK_EQUAL(expected, result);
+        EXPECT_EQ(expected, result);
     }
 
     {
-        auto expected = 32;
         auto result = multihash::HashType("sha2-256").size();
-        BOOST_CHECK_EQUAL(expected, result);
+        decltype(result) expected = 32;
+        EXPECT_EQ(expected, result);
     }
 
     /** Failing to look up a hash type */
-    BOOST_CHECK_THROW(multihash::HashType("unknown_hash"),
-                      multihash::Exception);
-    BOOST_CHECK_THROW(multihash::HashType(
-                          static_cast<multihash::HashCode>(0x84)),
-                      multihash::Exception);
+    EXPECT_THROW(multihash::HashType("unknown_hash"), multihash::Exception);
+    EXPECT_THROW(multihash::HashType(static_cast<multihash::HashCode>(0x84)),
+                 multihash::Exception);
 }
 
-BOOST_AUTO_TEST_CASE(hashing)
+TEST(Multihash, hashing)
 {
     /** Decoding a multihash from raw bytes */
     std::istringstream input_stream("foo");
@@ -68,12 +65,12 @@ BOOST_AUTO_TEST_CASE(hashing)
             auto expected =
                 static_cast<unsigned char>(multihash::HashCode::SHA1);
             auto result = static_cast<unsigned char>(hash.type().code());
-            BOOST_CHECK_EQUAL(expected, result);
+            EXPECT_EQ(expected, result);
         }
         {
             auto expected = "11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33";
             auto result = toHexString(hash);
-            BOOST_CHECK_EQUAL(expected, result);
+            EXPECT_EQ(expected, result);
         }
     }
     {
@@ -87,13 +84,13 @@ BOOST_AUTO_TEST_CASE(hashing)
             auto expected =
                 static_cast<unsigned char>(multihash::HashCode::SHA2_256);
             auto result = static_cast<unsigned char>(hash.type().code());
-            BOOST_CHECK_EQUAL(expected, result);
+            EXPECT_EQ(expected, result);
         }
         {
             auto expected = "12202c26b46b68ffc68ff99b453"
                             "c1d30413413422d706483bfa0f98a5e886266e7ae";
             auto result = toHexString(hash);
-            BOOST_CHECK_EQUAL(expected, result);
+            EXPECT_EQ(expected, result);
         }
     }
     {
@@ -107,7 +104,7 @@ BOOST_AUTO_TEST_CASE(hashing)
             auto expected =
                 static_cast<unsigned char>(multihash::HashCode::SHA2_512);
             auto result = static_cast<unsigned char>(hash.type().code());
-            BOOST_CHECK_EQUAL(expected, result);
+            EXPECT_EQ(expected, result);
         }
         {
             auto expected =
@@ -115,12 +112,12 @@ BOOST_AUTO_TEST_CASE(hashing)
                 "3283e524c6fa3204ae298382d624741d0dc6638326e282c41be5"
                 "e4254d8820772c5518a2c5a8c0c7f7eda19594a7eb539453e1ed7";
             auto result = toHexString(hash);
-            BOOST_CHECK_EQUAL(expected, result);
+            EXPECT_EQ(expected, result);
         }
     }
 }
 
-BOOST_AUTO_TEST_CASE(encoding)
+TEST(Multihash, encoding)
 {
     std::istringstream input_stream("foo");
     multihash::HashFunction hash_function(multihash::HashCode::SHA1);
