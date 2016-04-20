@@ -1,44 +1,75 @@
-#include <boost/program_options.hpp>
+#include <array>
 #include <fstream>
+#include <getopt.h>
 #include <iostream>
 #include <multihash/multihash.h>
-#define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
-
-namespace po = boost::program_options;
+#include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 int main(int argc, char* argv[])
 {
     // Declare the supported options.
     std::ostringstream os;
-    os << "Usage: multihash [OPTION]... [FILE]...\n"
-       << "Print cryptographic digests.\n"
-       << "With no FILE or when file is -, read standard input";
-    po::options_description desc(os.str());
-    desc.add_options()("help", "display help message");
-    desc.add_options()("hash-type", po::value<std::string>(),
-                       "algorithm, e.g sha1");
-    desc.add_options()("list-hash-types", "list all available algorithms");
+    os << "Usage: multihash [OPTION]... [FILE]..." << std::endl
+       << "Print cryptographic digests." << std::endl
+       << "With no FILE or when file is -, read standard input" << std::endl
+       << "    --help               Display help message" << std::endl
+       << "    --hash-type          Algorithm to use, e.g. sha1" << std::endl
+       << "    --list-hash-types    List available algorithms" << std::endl;
+    std::string usage = os.str();
 
-    po::variables_map vm;
+    int c = 0;
+    int help_flag = 0;
+    int list_flag = 0;
+    std::string algo;
 
-    try
+    std::array<option, 4> long_options{
+        {option{"help", no_argument, &help_flag, 1},
+         option{"hash-type", required_argument, nullptr, 't'},
+         option{"list-hash-types", no_argument, &list_flag, 1},
+         option{nullptr, 0, nullptr, 0}}};
+
+    while (true)
     {
-        po::store(po::parse_command_line(argc, argv, desc), vm);
-        po::notify(vm);
+        int option_index = 0;
+        c = getopt_long(argc, argv, "ht:l", long_options.data(),
+                        &option_index);
+
+        /* Detect the end of the options. */
+        if (c == -1)
+        {
+            break;
+        }
+
+        switch (c)
+        {
+            case 0:
+                /* If not a flag-setting long option, print help */
+                if (long_options.at(option_index).flag == nullptr)
+                {
+                    help_flag = 1;
+                }
+                break;
+            case 't':
+                algo = optarg;
+                break;
+            case '?':
+                break;
+            default:
+                help_flag = 1;
+        }
     }
-    catch (std::exception& e)
+
+    if (1 == help_flag)
     {
-        std::cerr << e.what() << std::endl;
-        std::cerr << desc << std::endl;
-        return 1;
-    }
-    if (vm.count("help") > 0)
-    {
-        std::cout << desc << std::endl;
+        std::cout << usage << std::endl;
         return 0;
     }
-    if (vm.count("list-hash-types") > 0)
+    if (1 == list_flag)
     {
         for (auto hash_type : multihash::hashTypes())
         {
@@ -48,15 +79,10 @@ int main(int argc, char* argv[])
     }
 
     /** Actually do some work if an algo is specified */
-    std::string algo;
-    if (vm.count("hash-type") == 1)
-    {
-        algo = vm["hash-type"].as<std::string>();
-    }
-    else
+    if (algo.empty())
     {
         std::cerr << "Must specify a hash type" << std::endl;
-        std::cerr << desc << std::endl;
+        std::cerr << usage << std::endl;
         return 1;
     }
 
@@ -82,13 +108,14 @@ int main(int argc, char* argv[])
         {
             for (auto filename : filenames)
             {
-                if (!boost::filesystem::exists(filename))
+                struct stat stat_record;
+                if (-1 == stat(filename.c_str(), &stat_record))
                 {
                     std::cerr << "multihash: " << filename
                               << ": No such file or directory" << std::endl;
                     continue;
                 }
-                else if (boost::filesystem::is_directory(filename))
+                else if (S_IFDIR == (stat_record.st_mode & S_IFMT))
                 {
                     std::cerr << "multihash: " << filename
                               << ": Is a directory" << std::endl;
