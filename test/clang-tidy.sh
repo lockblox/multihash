@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ $# -ne 1 ];
+then
+    echo Usage: clang-tidy.sh BUILD_DIRECTORY
+    exit 1
+fi
+
 # Find sources
 TEST_DIR=`dirname $0`
 BUILD_DIR=$1
@@ -22,7 +28,7 @@ fi
 
 echo Project directory $PROJECT_DIR
 
-/usr/local/share/clang/run-clang-tidy.py \
+/usr/lib/llvm-3.8/share/clang/run-clang-tidy.py \
     -p "$BUILD_DIR" -header-filter=".*" -checks=*,-llvm-header-guard 2>/dev/null \
     | egrep -o "\/.*" \
     | egrep "\..*:[0-9]+:" \
