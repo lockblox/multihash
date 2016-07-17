@@ -50,15 +50,10 @@ private:
     HashType hash_type_;
 };
 
-class BufferEncoder::Impl
+class HashBufferCodec::Impl
 {
 public:
     Buffer encode(const Hash& hash);
-};
-
-class BufferDecoder::Impl
-{
-public:
     Hash decode(const Buffer& raw_bytes);
 };
 
