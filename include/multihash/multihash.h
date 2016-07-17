@@ -28,7 +28,7 @@ struct InvalidHashException : public Exception
     explicit InvalidHashException(const std::string& message);
 };
 
-typedef std::vector<unsigned char> Buffer;
+typedef std::vector<char> Buffer;
 
 /** Code values of supported hash types */
 enum class HashCode : unsigned char
@@ -100,27 +100,14 @@ private:
     std::unique_ptr<Impl> pImpl;
 };
 
-/** Functor which packs a hash into a buffer */
-class BufferEncoder
+/** Functor which converts a hash to and from raw bytes */
+class HashBufferCodec
 {
 public:
-    BufferEncoder();
-    ~BufferEncoder();
+    HashBufferCodec();
+    ~HashBufferCodec();
 
     Buffer operator()(const Hash& hash);
-
-private:
-    class Impl;
-    std::unique_ptr<Impl> pImpl;
-};
-
-/** Functor which can extract a hash from a raw buffer */
-class BufferDecoder
-{
-public:
-    BufferDecoder();
-    ~BufferDecoder();
-
     Hash operator()(const Buffer& input);
 
 private:
@@ -130,7 +117,8 @@ private:
 
 } // namespace multihash
 
-std::ostream& operator<<(std::ostream& os, const multihash::HashCode& hash_code);
-std::ostream& operator<<(std::ostream& os, const multihash::HashType& hash_type);
+std::ostream&
+operator<<(std::ostream& os, const multihash::HashCode& hash_code);
+std::ostream&
+operator<<(std::ostream& os, const multihash::HashType& hash_type);
 std::ostream& operator<<(std::ostream& os, const multihash::Hash& hash);
-

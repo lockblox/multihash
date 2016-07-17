@@ -1,9 +1,8 @@
 #include "MultihashImpl.h"
 #include <iomanip>
+#include <iostream>
 #include <mutex> //for call_once
 #include <sstream>
-
-#include <iostream>
 
 namespace
 {
@@ -246,7 +245,9 @@ Buffer SslImpl::digest()
     Context context(context_);
     Buffer output(type_.digest_size());
     unsigned int digest_size;
-    if (EVP_DigestFinal_ex(context.get(), &output[0], &digest_size) != 1)
+    if (EVP_DigestFinal_ex(context.get(),
+                           reinterpret_cast<unsigned char*>(&output[0]),
+                           &digest_size) != 1)
     {
         throw Exception("Unable to get digest");
     }
@@ -257,62 +258,56 @@ Buffer SslImpl::digest()
     return output;
 }
 
-Hash BufferDecoder::Impl::decode(const Buffer& raw_bytes)
+Hash HashBufferCodec::Impl::decode(const Buffer& raw_bytes)
 {
     auto code = static_cast<HashCode>((raw_bytes.at(0)));
-    auto size(raw_bytes.at(1));
+    auto size = uint8_t(raw_bytes.at(1));
     auto hash_type = HashType(code);
 
     Buffer digest(begin(raw_bytes) + 2, end(raw_bytes));
     if (digest.size() != size)
     {
         std::ostringstream err;
-        err << "Header misreports digest size as " << size << "; true size is"
-            << digest.size();
+        err << "Header misreports digest size as " << static_cast<int>(size)
+            << "; true size is " << digest.size();
         throw Exception(err.str());
     }
     if (size != hash_type.size())
     {
         std::ostringstream err;
-        err << "Non standard digest size " << size << "; expected "
-            << hash_type.size();
+        err << "Non standard digest size " << static_cast<int>(size)
+            << "; expected " << hash_type.size();
         throw Exception(err.str());
     }
     return Hash(std::move(hash_type), digest);
 }
 
-BufferEncoder::BufferEncoder() : pImpl(new BufferEncoder::Impl)
+HashBufferCodec::HashBufferCodec() : pImpl(new HashBufferCodec::Impl)
 {
 }
 
-BufferEncoder::~BufferEncoder()
+HashBufferCodec::~HashBufferCodec()
 {
 }
 
-Buffer BufferEncoder::operator()(const Hash& hash)
+Buffer HashBufferCodec::operator()(const Hash& hash)
 {
     return pImpl->encode(hash);
 }
 
-BufferDecoder::BufferDecoder() : pImpl(new BufferDecoder::Impl)
-{
-}
-
-Hash BufferDecoder::operator()(const Buffer& input)
+Hash HashBufferCodec::operator()(const Buffer& input)
 {
     return pImpl->decode(input);
 }
 
-BufferDecoder::~BufferDecoder()
+Buffer HashBufferCodec::Impl::encode(const Hash& hash)
 {
-}
-
-Buffer BufferEncoder::Impl::encode(const Hash& hash)
-{
+    auto size = uint8_t(hash.digest().size());
+    auto code = uint8_t(hash.type().code());
     Buffer data;
-    data.reserve(hash.digest().size() + 2);
-    data.push_back(static_cast<unsigned char>(hash.type().code()));
-    data.push_back(static_cast<unsigned char>(hash.digest().size()));
+    data.reserve(size + 2);
+    data.push_back(code);
+    data.push_back(size);
     std::copy(begin(hash.digest()), end(hash.digest()),
               std::back_inserter(data));
     return data;
@@ -327,12 +322,13 @@ int SslImpl::block_size()
 
 std::ostream& operator<<(std::ostream& os, const multihash::Hash& hash)
 {
-    multihash::BufferEncoder encode;
+    multihash::HashBufferCodec encode;
     auto data(encode(hash));
     for (auto c : data)
     {
+        auto uc = uint8_t(c);
         os << std::hex << std::setfill('0') << std::setw(2);
-        os << static_cast<int>(c);
+        os << static_cast<int>(uc);
     }
     return os;
 }
