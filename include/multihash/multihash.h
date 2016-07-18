@@ -28,7 +28,7 @@ struct InvalidHashException : public Exception
     explicit InvalidHashException(const std::string& message);
 };
 
-typedef std::vector<char> Buffer;
+typedef std::vector<char> Bytes;
 
 /** Code values of supported hash types */
 enum class HashCode : unsigned char
@@ -67,13 +67,13 @@ std::set<HashType> hashTypes();
 class Hash
 {
 public:
-    Hash(HashType type, const Buffer& digest);
+    Hash(HashType type, const Bytes& digest);
     Hash(Hash&& rhs) noexcept;
     Hash(const Hash& rhs);
     ~Hash();
 
     const HashType& type() const;
-    const Buffer& digest() const;
+    const Bytes& digest() const;
 
     bool operator==(const Hash& rhs) const;
 
@@ -101,14 +101,14 @@ private:
 };
 
 /** Functor which converts a hash to and from raw bytes */
-class HashBufferCodec
+class HashBytesCodec
 {
 public:
-    HashBufferCodec();
-    ~HashBufferCodec();
+    HashBytesCodec();
+    ~HashBytesCodec();
 
-    Buffer operator()(const Hash& hash);
-    Hash operator()(const Buffer& input);
+    Bytes operator()(const Hash& hash);
+    Hash operator()(const Bytes& input);
 
 private:
     class Impl;

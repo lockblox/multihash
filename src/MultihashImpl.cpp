@@ -23,7 +23,7 @@ const char* Exception::what() const noexcept
     return message_.c_str();
 }
 
-Hash::Hash(HashType type, const Buffer& digest) : pImpl(new Impl(type, digest))
+Hash::Hash(HashType type, const Bytes& digest) : pImpl(new Impl(type, digest))
 {
 }
 
@@ -49,7 +49,7 @@ const HashType& Hash::type() const
     return pImpl->type();
 }
 
-const Buffer& Hash::digest() const
+const Bytes& Hash::digest() const
 {
     return pImpl->digest();
 }
@@ -117,7 +117,7 @@ Hash HashFunction::Impl::operator()(std::istream& input)
         throw Exception("Block size of 0");
     }
 
-    Buffer buffer(block_size);
+    Bytes buffer(block_size);
     auto begin = buffer.begin();
     auto end = buffer.end();
 
@@ -232,7 +232,7 @@ SslImpl::SslImpl(const HashType& hash_type) : type_(DigestType(hash_type))
     }
 }
 
-void SslImpl::update(const Buffer& data)
+void SslImpl::update(const Bytes& data)
 {
     if (EVP_DigestUpdate(context_.get(), &data[0], data.size()) != 1)
     {
@@ -240,10 +240,10 @@ void SslImpl::update(const Buffer& data)
     }
 }
 
-Buffer SslImpl::digest()
+Bytes SslImpl::digest()
 {
     Context context(context_);
-    Buffer output(type_.digest_size());
+    Bytes output(type_.digest_size());
     unsigned int digest_size;
     if (EVP_DigestFinal_ex(context.get(),
                            reinterpret_cast<unsigned char*>(&output[0]),
@@ -258,13 +258,13 @@ Buffer SslImpl::digest()
     return output;
 }
 
-Hash HashBufferCodec::Impl::decode(const Buffer& raw_bytes)
+Hash HashBytesCodec::Impl::decode(const Bytes& raw_bytes)
 {
     auto code = static_cast<HashCode>((raw_bytes.at(0)));
     auto size = uint8_t(raw_bytes.at(1));
     auto hash_type = HashType(code);
 
-    Buffer digest(begin(raw_bytes) + 2, end(raw_bytes));
+    Bytes digest(begin(raw_bytes) + 2, end(raw_bytes));
     if (digest.size() != size)
     {
         std::ostringstream err;
@@ -282,29 +282,29 @@ Hash HashBufferCodec::Impl::decode(const Buffer& raw_bytes)
     return Hash(std::move(hash_type), digest);
 }
 
-HashBufferCodec::HashBufferCodec() : pImpl(new HashBufferCodec::Impl)
+HashBytesCodec::HashBytesCodec() : pImpl(new HashBytesCodec::Impl)
 {
 }
 
-HashBufferCodec::~HashBufferCodec()
+HashBytesCodec::~HashBytesCodec()
 {
 }
 
-Buffer HashBufferCodec::operator()(const Hash& hash)
+Bytes HashBytesCodec::operator()(const Hash& hash)
 {
     return pImpl->encode(hash);
 }
 
-Hash HashBufferCodec::operator()(const Buffer& input)
+Hash HashBytesCodec::operator()(const Bytes& input)
 {
     return pImpl->decode(input);
 }
 
-Buffer HashBufferCodec::Impl::encode(const Hash& hash)
+Bytes HashBytesCodec::Impl::encode(const Hash& hash)
 {
     auto size = uint8_t(hash.digest().size());
     auto code = uint8_t(hash.type().code());
-    Buffer data;
+    Bytes data;
     data.reserve(size + 2);
     data.push_back(code);
     data.push_back(size);
@@ -322,7 +322,7 @@ int SslImpl::block_size()
 
 std::ostream& operator<<(std::ostream& os, const multihash::Hash& hash)
 {
-    multihash::HashBufferCodec encode;
+    multihash::HashBytesCodec encode;
     auto data(encode(hash));
     for (auto c : data)
     {

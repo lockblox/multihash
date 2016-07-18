@@ -9,7 +9,7 @@ namespace multihash
 class Hash::Impl
 {
 public:
-    Impl(HashType type, Buffer digest)
+    Impl(HashType type, Bytes digest)
         : type_(std::move(type)), digest_(std::move(digest))
     {
     }
@@ -17,21 +17,21 @@ public:
     {
         return type_;
     }
-    const Buffer& digest() const
+    const Bytes& digest() const
     {
         return digest_;
     }
 
 private:
     const HashType type_;
-    const Buffer digest_;
+    const Bytes digest_;
 };
 
 struct Algorithm
 {
     virtual int block_size() = 0;
-    virtual void update(const Buffer& data) = 0;
-    virtual Buffer digest() = 0;
+    virtual void update(const Bytes& data) = 0;
+    virtual Bytes digest() = 0;
     virtual ~Algorithm() = default;
 };
 
@@ -50,11 +50,11 @@ private:
     HashType hash_type_;
 };
 
-class HashBufferCodec::Impl
+class HashBytesCodec::Impl
 {
 public:
-    Buffer encode(const Hash& hash);
-    Hash decode(const Buffer& raw_bytes);
+    Bytes encode(const Hash& hash);
+    Hash decode(const Bytes& raw_bytes);
 };
 
 class SslImpl : public Algorithm
@@ -98,8 +98,8 @@ public:
     explicit SslImpl(const HashType& hash_type);
     ~SslImpl() override = default;
     int block_size() override;
-    void update(const Buffer& data) override;
-    Buffer digest() override;
+    void update(const Bytes& data) override;
+    Bytes digest() override;
 
 private:
     Context context_;
