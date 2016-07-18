@@ -122,7 +122,7 @@ TEST(Multihash, encoding)
     std::istringstream input_stream("foo");
     multihash::HashFunction hash_function(multihash::HashCode::SHA1);
     auto hash = hash_function(input_stream);
-    multihash::HashBufferCodec codec;
+    multihash::HashBytesCodec codec;
 
     auto encoded = codec(hash);
     auto decoded = codec(encoded);
