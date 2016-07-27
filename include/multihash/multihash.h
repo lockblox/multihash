@@ -69,6 +69,7 @@ class Hash
 public:
     Hash(HashType type, const Bytes& digest);
     Hash(Hash&& rhs) noexcept;
+    Hash& operator=(Hash&& rhs) noexcept = default;
     Hash(const Hash& rhs);
     ~Hash();
 
@@ -89,7 +90,10 @@ public:
     explicit HashFunction(HashCode code);
     explicit HashFunction(const HashType& hash_type);
     explicit HashFunction(const std::string& hash_type);
-    HashFunction(HashFunction&& rhs) noexcept;
+    HashFunction(HashFunction&&) noexcept;
+    HashFunction(const HashFunction&);
+    HashFunction& operator=(HashFunction&&);
+    HashFunction& operator=(const HashFunction&);
     ~HashFunction();
 
     Hash operator()(std::istream& input);
@@ -104,6 +108,9 @@ private:
 class HashBytesCodec
 {
 public:
+    using encoded_type = Bytes;
+    using value_type = Hash;
+
     HashBytesCodec();
     ~HashBytesCodec();
 
