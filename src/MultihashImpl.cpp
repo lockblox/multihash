@@ -73,6 +73,26 @@ HashFunction::HashFunction(HashFunction&& rhs) noexcept
 {
 }
 
+HashFunction::HashFunction(const HashFunction& other)
+    : pImpl(new Impl(other.type()))
+{
+}
+
+HashFunction& HashFunction::operator=(HashFunction&& rhs)
+{
+    pImpl = std::move(rhs.pImpl);
+    return *this;
+}
+
+HashFunction& HashFunction::operator=(const HashFunction& rhs)
+{
+    if (!(type() == rhs.type()))
+    {
+        pImpl.reset(new Impl(HashType(rhs.type())));
+    }
+    return *this;
+}
+
 /** Though the destructor is trivial, we must define it separately since the
  * default destructor of unique_ptr would require a complete declaration of
  * Impl
@@ -84,6 +104,11 @@ HashFunction::~HashFunction()
 Hash HashFunction::operator()(std::istream& input)
 {
     return (*pImpl)(input);
+}
+
+const HashType& HashFunction::type() const
+{
+    return pImpl->type();
 }
 
 HashFunction::Impl::Impl(HashType hash_type) : hash_type_(std::move(hash_type))
