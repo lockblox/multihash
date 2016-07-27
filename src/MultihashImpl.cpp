@@ -4,13 +4,10 @@
 #include <mutex> //for call_once
 #include <sstream>
 
-namespace
-{
-
-} // anonymous namespace
-
 namespace multihash
 {
+
+HashBytesCodec::Impl HashBytesCodec::Impl::instance_ = HashBytesCodec::Impl();
 
 SslImpl::Cleanup SslImpl::cleanup_ = SslImpl::Cleanup();
 
@@ -283,7 +280,7 @@ Bytes SslImpl::digest()
     return output;
 }
 
-Hash HashBytesCodec::Impl::decode(const Bytes& raw_bytes)
+Hash HashBytesCodec::Impl::decode(const Bytes& raw_bytes) const
 {
     auto code = static_cast<HashCode>((raw_bytes.at(0)));
     auto size = uint8_t(raw_bytes.at(1));
@@ -307,25 +304,41 @@ Hash HashBytesCodec::Impl::decode(const Bytes& raw_bytes)
     return Hash(std::move(hash_type), digest);
 }
 
-HashBytesCodec::HashBytesCodec() : pImpl(new HashBytesCodec::Impl)
+HashBytesCodec::Impl* HashBytesCodec::Impl::instance()
 {
+    return &instance_;
+}
+
+HashBytesCodec::HashBytesCodec() : pImpl(HashBytesCodec::Impl::instance())
+{
+}
+
+HashBytesCodec::HashBytesCodec(const HashBytesCodec& other)
+    : pImpl(other.pImpl)
+{
+}
+
+HashBytesCodec& HashBytesCodec::operator=(HashBytesCodec rhs)
+{
+    std::swap(*this, rhs);
+    return *this;
 }
 
 HashBytesCodec::~HashBytesCodec()
 {
 }
 
-Bytes HashBytesCodec::operator()(const Hash& hash)
+Bytes HashBytesCodec::operator()(const Hash& hash) const
 {
     return pImpl->encode(hash);
 }
 
-Hash HashBytesCodec::operator()(const Bytes& input)
+Hash HashBytesCodec::operator()(const Bytes& input) const
 {
     return pImpl->decode(input);
 }
 
-Bytes HashBytesCodec::Impl::encode(const Hash& hash)
+Bytes HashBytesCodec::Impl::encode(const Hash& hash) const
 {
     auto size = uint8_t(hash.digest().size());
     auto code = uint8_t(hash.type().code());

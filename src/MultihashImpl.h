@@ -53,8 +53,12 @@ private:
 class HashBytesCodec::Impl
 {
 public:
-    Bytes encode(const Hash& hash);
-    Hash decode(const Bytes& raw_bytes);
+    Bytes encode(const Hash& hash) const;
+    Hash decode(const Bytes& raw_bytes) const;
+    static Impl* instance();
+
+private:
+    static Impl instance_;
 };
 
 class SslImpl : public Algorithm

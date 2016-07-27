@@ -112,14 +112,16 @@ public:
     using value_type = Hash;
 
     HashBytesCodec();
+    HashBytesCodec(const HashBytesCodec&);
+    HashBytesCodec& operator=(const HashBytesCodec);
     ~HashBytesCodec();
 
-    Bytes operator()(const Hash& hash);
-    Hash operator()(const Bytes& input);
+    Bytes operator()(const Hash& hash) const;
+    Hash operator()(const Bytes& input) const;
 
 private:
     class Impl;
-    std::unique_ptr<Impl> pImpl;
+    const Impl* const pImpl;
 };
 
 } // namespace multihash
