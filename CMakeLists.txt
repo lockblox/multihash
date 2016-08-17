@@ -37,28 +37,14 @@ endif()
 include_directories("${gtest_SOURCE_DIR}/include"
                     "${gmock_SOURCE_DIR}/include")
 
-add_library(libmultihash STATIC src/MultihashImpl.cpp src/Type.cpp)
+add_library(libmultihash STATIC src/MultihashImpl.cpp src/Type.cpp
+            src/ArrayRef.cpp)
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 
 add_executable(multihash src/main.cpp)
 target_link_libraries(multihash libmultihash crypto )
 
 enable_testing()
-
-string(COMPARE EQUAL "${CMAKE_SYSTEM_NAME}" "Linux" LINUX)
-if(LINUX)
-    # Test code formatting obeys convention
-    add_custom_target (
-        check-format
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test/clang-format.sh
-    )
-    # Test code style obeys convention
-    add_custom_target (
-        check-tidy
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test/clang-tidy.sh
-        ${CMAKE_CURRENT_BINARY_DIR}
-    )
-ENDIF(LINUX)
 
 # Component test for whole executable
 add_test (
@@ -88,7 +74,8 @@ if(APPLE)
 endif()
 
 # Compile and run all unit tests
-add_executable(TestMultihash test/TestMultihash.cpp test/main.cpp)
+add_executable(TestMultihash test/TestMultihash.cpp test/main.cpp
+               test/TestArrayRef.cpp)
 target_link_libraries(TestMultihash gtest libmultihash crypto)
 
 set_target_properties(TestMultihash PROPERTIES RUNTIME_OUTPUT_DIRECTORY
