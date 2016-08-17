@@ -29,8 +29,8 @@ private:
 
 struct Algorithm
 {
-    virtual int block_size() = 0;
-    virtual void update(const Bytes& data) = 0;
+    virtual size_t block_size() = 0;
+    virtual void update(const ArrayRef data) = 0;
     virtual Bytes digest() = 0;
     virtual ~Algorithm() = default;
 };
@@ -44,10 +44,12 @@ public:
     {
         return hash_type_;
     }
-    Hash operator()(std::istream& input);
+    Hash operator()(std::istream& input) const;
+    Hash operator()(const ArrayRef input) const;
 
 private:
     HashType hash_type_;
+    std::unique_ptr<Algorithm> algorithm_;
 };
 
 class HashBytesCodec::Impl
@@ -101,8 +103,8 @@ public:
 
     explicit SslImpl(const HashType& hash_type);
     ~SslImpl() override = default;
-    int block_size() override;
-    void update(const Bytes& data) override;
+    size_t block_size() override;
+    void update(const ArrayRef data) override;
     Bytes digest() override;
 
 private:

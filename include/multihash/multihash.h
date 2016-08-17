@@ -3,6 +3,7 @@
 #include <exception>
 #include <istream>
 #include <memory>
+#include <multihash/ArrayRef.h>
 #include <set>
 #include <stdint.h>
 #include <string>
@@ -68,8 +69,8 @@ class Hash
 {
 public:
     Hash(HashType type, const Bytes& digest);
-    Hash(Hash&& rhs) noexcept;
-    Hash& operator=(Hash&& rhs) noexcept = default;
+    Hash(Hash&& other) noexcept;
+    Hash& operator=(Hash&& rhs) noexcept;
     Hash(const Hash& rhs);
     ~Hash();
 
@@ -90,13 +91,14 @@ public:
     explicit HashFunction(HashCode code);
     explicit HashFunction(const HashType& hash_type);
     explicit HashFunction(const std::string& hash_type);
-    HashFunction(HashFunction&&) noexcept;
-    HashFunction(const HashFunction&);
-    HashFunction& operator=(HashFunction&&);
-    HashFunction& operator=(const HashFunction&);
+    HashFunction(HashFunction&& other) noexcept;
+    HashFunction(const HashFunction& other);
+    HashFunction& operator=(HashFunction&& rhs) noexcept;
+    HashFunction& operator=(const HashFunction& rhs);
     ~HashFunction();
 
-    Hash operator()(std::istream& input);
+    Hash operator()(std::istream& input) const;
+    Hash operator()(const ArrayRef input) const;
     const HashType& type() const;
 
 private:
@@ -112,8 +114,8 @@ public:
     using value_type = Hash;
 
     HashBytesCodec();
-    HashBytesCodec(const HashBytesCodec&);
-    HashBytesCodec& operator=(const HashBytesCodec);
+    HashBytesCodec(const HashBytesCodec& other);
+    HashBytesCodec& operator=(const HashBytesCodec rhs);
     ~HashBytesCodec();
 
     Bytes operator()(const Hash& hash) const;
