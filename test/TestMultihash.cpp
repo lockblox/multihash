@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <iostream>
 #include <multihash/multihash.h>
+#include <sstream>
 
 std::string toHexString(const multihash::Hash& hash)
 {
@@ -48,19 +49,25 @@ TEST(Multihash, conversions)
     }
 
     /** Failing to look up a hash type */
-    EXPECT_THROW(multihash::HashType("unknown_hash"), multihash::Exception);
-    EXPECT_THROW(multihash::HashType(static_cast<multihash::HashCode>(0x84)),
-                 multihash::Exception);
+    {
+        EXPECT_THROW(multihash::HashType("unknown_hash"),
+                     multihash::Exception);
+    }
+    {
+        EXPECT_THROW(multihash::HashType(
+                         static_cast<multihash::HashCode>(0x84)),
+                     multihash::Exception);
+    }
 }
 
 TEST(Multihash, hashing)
 {
     /** Decoding a multihash from raw bytes */
-    std::istringstream input_stream("foo");
+    std::string input("foo");
+    std::istringstream input_stream(input);
     {
         multihash::HashFunction hash_function(multihash::HashCode::SHA1);
         auto hash = hash_function(input_stream);
-
         {
             auto expected =
                 static_cast<unsigned char>(multihash::HashCode::SHA1);
@@ -69,6 +76,25 @@ TEST(Multihash, hashing)
         }
         {
             auto expected = "11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33";
+            auto result = toHexString(hash);
+            EXPECT_EQ(expected, result);
+        }
+    }
+    {
+        auto source_chars =
+            std::string("All work and no play makes Jack a dull boy.\n");
+        auto repeat_count = 1000000;
+        std::stringstream os;
+        for (auto i = 0; i < repeat_count; ++i)
+        {
+            os << source_chars;
+        }
+        auto input = os.str();
+
+        multihash::HashFunction hash_function(multihash::HashCode::SHA1);
+        auto hash = hash_function(input);
+        {
+            auto expected = "11147dd3e2edbe26687c037094e7cd3d8f5c5e89e9ed";
             auto result = toHexString(hash);
             EXPECT_EQ(expected, result);
         }

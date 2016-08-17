@@ -24,12 +24,18 @@ Hash::Hash(HashType type, const Bytes& digest) : pImpl(new Impl(type, digest))
 {
 }
 
-Hash::Hash(Hash&& rhs) noexcept : pImpl(std::move(rhs.pImpl))
+Hash::Hash(Hash&& other) noexcept : pImpl(std::move(other.pImpl))
 {
 }
 
 Hash::Hash(const Hash& rhs) : pImpl(rhs.pImpl)
 {
+}
+
+Hash& Hash::operator=(Hash&& rhs) noexcept
+{
+    pImpl = std::move(rhs.pImpl);
+    return *this;
 }
 
 Hash::~Hash()
@@ -65,8 +71,8 @@ HashFunction::HashFunction(const std::string& hash_type)
 {
 }
 
-HashFunction::HashFunction(HashFunction&& rhs) noexcept
-    : pImpl(std::move(rhs.pImpl))
+HashFunction::HashFunction(HashFunction&& other) noexcept
+    : pImpl(std::move(other.pImpl))
 {
 }
 
@@ -75,7 +81,7 @@ HashFunction::HashFunction(const HashFunction& other)
 {
 }
 
-HashFunction& HashFunction::operator=(HashFunction&& rhs)
+HashFunction& HashFunction::operator=(HashFunction&& rhs) noexcept
 {
     pImpl = std::move(rhs.pImpl);
     return *this;
@@ -98,7 +104,12 @@ HashFunction::~HashFunction()
 {
 }
 
-Hash HashFunction::operator()(std::istream& input)
+Hash HashFunction::operator()(std::istream& input) const
+{
+    return (*pImpl)(input);
+}
+
+Hash HashFunction::operator()(const ArrayRef input) const
 {
     return (*pImpl)(input);
 }
@@ -108,57 +119,68 @@ const HashType& HashFunction::type() const
     return pImpl->type();
 }
 
-HashFunction::Impl::Impl(HashType hash_type) : hash_type_(std::move(hash_type))
+HashFunction::Impl::Impl(HashType hash_type)
+    : hash_type_(std::move(hash_type)), algorithm_(nullptr)
 {
-}
-
-Hash HashFunction::Impl::operator()(std::istream& input)
-{
-    std::unique_ptr<Algorithm> algorithm(nullptr);
     switch (hash_type_.code())
     {
         case HashCode::SHA1:
         case HashCode::SHA2_256:
         case HashCode::SHA2_512:
-            algorithm.reset(new SslImpl(hash_type_));
+            algorithm_.reset(new SslImpl(hash_type_));
             break;
         case HashCode::SHA3:
         case HashCode::BLAKE2B:
         case HashCode::BLAKE2S:
             throw Exception("No hash function for " + hash_type_.name());
-            break;
     }
+}
 
+Hash HashFunction::Impl::operator()(std::istream& input) const
+{
     if (!input.good())
     {
         throw Exception("HashFunction input is not good");
     }
-    auto block_size(algorithm->block_size());
-    if (!(block_size > 0))
-    {
-        throw Exception("Block size of 0");
-    }
 
-    Bytes buffer(block_size);
+    Bytes buffer(algorithm_->block_size());
     auto begin = buffer.begin();
     auto end = buffer.end();
 
     while (!input.eof())
     {
-        input.read(reinterpret_cast<char*>(buffer.data()), block_size);
+        input.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
 
         if (!input.eof())
         {
             // filled the buffer so update the hash
-            algorithm->update(buffer);
+            algorithm_->update(buffer);
         }
     }
     // final update to hash with partially filled vector
     auto chars_read(input.gcount());
     std::advance(begin, chars_read);
     buffer.erase(begin, end);
-    algorithm->update(buffer);
-    return Hash(hash_type_, algorithm->digest());
+    algorithm_->update(buffer);
+    return Hash(hash_type_, algorithm_->digest());
+}
+
+Hash HashFunction::Impl::operator()(const ArrayRef input) const
+{
+    auto block_size = algorithm_->block_size();
+    auto begin = input.begin();
+    auto size = std::min(input.size(), block_size);
+    auto remaining = input.size();
+
+    while (size > 0)
+    {
+        auto buffer = ArrayRef(begin, size);
+        algorithm_->update(buffer);
+        begin += size;
+        remaining -= size;
+        size = std::min(remaining, block_size);
+    }
+    return Hash(hash_type_, algorithm_->digest());
 }
 
 SslImpl::Cleanup::~Cleanup()
@@ -254,7 +276,7 @@ SslImpl::SslImpl(const HashType& hash_type) : type_(DigestType(hash_type))
     }
 }
 
-void SslImpl::update(const Bytes& data)
+void SslImpl::update(const ArrayRef data)
 {
     if (EVP_DigestUpdate(context_.get(), &data[0], data.size()) != 1)
     {
@@ -351,7 +373,7 @@ Bytes HashBytesCodec::Impl::encode(const Hash& hash) const
     return data;
 }
 
-int SslImpl::block_size()
+size_t SslImpl::block_size()
 {
     return type_.block_size();
 }
