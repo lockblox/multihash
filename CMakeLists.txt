@@ -56,21 +56,18 @@ set_tests_properties (
     "^1114f1d2d2f924e986ac86fdf7b36c94bcdf32beec15\ .*/test/foo"
     TIMEOUT 1
 )
-
-# Search OpenSSL
-find_package(PkgConfig REQUIRED)
-pkg_search_module(OPENSSL REQUIRED openssl)
-
-if( OPENSSL_FOUND )
-    include_directories(${OPENSSL_INCLUDE_DIRS})
-    message(STATUS "Using OpenSSL ${OPENSSL_VERSION}")
-else()
-    # Error; with REQUIRED, pkg_search_module() will throw an error by it's own
-endif()
-
 # Search OpenSSL not working for brew ( OSX )
 if(APPLE)
-    include_directories("/usr/local/Cellar/openssl/1.0.2/include")
+    link_directories("/usr/local/opt/openssl/lib")
+    include_directories("/usr/local/opt/openssl/include")
+else()
+    # Search OpenSSL
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(OPENSSL REQUIRED openssl)
+    if( OPENSSL_FOUND )
+        include_directories(${OPENSSL_INCLUDE_DIRS})
+        message(STATUS "Using OpenSSL ${OPENSSL_VERSION}")
+    endif()
 endif()
 
 # Compile and run all unit tests
