@@ -26,8 +26,6 @@ else
     echo "Create $IGNORE_FILE with contents of errors you wish to supress"
 fi
 
-echo Project directory $PROJECT_DIR
-
 /usr/lib/llvm-3.8/share/clang/run-clang-tidy.py \
     -p "$BUILD_DIR" -header-filter=".*" -checks=*,-llvm-header-guard 2>/dev/null \
     | egrep -o "\/.*" \
