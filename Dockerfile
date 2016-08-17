@@ -7,13 +7,6 @@ RUN apt-get update \
  && apt-get -yy autoremove \
  && apt-get -yy clean
 
-WORKDIR /work/
+WORKDIR /work/build
 
-RUN mkdir build
- 
 ENTRYPOINT /work/source/build.sh
-
-#example run: docker run \
-#   -v /home/jonathanb/Documents/Code/cpp-multihash/:/work/source/ \
-#   --privileged --name multihash-build -it jbrooker/cpp-multihash
-# docker start -i multihash-build
