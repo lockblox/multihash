@@ -29,9 +29,10 @@ public:
     static const Set all_types();
 
 private:
-    const static Impl sha1_;
-    const static Impl sha2_256_;
-    const static Impl sha2_512_;
+    const static Impl identity;
+    const static Impl sha1;
+    const static Impl sha2_256;
+    const static Impl sha2_512;
 
     const HashCode code_;
     const std::string name_;
