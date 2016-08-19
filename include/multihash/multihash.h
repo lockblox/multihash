@@ -34,6 +34,7 @@ typedef std::vector<char> Bytes;
 /** Code values of supported hash types */
 enum class HashCode : unsigned char
 {
+    IDENTITY = 0x00,
     SHA1 = 0x11,     //"sha1"
     SHA2_256 = 0x12, //"sha2-256"
     SHA2_512 = 0x13, //"sha2-512"
@@ -46,6 +47,7 @@ enum class HashCode : unsigned char
 class HashType
 {
 public:
+    HashType();
     explicit HashType(const std::string& name);
     explicit HashType(HashCode code);
     HashType(HashType&& rhs) noexcept;
@@ -58,16 +60,18 @@ public:
     bool operator==(const HashType& rhs) const;
     bool operator<(const HashType& rhs) const;
 
+    static std::set<HashType> types();
+
 private:
     class Impl;
     const Impl* pImpl;
 };
-std::set<HashType> hashTypes();
 
 /** Interface for a hash digest with encapsulated type */
 class Hash
 {
 public:
+    Hash();
     Hash(HashType type, const Bytes& digest);
     Hash(Hash&& other) noexcept;
     Hash& operator=(Hash&& rhs) noexcept;
@@ -88,6 +92,9 @@ private:
 class HashFunction
 {
 public:
+    using result_type = Hash;
+    using argument_type = ArrayRef;
+
     explicit HashFunction(HashCode code);
     explicit HashFunction(const HashType& hash_type);
     explicit HashFunction(const std::string& hash_type);

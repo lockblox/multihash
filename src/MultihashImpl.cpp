@@ -20,6 +20,10 @@ const char* Exception::what() const noexcept
     return message_.c_str();
 }
 
+Hash::Hash() : pImpl(new Impl(HashType(), Bytes()))
+{
+}
+
 Hash::Hash(HashType type, const Bytes& digest) : pImpl(new Impl(type, digest))
 {
 }
@@ -132,6 +136,7 @@ HashFunction::Impl::Impl(HashType hash_type)
         case HashCode::SHA3:
         case HashCode::BLAKE2B:
         case HashCode::BLAKE2S:
+        case HashCode::IDENTITY:
             throw Exception("No hash function for " + hash_type_.name());
     }
 }

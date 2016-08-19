@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     }
     if (1 == list_flag)
     {
-        for (auto hash_type : multihash::hashTypes())
+        for (auto hash_type : multihash::HashType::types())
         {
             std::cout << hash_type.name() << std::endl;
         }
@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
     {
         std::cerr << "ERROR: " << e.what() << std::endl;
         std::cout << "Available hash types: " << std::endl;
-        for (auto hash_type : multihash::hashTypes())
+        for (auto hash_type : multihash::HashType::types())
         {
             std::cout << hash_type.name() << std::endl;
         }
