@@ -82,6 +82,7 @@ public:
     const Bytes& digest() const;
 
     bool operator==(const Hash& rhs) const;
+    bool operator<(const Hash& rhs) const;
 
 private:
     class Impl;

@@ -51,6 +51,18 @@ bool Hash::operator==(const Hash& rhs) const
     return type() == rhs.type() && digest() == rhs.digest();
 }
 
+bool Hash::operator<(const Hash& rhs) const
+{
+    if (type() == rhs.type())
+    {
+        return digest() < rhs.digest();
+    }
+    else
+    {
+        return type() < rhs.type();
+    }
+}
+
 const HashType& Hash::type() const
 {
     return pImpl->type();
