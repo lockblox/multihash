@@ -53,14 +53,16 @@ bool Hash::operator==(const Hash& rhs) const
 
 bool Hash::operator<(const Hash& rhs) const
 {
+    auto result = false;
     if (type() == rhs.type())
     {
-        return digest() < rhs.digest();
+        result = digest() < rhs.digest();
     }
     else
     {
-        return type() < rhs.type();
+        result = type() < rhs.type();
     }
+    return result;
 }
 
 const HashType& Hash::type() const
