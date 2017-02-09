@@ -23,6 +23,11 @@ target_link_libraries(multihash libmultihash crypto )
 
 add_subdirectory(external/gtest)
 
+target_include_directories(multihash INTERFACE 
+                           "${multihash_SOURCE_DIR}/include")
+target_include_directories(libmultihash INTERFACE 
+                           "${multihash_SOURCE_DIR}/include")
+
 enable_testing()
 
 # Component test for whole executable
