@@ -1,9 +1,9 @@
 #pragma once
 
 #include <exception>
+#include <experimental/string_view>
 #include <istream>
 #include <memory>
-#include <multihash/ArrayRef.h>
 #include <set>
 #include <stdint.h>
 #include <string>
@@ -11,6 +11,8 @@
 
 namespace multihash
 {
+
+using string_view = std::experimental::fundamentals_v1::string_view;
 
 /** Base exception for the multihash library */
 class Exception : public std::exception
@@ -94,7 +96,7 @@ class HashFunction
 {
 public:
     using result_type = Hash;
-    using argument_type = ArrayRef;
+    using argument_type = string_view;
 
     explicit HashFunction(HashCode code);
     explicit HashFunction(const HashType& hash_type);
@@ -105,8 +107,10 @@ public:
     HashFunction& operator=(const HashFunction& rhs);
     ~HashFunction();
 
+    bool operator==(const HashFunction& rhs) const;
+
     Hash operator()(std::istream& input) const;
-    Hash operator()(const ArrayRef input) const;
+    Hash operator()(const string_view input) const;
     const HashType& type() const;
 
 private:

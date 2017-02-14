@@ -127,7 +127,7 @@ Hash HashFunction::operator()(std::istream& input) const
     return (*pImpl)(input);
 }
 
-Hash HashFunction::operator()(const ArrayRef input) const
+Hash HashFunction::operator()(const string_view input) const
 {
     return (*pImpl)(input);
 }
@@ -155,6 +155,11 @@ HashFunction::Impl::Impl(HashType hash_type)
     }
 }
 
+bool HashFunction::operator==(const HashFunction& rhs) const
+{
+    return type() == rhs.type();
+}
+
 Hash HashFunction::Impl::operator()(std::istream& input) const
 {
     if (!input.good())
@@ -162,13 +167,13 @@ Hash HashFunction::Impl::operator()(std::istream& input) const
         throw Exception("HashFunction input is not good");
     }
 
-    Bytes buffer(algorithm_->block_size());
+    auto buffer = std::string(algorithm_->block_size(), ' ');
     auto begin = buffer.begin();
     auto end = buffer.end();
 
     while (!input.eof())
     {
-        input.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
+        input.read(const_cast<char*>(buffer.data()), buffer.size());
 
         if (!input.eof())
         {
@@ -184,7 +189,7 @@ Hash HashFunction::Impl::operator()(std::istream& input) const
     return Hash(hash_type_, algorithm_->digest());
 }
 
-Hash HashFunction::Impl::operator()(const ArrayRef input) const
+Hash HashFunction::Impl::operator()(const string_view input) const
 {
     auto block_size = algorithm_->block_size();
     auto begin = input.begin();
@@ -193,7 +198,7 @@ Hash HashFunction::Impl::operator()(const ArrayRef input) const
 
     while (size > 0)
     {
-        auto buffer = ArrayRef(begin, size);
+        auto buffer = string_view(begin, size);
         algorithm_->update(buffer);
         begin += size;
         remaining -= size;
@@ -295,7 +300,7 @@ SslImpl::SslImpl(const HashType& hash_type) : type_(DigestType(hash_type))
     }
 }
 
-void SslImpl::update(const ArrayRef data)
+void SslImpl::update(const string_view data)
 {
     if (EVP_DigestUpdate(context_.get(), &data[0], data.size()) != 1)
     {

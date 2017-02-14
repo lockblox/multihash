@@ -30,7 +30,7 @@ private:
 struct Algorithm
 {
     virtual size_t block_size() = 0;
-    virtual void update(const ArrayRef data) = 0;
+    virtual void update(const string_view data) = 0;
     virtual Bytes digest() = 0;
     virtual ~Algorithm() = default;
 };
@@ -45,7 +45,7 @@ public:
         return hash_type_;
     }
     Hash operator()(std::istream& input) const;
-    Hash operator()(const ArrayRef input) const;
+    Hash operator()(const string_view input) const;
 
 private:
     HashType hash_type_;
@@ -104,7 +104,7 @@ public:
     explicit SslImpl(const HashType& hash_type);
     ~SslImpl() override = default;
     size_t block_size() override;
-    void update(const ArrayRef data) override;
+    void update(const string_view data) override;
     Bytes digest() override;
 
 private:
