@@ -3,19 +3,13 @@ cmake_minimum_required(VERSION 2.8)
 project(multihash LANGUAGES CXX)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Werror")
-
-# Prefer to use libc++ with clang
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -Wextra -Werror")
 
 include_directories(${multihash_SOURCE_DIR}/include)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #create compilation database for clang
 
-add_library(libmultihash STATIC src/MultihashImpl.cpp src/Type.cpp
-            src/ArrayRef.cpp)
+add_library(libmultihash STATIC src/MultihashImpl.cpp src/Type.cpp)
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 
 add_executable(multihash src/main.cpp)
@@ -55,8 +49,8 @@ else()
 endif()
 
 # Compile and run all unit tests
-add_executable(TestMultihash test/TestMultihash.cpp test/main.cpp
-               test/TestArrayRef.cpp)
+add_executable(TestMultihash test/TestMultihash.cpp test/main.cpp)
+               
 target_link_libraries(TestMultihash gtest libmultihash crypto)
 
 set_target_properties(TestMultihash PROPERTIES RUNTIME_OUTPUT_DIRECTORY

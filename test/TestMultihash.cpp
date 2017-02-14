@@ -141,6 +141,12 @@ TEST(Multihash, hashing)
             EXPECT_EQ(expected, result);
         }
     }
+    {
+        auto hash_function =
+            multihash::HashFunction(multihash::HashCode::SHA2_512);
+        auto hash_function_b = hash_function;
+        EXPECT_EQ(hash_function, hash_function_b);
+    }
 }
 
 TEST(Multihash, encoding)
