@@ -123,7 +123,7 @@ public:
 
     HashBytesCodec();
     HashBytesCodec(const HashBytesCodec& other);
-    HashBytesCodec& operator=(const HashBytesCodec rhs);
+    HashBytesCodec& operator=(const HashBytesCodec& rhs);
     ~HashBytesCodec();
 
     Bytes operator()(const Hash& hash) const;
@@ -131,7 +131,7 @@ public:
 
 private:
     class Impl;
-    const Impl* const pImpl;
+    const Impl* pImpl;
 };
 
 } // namespace multihash

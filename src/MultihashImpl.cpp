@@ -359,9 +359,9 @@ HashBytesCodec::HashBytesCodec(const HashBytesCodec& other)
 {
 }
 
-HashBytesCodec& HashBytesCodec::operator=(HashBytesCodec rhs)
+HashBytesCodec& HashBytesCodec::operator=(const HashBytesCodec& rhs)
 {
-    std::swap(*this, rhs);
+    pImpl = rhs.pImpl;
     return *this;
 }
 
