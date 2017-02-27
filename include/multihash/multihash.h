@@ -98,7 +98,7 @@ public:
     using result_type = Hash;
     using argument_type = string_view;
 
-    explicit HashFunction(HashCode code);
+    explicit HashFunction(HashCode code = HashCode::SHA2_256);
     explicit HashFunction(const HashType& hash_type);
     explicit HashFunction(const std::string& hash_type);
     HashFunction(HashFunction&& other) noexcept;

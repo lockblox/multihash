@@ -160,3 +160,9 @@ TEST(Multihash, encoding)
     auto decoded = codec(encoded);
     EXPECT_EQ(hash, decoded);
 }
+
+TEST(Multihash, Default)
+{
+    multihash::HashFunction hash_function;
+    EXPECT_EQ(multihash::HashCode::SHA2_256, hash_function.type().code());
+}
