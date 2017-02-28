@@ -166,3 +166,12 @@ TEST(Multihash, Default)
     multihash::HashFunction hash_function;
     EXPECT_EQ(multihash::HashCode::SHA2_256, hash_function.type().code());
 }
+
+TEST(Multihash, Inequality)
+{
+    multihash::HashFunction hash_function;
+    std::string foo("foo");
+    std::string bar("bar");
+    EXPECT_NE(hash_function(multihash::string_view(foo)),
+              hash_function(multihash::string_view(bar)));
+}
