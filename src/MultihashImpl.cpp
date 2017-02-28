@@ -42,6 +42,12 @@ Hash& Hash::operator=(Hash&& rhs) noexcept
     return *this;
 }
 
+Hash& Hash::operator=(Hash rhs) noexcept
+{
+    std::swap(pImpl, rhs.pImpl);
+    return *this;
+}
+
 Hash::~Hash()
 {
 }
