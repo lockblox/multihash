@@ -108,6 +108,11 @@ bool HashType::operator==(const HashType& rhs) const
     return pImpl == rhs.pImpl;
 }
 
+bool HashType::operator!=(const HashType& rhs) const
+{
+    return pImpl != rhs.pImpl;
+}
+
 bool HashType::operator<(const HashType& rhs) const
 {
     return code() < rhs.code();

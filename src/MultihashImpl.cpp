@@ -51,6 +51,11 @@ bool Hash::operator==(const Hash& rhs) const
     return type() == rhs.type() && digest() == rhs.digest();
 }
 
+bool Hash::operator!=(const Hash& rhs) const
+{
+    return (type() != rhs.type()) || (digest() != rhs.digest());
+}
+
 bool Hash::operator<(const Hash& rhs) const
 {
     auto result = false;

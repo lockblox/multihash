@@ -60,6 +60,7 @@ public:
     size_t size() const; /**< Default length of the hash type */
 
     bool operator==(const HashType& rhs) const;
+    bool operator!=(const HashType& rhs) const;
     bool operator<(const HashType& rhs) const;
 
     static std::set<HashType> types();
@@ -84,6 +85,7 @@ public:
     const Bytes& digest() const;
 
     bool operator==(const Hash& rhs) const;
+    bool operator!=(const Hash& rhs) const;
     bool operator<(const Hash& rhs) const;
 
 private:
