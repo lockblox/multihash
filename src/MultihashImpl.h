@@ -75,7 +75,6 @@ public:
     public:
         Context();
         Context(const Context& rhs);
-        Context(Context&& rhs) noexcept;
         Context& operator=(Context rhs);
         ~Context();
 

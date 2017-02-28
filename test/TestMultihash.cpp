@@ -175,3 +175,24 @@ TEST(Multihash, Inequality)
     EXPECT_NE(hash_function(multihash::string_view(foo)),
               hash_function(multihash::string_view(bar)));
 }
+
+TEST(Multihash, HashConstruction)
+{
+    multihash::HashFunction hash_function;
+    std::string foo("foo");
+    auto hash = hash_function(foo);
+    auto expected = std::string("12202c26b46b68ffc68ff99b453c1d3041341"
+                                "3422d706483bfa0f98a5e886266e7ae");
+    EXPECT_EQ(expected, toHexString(hash));
+    { // copy assignment
+        auto hash_copied = hash;
+        EXPECT_EQ(expected, toHexString(hash_copied));
+        EXPECT_EQ(expected, toHexString(hash));
+        EXPECT_EQ(hash_copied, hash);
+    }
+    { // copy construction
+        multihash::Hash hash_copied(hash);
+        EXPECT_EQ(expected, toHexString(hash));
+        EXPECT_EQ(hash_copied, hash);
+    }
+}
