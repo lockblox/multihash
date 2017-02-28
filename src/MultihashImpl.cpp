@@ -42,9 +42,10 @@ Hash& Hash::operator=(Hash&& rhs) noexcept
     return *this;
 }
 
-Hash& Hash::operator=(Hash rhs) noexcept
+Hash& Hash::operator=(const Hash& rhs) noexcept
 {
-    std::swap(pImpl, rhs.pImpl);
+    auto copy = rhs;
+    std::swap(pImpl, copy.pImpl);
     return *this;
 }
 
