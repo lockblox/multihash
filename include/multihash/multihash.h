@@ -78,6 +78,7 @@ public:
     Hash(HashType type, const Bytes& digest);
     Hash(Hash&& other) noexcept;
     Hash& operator=(Hash&& rhs) noexcept;
+    Hash& operator=(Hash rhs) noexcept;
     Hash(const Hash& rhs);
     ~Hash();
 
