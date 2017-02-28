@@ -28,18 +28,8 @@ Hash::Hash(HashType type, const Bytes& digest) : pImpl(new Impl(type, digest))
 {
 }
 
-Hash::Hash(Hash&& other) noexcept : pImpl(std::move(other.pImpl))
-{
-}
-
 Hash::Hash(const Hash& rhs) : pImpl(rhs.pImpl)
 {
-}
-
-Hash& Hash::operator=(Hash&& rhs) noexcept
-{
-    pImpl = std::move(rhs.pImpl);
-    return *this;
 }
 
 Hash& Hash::operator=(const Hash& rhs) noexcept
@@ -101,20 +91,9 @@ HashFunction::HashFunction(const std::string& hash_type)
 {
 }
 
-HashFunction::HashFunction(HashFunction&& other) noexcept
-    : pImpl(std::move(other.pImpl))
-{
-}
-
 HashFunction::HashFunction(const HashFunction& other)
     : pImpl(new Impl(other.type()))
 {
-}
-
-HashFunction& HashFunction::operator=(HashFunction&& rhs) noexcept
-{
-    pImpl = std::move(rhs.pImpl);
-    return *this;
 }
 
 HashFunction& HashFunction::operator=(const HashFunction& rhs)
@@ -235,11 +214,6 @@ SslImpl::Context::Context(const Context& rhs) : md_ctx_(EVP_MD_CTX_create())
         EVP_MD_CTX_destroy(md_ctx_);
         throw Exception("Unable to copy hash context");
     }
-}
-
-SslImpl::Context::Context(Context&& rhs) noexcept : md_ctx_(rhs.md_ctx_)
-{
-    rhs.md_ctx_ = nullptr;
 }
 
 SslImpl::Context& SslImpl::Context::operator=(Context rhs)

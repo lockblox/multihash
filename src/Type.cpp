@@ -66,11 +66,6 @@ HashType::HashType(HashCode code)
     pImpl = *it;
 }
 
-HashType::HashType(HashType&& rhs) noexcept : pImpl(rhs.pImpl)
-{
-    rhs.pImpl = nullptr;
-}
-
 HashType::HashType(const HashType& rhs) : pImpl(rhs.pImpl)
 {
 }

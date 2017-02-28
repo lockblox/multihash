@@ -52,7 +52,6 @@ public:
     HashType();
     explicit HashType(const std::string& name);
     explicit HashType(HashCode code);
-    HashType(HashType&& rhs) noexcept;
     HashType(const HashType& rhs);
 
     const std::string& name() const;
@@ -76,8 +75,6 @@ class Hash
 public:
     Hash();
     Hash(HashType type, const Bytes& digest);
-    Hash(Hash&& other) noexcept;
-    Hash& operator=(Hash&& rhs) noexcept;
     Hash& operator=(const Hash& rhs) noexcept;
     Hash(const Hash& rhs);
     ~Hash();
@@ -104,9 +101,7 @@ public:
     explicit HashFunction(HashCode code = HashCode::SHA2_256);
     explicit HashFunction(const HashType& hash_type);
     explicit HashFunction(const std::string& hash_type);
-    HashFunction(HashFunction&& other) noexcept;
     HashFunction(const HashFunction& other);
-    HashFunction& operator=(HashFunction&& rhs) noexcept;
     HashFunction& operator=(const HashFunction& rhs);
     ~HashFunction();
 
