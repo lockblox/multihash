@@ -75,7 +75,7 @@ TEST(Multihash, hashing)
             EXPECT_EQ(expected, result);
         }
         {
-            auto expected = "11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33";
+        auto expected = "11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33";
             auto result = toHexString(hash);
             EXPECT_EQ(expected, result);
         }
@@ -97,6 +97,11 @@ TEST(Multihash, hashing)
             auto expected = "11147dd3e2edbe26687c037094e7cd3d8f5c5e89e9ed";
             auto result = toHexString(hash);
             EXPECT_EQ(expected, result);
+
+            // hash again
+            hash = hash_function(input);
+            result = toHexString(hash);
+            EXPECT_EQ(expected, result);
         }
     }
     {
@@ -116,6 +121,11 @@ TEST(Multihash, hashing)
             auto expected = "12202c26b46b68ffc68ff99b453"
                             "c1d30413413422d706483bfa0f98a5e886266e7ae";
             auto result = toHexString(hash);
+            EXPECT_EQ(expected, result);
+
+            // hash again
+            hash = hash_function(input);
+            result = toHexString(hash);
             EXPECT_EQ(expected, result);
         }
     }
@@ -195,4 +205,8 @@ TEST(Multihash, HashConstruction)
         EXPECT_EQ(expected, toHexString(hash));
         EXPECT_EQ(hash_copied, hash);
     }
+
+    EXPECT_EQ(hash_function(foo), hash_function(foo));
+    EXPECT_EQ(hash, hash_function(foo));
+    EXPECT_EQ(expected, toHexString(hash_function(foo)));
 }

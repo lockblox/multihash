@@ -30,6 +30,7 @@ private:
 struct Algorithm
 {
     virtual size_t block_size() = 0;
+    virtual void init() = 0;
     virtual void update(const string_view data) = 0;
     virtual Bytes digest() = 0;
     virtual ~Algorithm() = default;
@@ -100,6 +101,7 @@ public:
         const EVP_MD* evp_md_;
     };
 
+    void init() override;
     explicit SslImpl(const HashType& hash_type);
     ~SslImpl() override = default;
     size_t block_size() override;
