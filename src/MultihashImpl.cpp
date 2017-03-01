@@ -158,6 +158,7 @@ Hash HashFunction::Impl::operator()(std::istream& input) const
         throw Exception("HashFunction input is not good");
     }
 
+    algorithm_->init();
     auto buffer = std::string(algorithm_->block_size(), ' ');
     auto begin = buffer.begin();
     auto end = buffer.end();
@@ -182,6 +183,7 @@ Hash HashFunction::Impl::operator()(std::istream& input) const
 
 Hash HashFunction::Impl::operator()(const string_view input) const
 {
+    algorithm_->init();
     auto block_size = algorithm_->block_size();
     auto begin = input.begin();
     auto size = std::min(input.size(), block_size);
@@ -279,6 +281,10 @@ int SslImpl::DigestType::block_size() const
 }
 
 SslImpl::SslImpl(const HashType& hash_type) : type_(DigestType(hash_type))
+{
+}
+
+void SslImpl::init()
 {
     if (EVP_DigestInit_ex(context_.get(), type_.get(), nullptr) != 1)
     {
