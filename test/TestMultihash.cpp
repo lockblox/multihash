@@ -75,7 +75,7 @@ TEST(Multihash, hashing)
             EXPECT_EQ(expected, result);
         }
         {
-        auto expected = "11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33";
+            auto expected = "11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33";
             auto result = toHexString(hash);
             EXPECT_EQ(expected, result);
         }
