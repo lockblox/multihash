@@ -17,9 +17,7 @@ target_link_libraries(multihash libmultihash crypto )
 
 add_subdirectory(external/gtest)
 
-target_include_directories(multihash INTERFACE 
-                           "${multihash_SOURCE_DIR}/include")
-target_include_directories(libmultihash INTERFACE 
+target_include_directories(libmultihash INTERFACE
                            "${multihash_SOURCE_DIR}/include")
 
 enable_testing()
@@ -50,7 +48,7 @@ endif()
 
 # Compile and run all unit tests
 add_executable(TestMultihash test/TestMultihash.cpp test/main.cpp)
-               
+
 target_link_libraries(TestMultihash gtest libmultihash crypto)
 
 set_target_properties(TestMultihash PROPERTIES RUNTIME_OUTPUT_DIRECTORY
