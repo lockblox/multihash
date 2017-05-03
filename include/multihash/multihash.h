@@ -31,7 +31,7 @@ struct InvalidHashException : public Exception
     explicit InvalidHashException(const std::string& message);
 };
 
-typedef std::vector<unsigned char> Bytes;
+typedef std::vector<char> Bytes;
 
 /** Code values of supported hash types */
 enum class HashCode : unsigned char
