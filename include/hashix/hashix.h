@@ -9,12 +9,15 @@
 #include <string>
 #include <vector>
 
-namespace multihash
+namespace x
+{
+
+namespace hashi
 {
 
 using string_view = std::experimental::fundamentals_v1::string_view;
 
-/** Base exception for the multihash library */
+/** Base exception for the hashi library */
 class Exception : public std::exception
 {
 public:
@@ -136,10 +139,12 @@ private:
     const Impl* pImpl;
 };
 
-} // namespace multihash
+} // namespace hashi
+
+} // namespace x;
 
 std::ostream&
-operator<<(std::ostream& os, const multihash::HashCode& hash_code);
+operator<<(std::ostream& os, const x::hashi::HashCode& hash_code);
 std::ostream&
-operator<<(std::ostream& os, const multihash::HashType& hash_type);
-std::ostream& operator<<(std::ostream& os, const multihash::Hash& hash);
+operator<<(std::ostream& os, const x::hashi::HashType& hash_type);
+std::ostream& operator<<(std::ostream& os, const x::hashi::Hash& hash);

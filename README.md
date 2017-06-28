@@ -1,18 +1,18 @@
-[![Build Status](https://travis-ci.org/jbrooker/cpp-multihash.svg?branch=master)](https://travis-ci.org/jbrooker/cpp-multihash)
+[![Build Status](https://travis-ci.org/campx/hashix.svg?branch=master)](https://travis-ci.org/campx/hashix)
 
-# cpp-multihash
+# hashix
 
 [multihash](//github.com/jbenet/multihash) implementation in c++.
 
 ## Example
 
-Run [bin/multihash](src/main.cpp)
+Run [bin/hashix](src/main.cpp)
 
 ```
 cd build
 cmake ..
 make
-echo -n "foo" | ../bin/multihash --hash-type sha1
+echo -n "foo" | ../bin/hashix --hash-type sha1
 11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33 -
 ```
 

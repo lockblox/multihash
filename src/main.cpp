@@ -1,8 +1,8 @@
 #include <array>
 #include <fstream>
 #include <getopt.h>
+#include <hashix/hashix.h>
 #include <iostream>
-#include <multihash/multihash.h>
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 {
     // Declare the supported options.
     std::ostringstream os;
-    os << "Usage: multihash [OPTION]... [FILE]..." << std::endl
+    os << "Usage: hashix [OPTION]... [FILE]..." << std::endl
        << "Print cryptographic digests." << std::endl
        << "With no FILE or when file is -, read standard input" << std::endl
        << "    --help               Display help message" << std::endl
@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     }
     if (1 == list_flag)
     {
-        for (auto hash_type : multihash::HashType::types())
+        for (auto hash_type : x::hashi::HashType::types())
         {
             std::cout << hash_type.name() << std::endl;
         }
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        auto hash_function = multihash::HashFunction(algo);
+        auto hash_function = x::hashi::HashFunction(algo);
 
         std::ios_base::sync_with_stdio(false); // enable fast io
 
@@ -111,14 +111,14 @@ int main(int argc, char* argv[])
                 struct stat stat_record;
                 if (-1 == stat(filename.c_str(), &stat_record))
                 {
-                    std::cerr << "multihash: " << filename
+                    std::cerr << "hashix: " << filename
                               << ": No such file or directory" << std::endl;
                     continue;
                 }
                 else if (S_IFDIR == (stat_record.st_mode & S_IFMT))
                 {
-                    std::cerr << "multihash: " << filename
-                              << ": Is a directory" << std::endl;
+                    std::cerr << "hashix: " << filename << ": Is a directory"
+                              << std::endl;
                     continue;
                 }
                 std::ifstream filestream(filename);
@@ -129,17 +129,17 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    std::cerr << "multihash: " << filename << ": "
+                    std::cerr << "hashix: " << filename << ": "
                               << "Permission denied" << std::endl;
                 }
             }
         }
     }
-    catch (multihash::InvalidHashException& e)
+    catch (x::hashi::InvalidHashException& e)
     {
         std::cerr << "ERROR: " << e.what() << std::endl;
         std::cout << "Available hash types: " << std::endl;
-        for (auto hash_type : multihash::HashType::types())
+        for (auto hash_type : x::hashi::HashType::types())
         {
             std::cout << hash_type.name() << std::endl;
         }

@@ -2,7 +2,10 @@
 #include <algorithm>
 #include <sstream>
 
-namespace multihash
+namespace x
+{
+
+namespace hashi
 {
 
 InvalidHashException::InvalidHashException(const std::string& message)
@@ -120,17 +123,17 @@ std::set<HashType> HashType::types()
                               HashType{HashCode::SHA2_512}};
 }
 
-} // namespace multihash
+} // namespace hashi
 
-std::ostream&
-operator<<(std::ostream& os, const multihash::HashType& hash_type)
+} // namespace x
+
+std::ostream& operator<<(std::ostream& os, const x::hashi::HashType& hash_type)
 {
     os << hash_type.name();
     return os;
 }
 
-std::ostream&
-operator<<(std::ostream& os, const multihash::HashCode& hash_code)
+std::ostream& operator<<(std::ostream& os, const x::hashi::HashCode& hash_code)
 {
     os << std::hex << static_cast<int>(hash_code);
     return os;

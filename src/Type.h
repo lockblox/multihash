@@ -1,8 +1,11 @@
 #pragma once
 
-#include <multihash/multihash.h>
+#include <hashix/hashix.h>
 
-namespace multihash
+namespace x
+{
+
+namespace hashi
 {
 
 class HashType::Impl
@@ -39,4 +42,6 @@ private:
     const size_t size_;
 };
 
-} // namespace multihash
+} // namespace hashi
+
+} // namespace x

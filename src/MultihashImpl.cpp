@@ -4,7 +4,10 @@
 #include <mutex> //for call_once
 #include <sstream>
 
-namespace multihash
+namespace x
+{
+
+namespace hashi
 {
 
 HashBytesCodec::Impl HashBytesCodec::Impl::instance_ = HashBytesCodec::Impl();
@@ -394,11 +397,13 @@ size_t SslImpl::block_size()
     return type_.block_size();
 }
 
-} // namespace multihash
+} // namespace hashi
 
-std::ostream& operator<<(std::ostream& os, const multihash::Hash& hash)
+} // namespace x
+
+std::ostream& operator<<(std::ostream& os, const x::hashi::Hash& hash)
 {
-    multihash::HashBytesCodec encode;
+    x::hashi::HashBytesCodec encode;
     auto data(encode(hash));
     for (auto c : data)
     {

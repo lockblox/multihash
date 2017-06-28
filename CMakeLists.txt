@@ -1,31 +1,31 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(multihash LANGUAGES CXX)
+project(hashix LANGUAGES CXX)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -Wextra -Werror")
 
-include_directories(${multihash_SOURCE_DIR}/include)
+include_directories(${hashix_SOURCE_DIR}/include)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #create compilation database for clang
 
-add_library(libmultihash STATIC src/MultihashImpl.cpp src/Type.cpp)
-set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
+add_library(libhashix STATIC src/MultihashImpl.cpp src/Type.cpp)
+set_target_properties(libhashix PROPERTIES OUTPUT_NAME hashix)
 
-add_executable(multihash src/main.cpp)
-target_link_libraries(multihash libmultihash crypto )
+add_executable(hashix src/main.cpp)
+target_link_libraries(hashix libhashix crypto )
 
 add_subdirectory(external/gtest)
 
-target_include_directories(libmultihash INTERFACE
-                           "${multihash_SOURCE_DIR}/include")
+target_include_directories(libhashix INTERFACE
+                           "${hashix_SOURCE_DIR}/include")
 
 enable_testing()
 
 # Component test for whole executable
 add_test (
     NAME TestMultihashBin WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    COMMAND multihash --hash-type sha1 ${CMAKE_CURRENT_SOURCE_DIR}/test/foo
+    COMMAND hashix --hash-type sha1 ${CMAKE_CURRENT_SOURCE_DIR}/test/foo
 )
 set_tests_properties (
     TestMultihashBin PROPERTIES PASS_REGULAR_EXPRESSION
@@ -49,7 +49,7 @@ endif()
 # Compile and run all unit tests
 add_executable(TestMultihash test/TestMultihash.cpp test/main.cpp)
 
-target_link_libraries(TestMultihash gtest libmultihash crypto)
+target_link_libraries(TestMultihash gtest libhashix crypto)
 
 set_target_properties(TestMultihash PROPERTIES RUNTIME_OUTPUT_DIRECTORY
                       ${CMAKE_CURRENT_BINARY_DIR}/test)
