@@ -23,9 +23,9 @@ script:
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then 
              mkdir build
-          && docker build -t jbrooker/cpp-multihash . 
+          && docker build -t campx/hashix . 
           && docker run -v $PWD:/work/source/ -v $PWD/build:/work/build
-             --privileged -it jbrooker/cpp-multihash;
+             --privileged -it campx/hashix;
       fi
 branches:
     only:

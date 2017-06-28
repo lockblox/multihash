@@ -3,7 +3,10 @@
 #include "Type.h"
 #include <openssl/evp.h>
 
-namespace multihash
+namespace x
+{
+
+namespace hashi
 {
 
 class Hash::Impl
@@ -114,4 +117,6 @@ private:
     static Cleanup cleanup_;
 };
 
-} // namespace multihash
+} // namespace hashi
+
+} // namespace x
