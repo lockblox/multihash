@@ -2,10 +2,7 @@
 
 #include <shax/shax.h>
 
-namespace x
-{
-
-namespace hashi
+namespace shax
 {
 
 class HashType::Impl
@@ -42,6 +39,4 @@ private:
     const size_t size_;
 };
 
-} // namespace hashi
-
-} // namespace x
+} // namespace shax

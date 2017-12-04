@@ -9,10 +9,7 @@
 #include <string>
 #include <vector>
 
-namespace x
-{
-
-namespace hashi
+namespace shax
 {
 
 using string_view = std::experimental::fundamentals_v1::string_view;
@@ -139,12 +136,8 @@ private:
     const Impl* pImpl;
 };
 
-} // namespace hashi
+} // namespace shax
 
-} // namespace x;
-
-std::ostream&
-operator<<(std::ostream& os, const x::hashi::HashCode& hash_code);
-std::ostream&
-operator<<(std::ostream& os, const x::hashi::HashType& hash_type);
-std::ostream& operator<<(std::ostream& os, const x::hashi::Hash& hash);
+std::ostream& operator<<(std::ostream& os, const shax::HashCode& hash_code);
+std::ostream& operator<<(std::ostream& os, const shax::HashType& hash_type);
+std::ostream& operator<<(std::ostream& os, const shax::Hash& hash);
