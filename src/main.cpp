@@ -1,7 +1,7 @@
 #include <array>
 #include <fstream>
 #include <getopt.h>
-#include <hashix/hashix.h>
+#include <shax/shax.h>
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 {
     // Declare the supported options.
     std::ostringstream os;
-    os << "Usage: hashix [OPTION]... [FILE]..." << std::endl
+    os << "Usage: shax [OPTION]... [FILE]..." << std::endl
        << "Print cryptographic digests." << std::endl
        << "With no FILE or when file is -, read standard input" << std::endl
        << "    --help               Display help message" << std::endl
@@ -111,13 +111,13 @@ int main(int argc, char* argv[])
                 struct stat stat_record;
                 if (-1 == stat(filename.c_str(), &stat_record))
                 {
-                    std::cerr << "hashix: " << filename
+                    std::cerr << "shax: " << filename
                               << ": No such file or directory" << std::endl;
                     continue;
                 }
                 else if (S_IFDIR == (stat_record.st_mode & S_IFMT))
                 {
-                    std::cerr << "hashix: " << filename << ": Is a directory"
+                    std::cerr << "shax: " << filename << ": Is a directory"
                               << std::endl;
                     continue;
                 }
@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    std::cerr << "hashix: " << filename << ": "
+                    std::cerr << "shax: " << filename << ": "
                               << "Permission denied" << std::endl;
                 }
             }

@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include <cstdlib>
-#include <hashix/hashix.h>
+#include <shax/shax.h>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
