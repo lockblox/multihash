@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     }
     if (1 == list_flag)
     {
-        for (auto hash_type : x::hashi::HashType::types())
+        for (auto hash_type : shax::HashType::types())
         {
             std::cout << hash_type.name() << std::endl;
         }
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        auto hash_function = x::hashi::HashFunction(algo);
+        auto hash_function = shax::HashFunction(algo);
 
         std::ios_base::sync_with_stdio(false); // enable fast io
 
@@ -135,11 +135,11 @@ int main(int argc, char* argv[])
             }
         }
     }
-    catch (x::hashi::InvalidHashException& e)
+    catch (shax::InvalidHashException& e)
     {
         std::cerr << "ERROR: " << e.what() << std::endl;
         std::cout << "Available hash types: " << std::endl;
-        for (auto hash_type : x::hashi::HashType::types())
+        for (auto hash_type : shax::HashType::types())
         {
             std::cout << hash_type.name() << std::endl;
         }
