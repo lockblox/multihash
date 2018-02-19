@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jbrooker/cpp-multihash.svg?branch=master)](https://travis-ci.org/jbrooker/cpp-multihash)
+[![Build Status](https://travis-ci.org/cpp-ipfs/cpp-multihash.svg?branch=master)](https://travis-ci.org/cpp-ipfs/cpp-multihash)
 
 # cpp-multihash
 
