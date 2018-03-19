@@ -3,22 +3,39 @@ cmake_minimum_required(VERSION 2.8)
 project(shax LANGUAGES CXX)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -Wextra -Werror")
 
-include_directories(${shax_SOURCE_DIR}/include)
+if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra")
+endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #create compilation database for clang
+SET(GTEST_LIBRARIES gtest)
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+    if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
+        SET(GTEST_LIBRARIES gtestd)
+    endif()
+endif()
 
 add_library(libshax STATIC src/MultihashImpl.cpp src/Type.cpp)
 set_target_properties(libshax PROPERTIES OUTPUT_NAME shax)
+target_compile_features(libshax PUBLIC cxx_return_type_deduction)
+target_include_directories(libshax PUBLIC "${shax_SOURCE_DIR}/include")
 
 add_executable(shax src/main.cpp)
 target_link_libraries(shax libshax crypto )
 
 add_subdirectory(external/gtest)
+include_directories(${CMAKE_BINARY_DIR}/include)
+link_directories(${CMAKE_BINARY_DIR}/lib)
 
 target_include_directories(libshax INTERFACE
                            "${shax_SOURCE_DIR}/include")
+
+install(TARGETS libshax 
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin)
+install(DIRECTORY shax DESTINATION include FILES_MATCHING 
+        PATTERN "*.h")
 
 enable_testing()
 
@@ -50,6 +67,7 @@ endif()
 add_executable(TestMultihash test/TestMultihash.cpp test/main.cpp)
 
 target_link_libraries(TestMultihash gtest libshax crypto)
+add_dependencies(TestMultihash googletest)
 
 set_target_properties(TestMultihash PROPERTIES RUNTIME_OUTPUT_DIRECTORY
                       ${CMAKE_CURRENT_BINARY_DIR}/test)
