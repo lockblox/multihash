@@ -1,8 +1,8 @@
 #include <array>
 #include <fstream>
 #include <getopt.h>
-#include <shax/shax.h>
 #include <iostream>
+#include <shax/HashFunction.h>
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
             }
         }
     }
-    catch (shax::InvalidHashException& e)
+    catch (std::invalid_argument& e)
     {
         std::cerr << "ERROR: " << e.what() << std::endl;
         std::cout << "Available hash types: " << std::endl;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shax/shax.h>
+#include <shax/HashType.h>
 
 namespace shax
 {

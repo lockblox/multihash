@@ -1,8 +1,9 @@
 #include "gtest/gtest.h"
 #include <cstdlib>
-#include <shax/shax.h>
 #include <iomanip>
 #include <iostream>
+#include <shax/HashFunction.h>
+#include <shax/HashRawCodec.h>
 #include <sstream>
 
 std::string toHexString(const shax::Hash& hash)
@@ -50,11 +51,11 @@ TEST(Multihash, conversions)
 
     /** Failing to look up a hash type */
     {
-        EXPECT_THROW(shax::HashType("unknown_hash"), shax::Exception);
+        EXPECT_THROW(shax::HashType("unknown_hash"), std::invalid_argument);
     }
     {
         EXPECT_THROW(shax::HashType(static_cast<shax::HashCode>(0x84)),
-                     shax::Exception);
+                     std::invalid_argument);
     }
 }
 
@@ -67,8 +68,7 @@ TEST(Multihash, hashing)
         shax::HashFunction hash_function(shax::HashCode::SHA1);
         auto hash = hash_function(input_stream);
         {
-            auto expected =
-                static_cast<unsigned char>(shax::HashCode::SHA1);
+            auto expected = static_cast<unsigned char>(shax::HashCode::SHA1);
             auto result = static_cast<unsigned char>(hash.type().code());
             EXPECT_EQ(expected, result);
         }
@@ -106,8 +106,7 @@ TEST(Multihash, hashing)
         input_stream.clear();
         input_stream.seekg(0);
 
-        auto hash_function =
-            shax::HashFunction(shax::HashCode::SHA2_256);
+        auto hash_function = shax::HashFunction(shax::HashCode::SHA2_256);
         auto hash = hash_function(input_stream);
         {
             auto expected =
@@ -131,8 +130,7 @@ TEST(Multihash, hashing)
         input_stream.clear();
         input_stream.seekg(0);
 
-        auto hash_function =
-            shax::HashFunction(shax::HashCode::SHA2_512);
+        auto hash_function = shax::HashFunction(shax::HashCode::SHA2_512);
         auto hash = hash_function(input_stream);
         {
             auto expected =
@@ -150,8 +148,7 @@ TEST(Multihash, hashing)
         }
     }
     {
-        auto hash_function =
-            shax::HashFunction(shax::HashCode::SHA2_512);
+        auto hash_function = shax::HashFunction(shax::HashCode::SHA2_512);
         auto hash_function_b = hash_function;
         EXPECT_EQ(hash_function, hash_function_b);
     }
@@ -162,7 +159,7 @@ TEST(Multihash, encoding)
     std::istringstream input_stream("foo");
     shax::HashFunction hash_function(shax::HashCode::SHA1);
     auto hash = hash_function(input_stream);
-    shax::HashBytesCodec codec;
+    shax::HashRawCodec codec;
 
     auto encoded = codec(hash);
     auto decoded = codec(encoded);
