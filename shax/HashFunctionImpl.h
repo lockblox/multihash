@@ -14,10 +14,11 @@ public:
     {
         return hash_type_;
     }
-    Hash operator()(std::istream& input) const;
-    Hash operator()(const string_view input) const;
+    Hash operator()(std::istream& input);
+    Hash operator()(const string_view input);
 
 private:
+    void init();
     HashType hash_type_;
     std::unique_ptr<Algorithm> algorithm_;
 };

@@ -79,8 +79,6 @@ const EVP_MD* SslImpl::DigestType::get() const
 
 int SslImpl::DigestType::digest_size() const
 {
-    return EVP_MD_size(evp_md_);
-}
 
 int SslImpl::DigestType::block_size() const
 {
@@ -88,10 +86,6 @@ int SslImpl::DigestType::block_size() const
 }
 
 SslImpl::SslImpl(const HashType& hash_type) : type_(DigestType(hash_type))
-{
-}
-
-void SslImpl::init()
 {
     if (EVP_DigestInit_ex(context_.get(), type_.get(), nullptr) != 1)
     {

@@ -1,18 +1,23 @@
 #include "HashFunctionImpl.h"
-#include "SslImpl.h"
+#include "CryptoppImpl.h"
 #include <stdexcept>
 
 namespace shax
 {
 HashFunction::Impl::Impl(HashType hash_type)
-    : hash_type_(std::move(hash_type)), algorithm_(nullptr)
+    : hash_type_(std::move(hash_type))
+{
+    init();
+}
+
+void HashFunction::Impl::init()
 {
     switch (hash_type_.code())
     {
         case HashCode::SHA1:
         case HashCode::SHA2_256:
         case HashCode::SHA2_512:
-            algorithm_.reset(new SslImpl(hash_type_));
+            algorithm_ = std::make_unique<CryptoppImpl>(hash_type_);
             break;
         case HashCode::SHA3:
         case HashCode::BLAKE2B:
@@ -28,14 +33,13 @@ bool HashFunction::operator==(const HashFunction& rhs) const
     return type() == rhs.type();
 }
 
-Hash HashFunction::Impl::operator()(std::istream& input) const
+Hash HashFunction::Impl::operator()(std::istream& input) 
 {
     if (!input.good())
     {
         throw std::invalid_argument("HashFunction input is not good");
     }
-
-    algorithm_->init();
+    init();
     auto buffer = std::string(algorithm_->block_size(), ' ');
     auto begin = buffer.begin();
     auto end = buffer.end();
@@ -58,19 +62,21 @@ Hash HashFunction::Impl::operator()(std::istream& input) const
     return Hash(hash_type_, algorithm_->digest());
 }
 
-Hash HashFunction::Impl::operator()(const string_view input) const
+Hash HashFunction::Impl::operator()(const string_view input) 
 {
-    algorithm_->init();
+    init();
     auto block_size = algorithm_->block_size();
     auto begin = input.begin();
     auto size = std::min(input.size(), block_size);
     auto remaining = input.size();
+    auto end = begin;
 
     while (size > 0)
     {
-        auto buffer = string_view(begin, size);
+        std::advance(end, size);
+        auto buffer = string_view(begin, end);
         algorithm_->update(buffer);
-        begin += size;
+        begin = end;
         remaining -= size;
         size = std::min(remaining, block_size);
     }

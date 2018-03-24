@@ -9,7 +9,7 @@ ExternalProject_Add (
     GIT_TAG           master
     INSTALL_DIR       ${CMAKE_BINARY_DIR}
     CMAKE_ARGS        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> 
-                      -Dgtest_force_shared_crt=ON
+					  -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                       -Dgtest_disable_pthreads=ON
     PREFIX            ${CMAKE_CURRENT_BINARY_DIR}
     UPDATE_COMMAND    ""
