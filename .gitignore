@@ -1,4 +1,5 @@
 *.[oa]
 *.swp
 *.swo
+.vs
 build
