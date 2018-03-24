@@ -1,13 +1,11 @@
 #pragma once
 
-#include <experimental/string_view>
+#include <shax/StringView.h>
 #include <istream>
 #include <shax/Hash.h>
 
 namespace shax
 {
-
-using string_view = std::experimental::fundamentals_v1::string_view;
 
 /** Interface for a hash digest with encapsulated type */
 /** Functor which hashes an input stream with a given hash type */
