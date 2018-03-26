@@ -34,6 +34,7 @@ public:
     bool operator==(const HashType& rhs) const;
     bool operator!=(const HashType& rhs) const;
     bool operator<(const HashType& rhs) const;
+    bool operator>(const HashType& rhs) const;
 
     static std::set<HashType> types();
 

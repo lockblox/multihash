@@ -54,6 +54,20 @@ bool Hash::operator<(const Hash& rhs) const
     return result;
 }
 
+bool Hash::operator>(const Hash& rhs) const
+{
+    auto result = false;
+    if (type() == rhs.type())
+    {
+        result = digest() > rhs.digest();
+    }
+    else
+    {
+        result = type() > rhs.type();
+    }
+    return result;
+}
+
 const HashType& Hash::type() const
 {
     return pImpl->type();
