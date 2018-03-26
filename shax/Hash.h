@@ -22,6 +22,7 @@ public:
     bool operator==(const Hash& rhs) const;
     bool operator!=(const Hash& rhs) const;
     bool operator<(const Hash& rhs) const;
+    bool operator>(const Hash& rhs) const;
 
 private:
     class Impl;
