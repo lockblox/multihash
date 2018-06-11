@@ -4,6 +4,7 @@ project(shax LANGUAGES CXX)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 
+set(CMAKE_VERBOSE_MAKEFILE ON)
 add_subdirectory(external/cryptopp)
 
 include_directories(${CMAKE_BINARY_DIR}/include)
@@ -19,12 +20,15 @@ else()
 endif()
 
 SET(GTEST_LIBRARIES gtest)
-SET(CRYPTOPP_LIBRARIES cryptopp)
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
-	SET(CRYPTOPP_LIBRARIES cryptlib)
+if(WIN32)
     if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
         SET(GTEST_LIBRARIES gtestd)
     endif()
+endif()
+
+SET(CRYPTOPP_LIBRARIES cryptopp)
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+	SET(CRYPTOPP_LIBRARIES cryptlib)
 endif()
 
 if(MSVC)
@@ -67,7 +71,7 @@ message(STATUS "Initial build flags:")
 
 add_library(libshax
             shax/Algorithm.cpp          shax/Algorithm.h
-			shax/CryptoppImpl.cpp		shax/CryptoppImpl.h
+			shax/CryptoppImpl.cpp		 shax/CryptoppImpl.h
             shax/Hash.cpp               shax/Hash.h
             shax/HashFunction.cpp       shax/HashFunction.h
             shax/HashFunctionImpl.cpp   shax/HashFunctionImpl.h
@@ -76,7 +80,7 @@ add_library(libshax
             shax/HashRawCodecImpl.cpp   shax/HashRawCodecImpl.h
             shax/HashType.cpp           shax/HashType.h
             shax/HashTypeImpl.cpp       shax/HashTypeImpl.h
-			shax/StringView.cpp			shax/StringView.h)
+			shax/StringView.cpp			 shax/StringView.h)
 set_target_properties(libshax PROPERTIES OUTPUT_NAME shax)
 target_compile_features(libshax PUBLIC cxx_return_type_deduction)
 target_include_directories(libshax PUBLIC "${shax_SOURCE_DIR}")
