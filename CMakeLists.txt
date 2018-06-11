@@ -21,7 +21,7 @@ endif()
 
 SET(GTEST_LIBRARIES gtest)
 if(WIN32)
-    if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
+    if (${CMAKE_BUILD_TYPE} MATCHES Debug)
         SET(GTEST_LIBRARIES gtestd)
     endif()
 endif()
