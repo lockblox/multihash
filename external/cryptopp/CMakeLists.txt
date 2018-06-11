@@ -35,12 +35,6 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 	)
 	# need to determine target architecture from cmake/env and pass to msbuild
 else()
-    message(STATUS "NIX build of cryptopp")
-	ProcessorCount(N)
-	if(NOT N EQUAL 0)
-		set(MAKE_FLAGS -j${N})
-	endif()
-
 	ExternalProject_Add (
 		${CRYPTOPP_PROJECT}
 		GIT_REPOSITORY    ${CRYPTOPP_GIT_REPO} 
@@ -48,8 +42,7 @@ else()
 		INSTALL_DIR       ${CMAKE_BINARY_DIR}
 		CONFIGURE_COMMAND ""
 		BUILD_IN_SOURCE   ${CRYPTOPP_BUILD_IN_SOURCE}
-		BUILD_COMMAND     make ${MAKE_FLAGS}
-		INSTALL_COMMAND   make install PREFIX=<INSTALL_DIR>
+		INSTALL_COMMAND   ${CMAKE_MAKE_PROGRAM} install PREFIX=<INSTALL_DIR>
 		PREFIX            ${CMAKE_CURRENT_BINARY_DIR}
 		UPDATE_COMMAND    ""
 	)
