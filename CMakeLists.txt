@@ -19,11 +19,8 @@ else()
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra")
 endif()
 
-SET(GTEST_LIBRARIES gtest)
-if(WIN32)
-    if (${CMAKE_BUILD_TYPE} MATCHES Debug)
-        SET(GTEST_LIBRARIES gtestd)
-    endif()
+if (${CMAKE_BUILD_TYPE} MATCHES Debug)
+    SET(GTEST_LIBRARIES gtestd)
 endif()
 
 SET(CRYPTOPP_LIBRARIES cryptopp)
