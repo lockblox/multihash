@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/campx/shax.svg?branch=master)](https://travis-ci.org/campx/shax)
+[![Build Status](https://travis-ci.org/cpp-ipfs/cpp-multihash.svg?branch=master)](https://travis-ci.org/cpp-ipfs/cpp-multihash)
 
 # shax
 
