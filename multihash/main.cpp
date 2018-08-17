@@ -2,6 +2,7 @@
 #include <multihash/HashFunction.h>
 #include <sys/stat.h>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
 int main(int argc, char *argv[]) {
