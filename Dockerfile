@@ -6,8 +6,7 @@ RUN apt-get update \
             g++ \
             libstdc++-4.9-dev \
             libssl-dev \
-            git
-
+            git \
  && apt-get -yy autoremove \
  && apt-get -yy clean
 
