@@ -91,11 +91,11 @@ add_dependencies(multihash libcryptopp)
 
 	# Component test for whole executable
 	add_test (
-		NAME TestMultihashBin WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+		NAME MultihashBinTest WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
             COMMAND multihash --hash-type sha1 ${CMAKE_CURRENT_SOURCE_DIR}/multihash/test/foo
 	)
 	set_tests_properties (
-		TestMultihashBin PROPERTIES PASS_REGULAR_EXPRESSION
+		MultihashBinTest PROPERTIES PASS_REGULAR_EXPRESSION
             "^1114f1d2d2f924e986ac86fdf7b36c94bcdf32beec15\ .*/multihash/test/foo"
 		TIMEOUT 1
 	)
@@ -112,14 +112,14 @@ install(DIRECTORY multihash DESTINATION include
 enable_testing()
 
 # Compile and run all unit tests
-add_executable(TestMultihash multihash/test/MultihashTest.cpp multihash/test/main.cpp)
+add_executable(MultihashTest multihash/test/MultihashTest.cpp multihash/test/main.cpp)
 add_subdirectory(external/gtest)
-target_link_libraries(TestMultihash ${GTEST_LIBRARIES} libmultihash
+target_link_libraries(MultihashTest ${GTEST_LIBRARIES} libmultihash
                       ${CRYPTOPP_LIBRARIES})
                       
-add_dependencies(TestMultihash googletest libcryptopp)
-set_target_properties(TestMultihash PROPERTIES RUNTIME_OUTPUT_DIRECTORY
+add_dependencies(MultihashTest googletest libcryptopp)
+set_target_properties(MultihashTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY
                       ${CMAKE_CURRENT_BINARY_DIR}/test)
-add_test(NAME TestMultihash
+add_test(NAME MultihashTest
          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/test
-         COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test/TestMultihash)
+         COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test/MultihashTest)
