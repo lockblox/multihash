@@ -1,6 +1,7 @@
 #include <getopt.h>
 #include <multihash/HashFunction.h>
 #include <sys/stat.h>
+#include <array>
 #include <fstream>
 #include <iostream>
 #include <sstream>
