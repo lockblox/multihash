@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(shax LANGUAGES CXX)
+project(multihash LANGUAGES CXX)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 
@@ -66,55 +66,55 @@ endif()
 
 message(STATUS "Initial build flags:")
 
-add_library(libshax
-            shax/Algorithm.cpp          shax/Algorithm.h
-			shax/CryptoppImpl.cpp		 shax/CryptoppImpl.h
-            shax/Hash.cpp               shax/Hash.h
-            shax/HashFunction.cpp       shax/HashFunction.h
-            shax/HashFunctionImpl.cpp   shax/HashFunctionImpl.h
-            shax/HashImpl.cpp           shax/HashImpl.h
-            shax/HashRawCodec.cpp       shax/HashRawCodec.h
-            shax/HashRawCodecImpl.cpp   shax/HashRawCodecImpl.h
-            shax/HashType.cpp           shax/HashType.h
-            shax/HashTypeImpl.cpp       shax/HashTypeImpl.h
-			shax/StringView.cpp			 shax/StringView.h)
-set_target_properties(libshax PROPERTIES OUTPUT_NAME shax)
-target_compile_features(libshax PUBLIC cxx_return_type_deduction)
-target_include_directories(libshax PUBLIC "${shax_SOURCE_DIR}")
-add_dependencies(libshax libcryptopp)
+add_library(libmultihash
+        multihash/Algorithm.cpp multihash/Algorithm.h
+        multihash/CryptoppImpl.cpp multihash/CryptoppImpl.h
+        multihash/Hash.cpp multihash/Hash.h
+        multihash/HashFunction.cpp multihash/HashFunction.h
+        multihash/HashFunctionImpl.cpp multihash/HashFunctionImpl.h
+        multihash/HashImpl.cpp multihash/HashImpl.h
+        multihash/HashRawCodec.cpp multihash/HashRawCodec.h
+        multihash/HashRawCodecImpl.cpp multihash/HashRawCodecImpl.h
+        multihash/HashType.cpp multihash/HashType.h
+        multihash/HashTypeImpl.cpp multihash/HashTypeImpl.h
+        multihash/StringView.cpp multihash/StringView.h)
+set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
+target_compile_features(libmultihash PUBLIC cxx_return_type_deduction)
+target_include_directories(libmultihash PUBLIC "${multihash_SOURCE_DIR}")
+add_dependencies(libmultihash libcryptopp)
 
 if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 # Binary depends on getopt which is unavailable in Windows
-	add_executable(shax shax/main.cpp)
-    target_link_libraries(shax libshax ${CRYPTOPP_LIBRARIES})
-    add_dependencies(shax libcryptopp)
+add_executable(multihash multihash/main.cpp)
+target_link_libraries(multihash libmultihash ${CRYPTOPP_LIBRARIES})
+add_dependencies(multihash libcryptopp)
 
 	# Component test for whole executable
 	add_test (
 		NAME TestMultihashBin WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-		COMMAND shax --hash-type sha1 ${CMAKE_CURRENT_SOURCE_DIR}/shax/test/foo
+            COMMAND multihash --hash-type sha1 ${CMAKE_CURRENT_SOURCE_DIR}/multihash/test/foo
 	)
 	set_tests_properties (
 		TestMultihashBin PROPERTIES PASS_REGULAR_EXPRESSION
-		"^1114f1d2d2f924e986ac86fdf7b36c94bcdf32beec15\ .*/shax/test/foo"
+            "^1114f1d2d2f924e986ac86fdf7b36c94bcdf32beec15\ .*/multihash/test/foo"
 		TIMEOUT 1
 	)
 endif()
 
-install(TARGETS libshax 
+install(TARGETS libmultihash
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin)
-install(DIRECTORY shax DESTINATION include 
+install(DIRECTORY multihash DESTINATION include
         FILES_MATCHING PATTERN "*.h"
         PATTERN "*Impl.h" EXCLUDE)
 
 enable_testing()
 
 # Compile and run all unit tests
-add_executable(TestMultihash shax/test/TestMultihash.cpp shax/test/main.cpp)
+add_executable(TestMultihash multihash/test/TestMultihash.cpp multihash/test/main.cpp)
 add_subdirectory(external/gtest)
-target_link_libraries(TestMultihash ${GTEST_LIBRARIES} libshax
+target_link_libraries(TestMultihash ${GTEST_LIBRARIES} libmultihash
                       ${CRYPTOPP_LIBRARIES})
                       
 add_dependencies(TestMultihash googletest libcryptopp)
