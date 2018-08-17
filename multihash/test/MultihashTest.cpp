@@ -1,4 +1,5 @@
 #include <multihash/HashFunction.h>
+#include <multihash/HashRawCodec.h>
 #include <iomanip>
 #include "gtest/gtest.h"
 
