@@ -55,9 +55,7 @@ int SslImpl::DigestType::digest_size() const {
     return EVP_MD_block_size(evp_md_);
   }
 
-  SslImpl::SslImpl(
-  const HashType &hash_type) : type_(DigestType(hash_type))
-  {
+  SslImpl::SslImpl(const HashType &hash_type) : type_(DigestType(hash_type)) {
     if (EVP_DigestInit_ex(context_.get(), type_.get(), nullptr) != 1) {
       throw std::runtime_error("Unable to initialise hash digest function");
     }
