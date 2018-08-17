@@ -19,10 +19,6 @@ else()
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra")
 endif()
 
-if (${CMAKE_BUILD_TYPE} MATCHES Debug)
-    SET(GTEST_LIBRARIES gtestd)
-endif()
-
 SET(CRYPTOPP_LIBRARIES cryptopp)
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 	SET(CRYPTOPP_LIBRARIES cryptlib)
@@ -109,15 +105,14 @@ install(DIRECTORY multihash DESTINATION include
         FILES_MATCHING PATTERN "*.h"
         PATTERN "*Impl.h" EXCLUDE)
 
-enable_testing()
-
 # Compile and run all unit tests
+enable_testing()
+if (NOT TARGET gtest)
+    add_subdirectory(external/googletest)
+endif()
 add_executable(MultihashTest multihash/test/MultihashTest.cpp multihash/test/main.cpp)
-add_subdirectory(external/gtest)
-target_link_libraries(MultihashTest ${GTEST_LIBRARIES} libmultihash
-                      ${CRYPTOPP_LIBRARIES})
-                      
-add_dependencies(MultihashTest googletest libcryptopp)
+target_link_libraries(MultihashTest gtest libmultihash ${CRYPTOPP_LIBRARIES})
+add_dependencies(MultihashTest libcryptopp)
 set_target_properties(MultihashTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY
                       ${CMAKE_CURRENT_BINARY_DIR}/test)
 add_test(NAME MultihashTest
