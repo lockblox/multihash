@@ -1,5 +1,6 @@
 #include "HashRawCodecImpl.h"
 #include <iomanip>
+#include <sstream>
 
 namespace multihash {
 
