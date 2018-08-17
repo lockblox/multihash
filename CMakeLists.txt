@@ -112,7 +112,7 @@ install(DIRECTORY multihash DESTINATION include
 enable_testing()
 
 # Compile and run all unit tests
-add_executable(TestMultihash multihash/test/TestMultihash.cpp multihash/test/main.cpp)
+add_executable(TestMultihash multihash/test/MultihashTest.cpp multihash/test/main.cpp)
 add_subdirectory(external/gtest)
 target_link_libraries(TestMultihash ${GTEST_LIBRARIES} libmultihash
                       ${CRYPTOPP_LIBRARIES})
