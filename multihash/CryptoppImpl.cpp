@@ -49,4 +49,5 @@ std::vector<char> CryptoppImpl::digest() {
   hash_->Final(reinterpret_cast<unsigned char *>(digest_.data()));
   return digest_;
 }
+
 }

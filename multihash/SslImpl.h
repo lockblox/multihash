@@ -6,7 +6,7 @@
 
 namespace multihash {
 
-class SslImpl : public Algorithm {
+class SslImpl: public Algorithm {
  public:
   struct Cleanup {
     ~Cleanup();
