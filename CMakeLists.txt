@@ -9,6 +9,7 @@ add_subdirectory(external/cryptopp)
 
 include_directories(${CMAKE_BINARY_DIR}/include)
 link_directories(${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     if("${MSVC_RUNTIME}" STREQUAL "")
