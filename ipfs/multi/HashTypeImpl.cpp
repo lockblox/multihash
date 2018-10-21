@@ -1,6 +1,7 @@
 #include "HashTypeImpl.h"
 
-namespace multihash {
+namespace ipfs {
+namespace multi {
 
 HashType::Impl::Impl(HashCode code, std::string name, size_t size)
     : code_(code), name_(std::move(name)), size_(size) {}
@@ -20,8 +21,8 @@ const HashType::Impl::Set HashType::Impl::all_types() {
                              &HashType::Impl::sha2_512};
 }
 
-bool HashType::Impl::operator<(const HashType::Impl &rhs) const {
+bool HashType::Impl::operator<(const HashType::Impl& rhs) const {
   return code() < rhs.code();
 }
-
-}  // namespace multihash
+}  // namespace multi
+}  // namespace ipfs

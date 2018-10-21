@@ -3,7 +3,8 @@
 #include <set>
 #include <string>
 
-namespace multihash {
+namespace ipfs {
+namespace multi {
 
 /** Code values of supported hash types */
 enum class HashCode : unsigned char {
@@ -20,27 +21,26 @@ enum class HashCode : unsigned char {
 class HashType {
  public:
   HashType();
-  explicit HashType(const std::string &name);
+  explicit HashType(const std::string& name);
   explicit HashType(HashCode code);
-  HashType(const HashType &rhs);
+  HashType(const HashType& rhs);
 
-  const std::string &name() const;
+  const std::string& name() const;
   HashCode code() const;
   size_t size() const; /**< Default length of the hash type */
 
-  bool operator==(const HashType &rhs) const;
-  bool operator!=(const HashType &rhs) const;
-  bool operator<(const HashType &rhs) const;
-  bool operator>(const HashType &rhs) const;
+  bool operator==(const HashType& rhs) const;
+  bool operator!=(const HashType& rhs) const;
+  bool operator<(const HashType& rhs) const;
+  bool operator>(const HashType& rhs) const;
 
   static std::set<HashType> types();
 
  private:
   class Impl;
-  const Impl *pImpl;
+  const Impl* pImpl;
 };
 
-std::ostream &operator<<(std::ostream &os,
-                         const multihash::HashCode &hash_code);
-
-}  // namespace multihash
+std::ostream& operator<<(std::ostream& os, const HashCode& hash_code);
+}  // namespace multi
+}  // namespace ipfs

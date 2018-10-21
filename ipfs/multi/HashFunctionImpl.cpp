@@ -1,7 +1,8 @@
 #include "HashFunctionImpl.h"
 #include "CryptoppImpl.h"
 
-namespace multihash {
+namespace ipfs {
+namespace multi {
 HashFunction::Impl::Impl(HashType hash_type)
     : hash_type_(std::move(hash_type)) {
   init();
@@ -22,11 +23,11 @@ void HashFunction::Impl::init() {
   }
 }
 
-bool HashFunction::operator==(const HashFunction &rhs) const {
+bool HashFunction::operator==(const HashFunction& rhs) const {
   return type() == rhs.type();
 }
 
-Hash HashFunction::Impl::operator()(std::istream &input) {
+Hash HashFunction::Impl::operator()(std::istream& input) {
   if (!input.good()) {
     throw std::invalid_argument("HashFunction input is not good");
   }
@@ -36,7 +37,7 @@ Hash HashFunction::Impl::operator()(std::istream &input) {
   auto end = buffer.end();
 
   while (!input.eof()) {
-    input.read(const_cast<char *>(buffer.data()), buffer.size());
+    input.read(const_cast<char*>(buffer.data()), buffer.size());
 
     if (!input.eof()) {
       // filled the buffer so update the hash
@@ -69,5 +70,5 @@ Hash HashFunction::Impl::operator()(const string_view input) {
   }
   return Hash(hash_type_, algorithm_->digest());
 }
-
-}  // namespace multihash
+}  // namespace multi
+}  // namespace ipfs

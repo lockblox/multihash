@@ -2,15 +2,16 @@
 #include <sstream>
 #include "HashTypeImpl.h"
 
-namespace multihash {
+namespace ipfs {
+namespace multi {
 
 HashType::HashType() : HashType(HashCode::IDENTITY) {}
 
-HashType::HashType(const std::string &name) {
+HashType::HashType(const std::string& name) {
   auto all_types(Impl::all_types());
   auto end(std::end(all_types));
   auto it(std::find_if(std::begin(all_types), end,
-                       [name](const HashType::Impl *elem) -> bool {
+                       [name](const HashType::Impl* elem) -> bool {
                          return name == elem->name();
                        }));
   if (end == it) {
@@ -23,7 +24,7 @@ HashType::HashType(HashCode code) {
   auto all_types(Impl::all_types());
   auto end(std::end(all_types));
   auto it(std::find_if(std::begin(all_types), end,
-                       [code](const HashType::Impl *elem) -> bool {
+                       [code](const HashType::Impl* elem) -> bool {
                          return code == elem->code();
                        }));
   if (end == it) {
@@ -33,27 +34,27 @@ HashType::HashType(HashCode code) {
   pImpl = *it;
 }
 
-HashType::HashType(const HashType &rhs) : pImpl(rhs.pImpl) {}
+HashType::HashType(const HashType& rhs) : pImpl(rhs.pImpl) {}
 
-const std::string &HashType::name() const { return pImpl->name(); }
+const std::string& HashType::name() const { return pImpl->name(); }
 
 HashCode HashType::code() const { return pImpl->code(); }
 
 size_t HashType::size() const { return pImpl->size(); }
 
-bool HashType::operator==(const HashType &rhs) const {
+bool HashType::operator==(const HashType& rhs) const {
   return pImpl == rhs.pImpl;
 }
 
-bool HashType::operator!=(const HashType &rhs) const {
+bool HashType::operator!=(const HashType& rhs) const {
   return pImpl != rhs.pImpl;
 }
 
-bool HashType::operator<(const HashType &rhs) const {
+bool HashType::operator<(const HashType& rhs) const {
   return code() < rhs.code();
 }
 
-bool HashType::operator>(const HashType &rhs) const {
+bool HashType::operator>(const HashType& rhs) const {
   return code() > rhs.code();
 }
 
@@ -63,16 +64,14 @@ std::set<HashType> HashType::types() {
                             HashType{HashCode::SHA2_512}};
 }
 
-std::ostream &operator<<(std::ostream &os,
-                         const multihash::HashType &hash_type) {
+std::ostream& operator<<(std::ostream& os, const HashType& hash_type) {
   os << hash_type.name();
   return os;
 }
 
-std::ostream &operator<<(std::ostream &os,
-                         const multihash::HashCode &hash_code) {
+std::ostream& operator<<(std::ostream& os, const HashCode& hash_code) {
   os << std::hex << static_cast<int>(hash_code);
   return os;
 }
-
-}  // namespace multihash
+}  // namespace multi
+}  // namespace ipfs

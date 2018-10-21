@@ -1,17 +1,18 @@
-#include <multihash/HashRawCodec.h>
+#include <ipfs/multi/HashRawCodec.h>
 #include <iomanip>
 #include "HashImpl.h"
 
-namespace multihash {
+namespace ipfs {
+namespace multi {
 
 Hash::Hash() : pImpl(new Impl(HashType(), std::vector<char>())) {}
 
-Hash::Hash(HashType type, const std::vector<char> &digest)
+Hash::Hash(HashType type, const std::vector<char>& digest)
     : pImpl(new Impl(type, digest)) {}
 
-Hash::Hash(const Hash &rhs) : pImpl(rhs.pImpl) {}
+Hash::Hash(const Hash& rhs) : pImpl(rhs.pImpl) {}
 
-Hash &Hash::operator=(const Hash &rhs) noexcept {
+Hash& Hash::operator=(const Hash& rhs) noexcept {
   auto copy = rhs;
   std::swap(pImpl, copy.pImpl);
   return *this;
@@ -19,15 +20,15 @@ Hash &Hash::operator=(const Hash &rhs) noexcept {
 
 Hash::~Hash() {}
 
-bool Hash::operator==(const Hash &rhs) const {
+bool Hash::operator==(const Hash& rhs) const {
   return type() == rhs.type() && digest() == rhs.digest();
 }
 
-bool Hash::operator!=(const Hash &rhs) const {
+bool Hash::operator!=(const Hash& rhs) const {
   return (type() != rhs.type()) || (digest() != rhs.digest());
 }
 
-bool Hash::operator<(const Hash &rhs) const {
+bool Hash::operator<(const Hash& rhs) const {
   auto result = false;
   if (type() == rhs.type()) {
     result = digest() < rhs.digest();
@@ -37,7 +38,7 @@ bool Hash::operator<(const Hash &rhs) const {
   return result;
 }
 
-bool Hash::operator>(const Hash &rhs) const {
+bool Hash::operator>(const Hash& rhs) const {
   auto result = false;
   if (type() == rhs.type()) {
     result = digest() > rhs.digest();
@@ -47,11 +48,11 @@ bool Hash::operator>(const Hash &rhs) const {
   return result;
 }
 
-const HashType &Hash::type() const { return pImpl->type(); }
+const HashType& Hash::type() const { return pImpl->type(); }
 
-const std::vector<char> &Hash::digest() const { return pImpl->digest(); }
+const std::vector<char>& Hash::digest() const { return pImpl->digest(); }
 
-std::ostream &operator<<(std::ostream &os, const Hash &hash) {
+std::ostream& operator<<(std::ostream& os, const Hash& hash) {
   HashRawCodec encode;
   auto data(encode(hash));
   for (auto c : data) {
@@ -61,5 +62,5 @@ std::ostream &operator<<(std::ostream &os, const Hash &hash) {
   }
   return os;
 }
-
-}  // namespace Hash
+}  // namespace multi
+}  // namespace ipfs

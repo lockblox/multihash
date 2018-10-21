@@ -1,20 +1,21 @@
 #pragma once
 
-#include <multihash/HashType.h>
+#include <ipfs/multi/HashType.h>
 
-namespace multihash {
+namespace ipfs {
+namespace multi {
 
 class HashType::Impl {
  public:
   Impl(HashCode code, std::string name, size_t size);
   ~Impl() = default;
-  const std::string &name() const { return name_; }
+  const std::string& name() const { return name_; }
   HashCode code() const { return code_; }
   size_t size() const { return size_; }
 
-  bool operator<(const Impl &rhs) const;
+  bool operator<(const Impl& rhs) const;
 
-  typedef std::set<const Impl *> Set;
+  typedef std::set<const Impl*> Set;
   static const Set all_types();
 
  private:
@@ -27,5 +28,5 @@ class HashType::Impl {
   const std::string name_;
   const size_t size_;
 };
-
-}  // namespace multihash
+}  // namespace multi
+}  // namespace ipfs
