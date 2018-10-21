@@ -64,17 +64,17 @@ endif()
 message(STATUS "Initial build flags:")
 
 add_library(libmultihash
-        multihash/Algorithm.cpp multihash/Algorithm.h
-        multihash/CryptoppImpl.cpp multihash/CryptoppImpl.h
-        multihash/Hash.cpp multihash/Hash.h
-        multihash/HashFunction.cpp multihash/HashFunction.h
-        multihash/HashFunctionImpl.cpp multihash/HashFunctionImpl.h
-        multihash/HashImpl.cpp multihash/HashImpl.h
-        multihash/HashRawCodec.cpp multihash/HashRawCodec.h
-        multihash/HashRawCodecImpl.cpp multihash/HashRawCodecImpl.h
-        multihash/HashType.cpp multihash/HashType.h
-        multihash/HashTypeImpl.cpp multihash/HashTypeImpl.h
-        multihash/StringView.cpp multihash/StringView.h)
+        ipfs/multi/Algorithm.cpp ipfs/multi/Algorithm.h
+        ipfs/multi/CryptoppImpl.cpp ipfs/multi/CryptoppImpl.h
+        ipfs/multi/Hash.cpp ipfs/multi/Hash.h
+        ipfs/multi/HashFunction.cpp ipfs/multi/HashFunction.h
+        ipfs/multi/HashFunctionImpl.cpp ipfs/multi/HashFunctionImpl.h
+        ipfs/multi/HashImpl.cpp ipfs/multi/HashImpl.h
+        ipfs/multi/HashRawCodec.cpp ipfs/multi/HashRawCodec.h
+        ipfs/multi/HashRawCodecImpl.cpp ipfs/multi/HashRawCodecImpl.h
+        ipfs/multi/HashType.cpp ipfs/multi/HashType.h
+        ipfs/multi/HashTypeImpl.cpp ipfs/multi/HashTypeImpl.h
+        ipfs/multi/StringView.cpp ipfs/multi/StringView.h)
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 target_compile_features(libmultihash PUBLIC cxx_return_type_deduction)
 target_include_directories(libmultihash PUBLIC "${multihash_SOURCE_DIR}")
@@ -82,18 +82,18 @@ add_dependencies(libmultihash libcryptopp)
 
 if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 # Binary depends on getopt which is unavailable in Windows
-add_executable(multihash multihash/main.cpp)
+add_executable(multihash ipfs/multi/main.cpp)
 target_link_libraries(multihash libmultihash ${CRYPTOPP_LIBRARIES})
 add_dependencies(multihash libcryptopp)
 
 	# Component test for whole executable
 	add_test (
 		NAME MultihashBinTest WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            COMMAND multihash --hash-type sha1 ${CMAKE_CURRENT_SOURCE_DIR}/multihash/test/foo
+            COMMAND multihash --hash-type sha1 ${CMAKE_CURRENT_SOURCE_DIR}/ipfs/multi/test/foo
 	)
 	set_tests_properties (
 		MultihashBinTest PROPERTIES PASS_REGULAR_EXPRESSION
-            "^1114f1d2d2f924e986ac86fdf7b36c94bcdf32beec15\ .*/multihash/test/foo"
+            "^1114f1d2d2f924e986ac86fdf7b36c94bcdf32beec15\ .*/ipfs/multi/test/foo"
 		TIMEOUT 1
 	)
 endif()
@@ -111,7 +111,7 @@ enable_testing()
 if (NOT TARGET gtest)
     add_subdirectory(external/googletest)
 endif()
-add_executable(MultihashTest multihash/test/MultihashTest.cpp multihash/test/main.cpp)
+add_executable(MultihashTest ipfs/multi/test/MultihashTest.cpp ipfs/multi/test/main.cpp)
 target_link_libraries(MultihashTest gtest libmultihash ${CRYPTOPP_LIBRARIES})
 add_dependencies(MultihashTest libcryptopp)
 set_target_properties(MultihashTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY

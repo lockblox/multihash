@@ -1,19 +1,20 @@
 #include "HashFunctionImpl.h"
 
-namespace multihash {
+namespace ipfs {
+namespace multi {
 
-HashFunction::HashFunction(const HashType &hash_type)
+HashFunction::HashFunction(const HashType& hash_type)
     : pImpl(new Impl(hash_type)) {}
 
 HashFunction::HashFunction(HashCode code) : pImpl(new Impl(HashType(code))) {}
 
-HashFunction::HashFunction(const std::string &hash_type)
+HashFunction::HashFunction(const std::string& hash_type)
     : pImpl(new Impl(HashType(hash_type))) {}
 
-HashFunction::HashFunction(const HashFunction &other)
+HashFunction::HashFunction(const HashFunction& other)
     : pImpl(new Impl(other.type())) {}
 
-HashFunction &HashFunction::operator=(const HashFunction &rhs) {
+HashFunction& HashFunction::operator=(const HashFunction& rhs) {
   if (!(type() == rhs.type())) {
     pImpl.reset(new Impl(HashType(rhs.type())));
   }
@@ -26,7 +27,7 @@ HashFunction &HashFunction::operator=(const HashFunction &rhs) {
  */
 HashFunction::~HashFunction() {}
 
-Hash HashFunction::operator()(std::istream &input) const {
+Hash HashFunction::operator()(std::istream& input) const {
   return (*pImpl)(input);
 }
 
@@ -34,6 +35,6 @@ Hash HashFunction::operator()(const string_view input) const {
   return (*pImpl)(input);
 }
 
-const HashType &HashFunction::type() const { return pImpl->type(); }
-
-}  // namespace multihash
+const HashType& HashFunction::type() const { return pImpl->type(); }
+}  // namespace multi
+}  // namespace ipfs

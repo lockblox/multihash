@@ -19,10 +19,10 @@ script:
           make test;
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then
-          mkdir build;
-          docker build -t cpp-ipfs/cpp-multihash .;
-          docker run -v $PWD:/work/source/ -v $PWD/build:/work/build
-             --privileged -it cpp-ipfs/cpp-multihash;
+          docker run -v $PWD:/work/source/ --entrypoint "/home/quality/build.sh"
+             --privileged -it lockblox/orthodox
+             "/work/source/ipfs/multi"
+             "/work/source";
       fi
 branches:
     only:

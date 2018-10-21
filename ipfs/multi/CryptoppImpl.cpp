@@ -3,9 +3,10 @@
 #include <cryptopp/sha.h>
 #include <cryptopp/sha3.h>
 
-namespace multihash {
+namespace ipfs {
+namespace multi {
 
-CryptoppImpl::CryptoppImpl(const HashType &hash_type) {
+CryptoppImpl::CryptoppImpl(const HashType& hash_type) {
   switch (hash_type.code()) {
     case HashCode::SHA1:
       hash_ = std::make_unique<CryptoPP::SHA1>();
@@ -39,14 +40,15 @@ CryptoppImpl::CryptoppImpl(const HashType &hash_type) {
 
 size_t CryptoppImpl::block_size() { return hash_->OptimalBlockSize(); }
 
-void CryptoppImpl::update(const string_view &data) {
-  hash_->Update(reinterpret_cast<const unsigned char *>(data.data()),
+void CryptoppImpl::update(const string_view& data) {
+  hash_->Update(reinterpret_cast<const unsigned char*>(data.data()),
                 data.size());
 }
 
 std::vector<char> CryptoppImpl::digest() {
   // TODO clone so that we can continue updating
-  hash_->Final(reinterpret_cast<unsigned char *>(digest_.data()));
+  hash_->Final(reinterpret_cast<unsigned char*>(digest_.data()));
   return digest_;
 }
-}
+}  // namespace multi
+}  // namespace ipfs
