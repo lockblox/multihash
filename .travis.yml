@@ -3,12 +3,16 @@ services:
     - docker
 language: cpp
 compiler: gcc
-cache: ccache
+cache:
+  directories:
+  - $HOME/.hunter
+  - $HOME/.ccache
+
 install:
     - if [ $TRAVIS_OS_NAME == osx ]; then
            brew update;
            brew install openssl cmake ccache;
-          export PATH="/usr/local/opt/ccache/libexec:$PATH";
+           export PATH="/usr/local/opt/ccache/libexec:$PATH";
       fi
 script:
     - if [ $TRAVIS_OS_NAME == osx ]; then
@@ -19,7 +23,8 @@ script:
           make test;
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then
-          docker run -v $PWD:/root/src:ro --privileged -it lockblox/orthodox;
+          docker run -v $PWD:/root/src:ro \
+                     -v $HOME:/root --privileged -it lockblox/orthodox;
       fi
 branches:
     only:
