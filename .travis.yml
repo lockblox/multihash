@@ -23,7 +23,7 @@ script:
           make test;
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then
-          docker run -v $PWD:/root/src:ro \
+          docker run -v $PWD:/root/src:ro 
                      -v $HOME:/root --privileged -it lockblox/orthodox;
       fi
 branches:
