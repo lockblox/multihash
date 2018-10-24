@@ -1,7 +1,7 @@
 #include "CryptoppImpl.h"
-#include <cryptopp/blake2.h>
-#include <cryptopp/sha.h>
-#include <cryptopp/sha3.h>
+#include <blake2.h>
+#include <sha.h>
+#include <sha3.h>
 
 namespace ipfs {
 namespace multi {

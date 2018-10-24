@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cryptopp/cryptlib.h>
+#include <cryptlib.h>
 #include <ipfs/multi/StringView.h>
 #include <vector>
 
