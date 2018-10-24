@@ -19,10 +19,7 @@ script:
           make test;
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then
-          docker run -v $PWD:/work/source/ --entrypoint "/home/quality/build.sh"
-             --privileged -it lockblox/orthodox
-             "/work/source/ipfs/multi"
-             "/work/source";
+          docker run -v $PWD:/root/src:ro --privileged -it lockblox/orthodox;
       fi
 branches:
     only:
