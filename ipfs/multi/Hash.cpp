@@ -1,6 +1,6 @@
 #include <ipfs/multi/HashRawCodec.h>
 #include <iomanip>
-#include "HashImpl.h"
+#include "ipfs/multi/detail/HashImpl.h"
 
 namespace ipfs {
 namespace multi {
