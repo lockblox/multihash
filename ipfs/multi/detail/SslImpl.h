@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ipfs/multi/Algorithm.h>
+#include <ipfs/multi/detail/Algorithm.h>
 #include <ipfs/multi/HashType.h>
 #include <openssl/evp.h>
 

@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <sstream>
-#include "HashTypeImpl.h"
+#include "ipfs/multi/detail/HashTypeImpl.h"
 
 namespace ipfs {
 namespace multi {

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cryptlib.h>
-#include <ipfs/multi/Algorithm.h>
 #include <ipfs/multi/HashType.h>
+#include <ipfs/multi/detail/Algorithm.h>
 #include <memory>
 
 namespace ipfs {

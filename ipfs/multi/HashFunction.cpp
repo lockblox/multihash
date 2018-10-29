@@ -1,4 +1,4 @@
-#include "HashFunctionImpl.h"
+#include "ipfs/multi/detail/HashFunctionImpl.h"
 
 namespace ipfs {
 namespace multi {

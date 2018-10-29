@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.1)
 
 include("3rdparty/gate/cmake/HunterGate.cmake")
 HunterGate(
-    URL "https://github.com/ruslo/hunter/archive/v0.21.16.tar.gz"
-    SHA1 "aa1faccd24f33dd2c368f85a4e9ca2e5d9c249cb"
+        URL "https://github.com/ruslo/hunter/archive/v0.21.16.tar.gz"
+        SHA1 "aa1faccd24f33dd2c368f85a4e9ca2e5d9c249cb"
 )
 
 project(multihash LANGUAGES CXX)
@@ -18,20 +18,31 @@ find_package(cryptopp CONFIG REQUIRED)
 
 if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra")
-endif()
+endif ()
 
 add_library(libmultihash
-        ipfs/multi/Algorithm.cpp ipfs/multi/Algorithm.h
-        ipfs/multi/CryptoppImpl.cpp ipfs/multi/CryptoppImpl.h
-        ipfs/multi/Hash.cpp ipfs/multi/Hash.h
-        ipfs/multi/HashFunction.cpp ipfs/multi/HashFunction.h
-        ipfs/multi/HashFunctionImpl.cpp ipfs/multi/HashFunctionImpl.h
-        ipfs/multi/HashImpl.cpp ipfs/multi/HashImpl.h
-        ipfs/multi/HashRawCodec.cpp ipfs/multi/HashRawCodec.h
-        ipfs/multi/HashRawCodecImpl.cpp ipfs/multi/HashRawCodecImpl.h
-        ipfs/multi/HashType.cpp ipfs/multi/HashType.h
-        ipfs/multi/HashTypeImpl.cpp ipfs/multi/HashTypeImpl.h
-        ipfs/multi/StringView.cpp ipfs/multi/StringView.h)
+        ipfs/multi/Hash.cpp
+        ipfs/multi/Hash.h
+        ipfs/multi/HashFunction.cpp
+        ipfs/multi/HashFunction.h
+        ipfs/multi/HashRawCodec.cpp
+        ipfs/multi/HashRawCodec.h
+        ipfs/multi/HashType.cpp
+        ipfs/multi/HashType.h
+        ipfs/multi/StringView.cpp
+        ipfs/multi/StringView.h
+        ipfs/multi/detail/Algorithm.cpp
+        ipfs/multi/detail/Algorithm.h
+        ipfs/multi/detail/CryptoppImpl.cpp
+        ipfs/multi/detail/CryptoppImpl.h
+        ipfs/multi/detail/HashFunctionImpl.cpp
+        ipfs/multi/detail/HashFunctionImpl.h
+        ipfs/multi/detail/HashImpl.cpp
+        ipfs/multi/detail/HashImpl.h
+        ipfs/multi/detail/HashRawCodecImpl.cpp
+        ipfs/multi/detail/HashRawCodecImpl.h
+        ipfs/multi/detail/HashTypeImpl.cpp
+        ipfs/multi/detail/HashTypeImpl.h)
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 target_link_libraries(libmultihash PRIVATE cryptopp-static)
 target_include_directories(libmultihash PUBLIC "${multihash_SOURCE_DIR}")
@@ -41,17 +52,17 @@ if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     # Binary depends on getopt which is unavailable in Windows
     add_executable(multihash ipfs/multi/main.cpp)
     target_link_libraries(multihash libmultihash)
-	# Component test for whole executable
-	add_test (
-		NAME MultihashBinTest WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    # Component test for whole executable
+    add_test(
+            NAME MultihashBinTest WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
             COMMAND multihash --hash-type sha1 ${CMAKE_CURRENT_SOURCE_DIR}/test/foo
-	)
-	set_tests_properties (
-		MultihashBinTest PROPERTIES PASS_REGULAR_EXPRESSION
-        "1114f1d2d2f924e986ac86fdf7b36c94bcdf32beec15"
-		TIMEOUT 1
-	)
-endif()
+    )
+    set_tests_properties(
+            MultihashBinTest PROPERTIES PASS_REGULAR_EXPRESSION
+            "1114f1d2d2f924e986ac86fdf7b36c94bcdf32beec15"
+            TIMEOUT 1
+    )
+endif ()
 
 # Compile and run all unit tests
 hunter_add_package(GTest)
@@ -59,10 +70,10 @@ find_package(GTest CONFIG REQUIRED)
 add_executable(MultihashTest test/MultihashTest.cpp test/main.cpp)
 target_link_libraries(MultihashTest PUBLIC libmultihash PUBLIC GTest::main)
 set_target_properties(MultihashTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY
-                      ${CMAKE_CURRENT_BINARY_DIR}/test)
+        ${CMAKE_CURRENT_BINARY_DIR}/test)
 add_test(NAME MultihashTest
-         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/test
-         COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test/MultihashTest)
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/test
+        COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test/MultihashTest)
 
 install(TARGETS libmultihash
         LIBRARY DESTINATION lib
