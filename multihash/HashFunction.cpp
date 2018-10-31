@@ -1,7 +1,6 @@
-#include "ipfs/multi/detail/HashFunctionImpl.h"
+#include "multihash/detail/HashFunctionImpl.h"
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 HashFunction::HashFunction(const HashType& hash_type)
     : pImpl(new Impl(hash_type)) {}
@@ -36,5 +35,4 @@ Hash HashFunction::operator()(const string_view input) const {
 }
 
 const HashType& HashFunction::type() const { return pImpl->type(); }
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

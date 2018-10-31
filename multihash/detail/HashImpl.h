@@ -1,9 +1,8 @@
 #pragma once
 
-#include <ipfs/multi/Hash.h>
+#include <multihash/Hash.h>
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 class Hash::Impl {
  public:
@@ -15,5 +14,4 @@ class Hash::Impl {
   const HashType type_;
   const std::vector<char> digest_;
 };
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

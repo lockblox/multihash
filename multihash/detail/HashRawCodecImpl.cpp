@@ -2,8 +2,7 @@
 #include <iomanip>
 #include <sstream>
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 Hash HashRawCodec::Impl::decode(const std::vector<char>& raw_bytes) const {
   auto code = static_cast<HashCode>((raw_bytes.at(0)));
@@ -40,5 +39,4 @@ std::vector<char> HashRawCodec::Impl::encode(const Hash& hash) const {
 }
 
 HashRawCodec::Impl HashRawCodec::Impl::instance_ = HashRawCodec::Impl();
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

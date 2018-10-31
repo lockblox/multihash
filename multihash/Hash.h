@@ -1,11 +1,10 @@
 #pragma once
 
-#include <ipfs/multi/HashType.h>
+#include <multihash/HashType.h>
 #include <memory>
 #include <vector>
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 class Hash {
  public:
@@ -29,5 +28,4 @@ class Hash {
 };
 
 std::ostream& operator<<(std::ostream& os, const Hash& hash);
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

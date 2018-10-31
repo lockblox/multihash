@@ -11,7 +11,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 hunter_add_package(cryptopp)
 find_package(cryptopp CONFIG REQUIRED)
@@ -21,28 +21,28 @@ if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 endif ()
 
 add_library(libmultihash
-        ipfs/multi/Hash.cpp
-        ipfs/multi/Hash.h
-        ipfs/multi/HashFunction.cpp
-        ipfs/multi/HashFunction.h
-        ipfs/multi/HashRawCodec.cpp
-        ipfs/multi/HashRawCodec.h
-        ipfs/multi/HashType.cpp
-        ipfs/multi/HashType.h
-        ipfs/multi/StringView.cpp
-        ipfs/multi/StringView.h
-        ipfs/multi/detail/Algorithm.cpp
-        ipfs/multi/detail/Algorithm.h
-        ipfs/multi/detail/CryptoppImpl.cpp
-        ipfs/multi/detail/CryptoppImpl.h
-        ipfs/multi/detail/HashFunctionImpl.cpp
-        ipfs/multi/detail/HashFunctionImpl.h
-        ipfs/multi/detail/HashImpl.cpp
-        ipfs/multi/detail/HashImpl.h
-        ipfs/multi/detail/HashRawCodecImpl.cpp
-        ipfs/multi/detail/HashRawCodecImpl.h
-        ipfs/multi/detail/HashTypeImpl.cpp
-        ipfs/multi/detail/HashTypeImpl.h)
+        multihash/Hash.cpp
+        multihash/Hash.h
+        multihash/HashFunction.cpp
+        multihash/HashFunction.h
+        multihash/HashRawCodec.cpp
+        multihash/HashRawCodec.h
+        multihash/HashType.cpp
+        multihash/HashType.h
+        multihash/StringView.cpp
+        multihash/StringView.h
+        multihash/detail/Algorithm.cpp
+        multihash/detail/Algorithm.h
+        multihash/detail/CryptoppImpl.cpp
+        multihash/detail/CryptoppImpl.h
+        multihash/detail/HashFunctionImpl.cpp
+        multihash/detail/HashFunctionImpl.h
+        multihash/detail/HashImpl.cpp
+        multihash/detail/HashImpl.h
+        multihash/detail/HashRawCodecImpl.cpp
+        multihash/detail/HashRawCodecImpl.h
+        multihash/detail/HashTypeImpl.cpp
+        multihash/detail/HashTypeImpl.h)
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 target_link_libraries(libmultihash PRIVATE cryptopp-static)
 target_include_directories(libmultihash PUBLIC "${multihash_SOURCE_DIR}")
@@ -50,7 +50,7 @@ target_include_directories(libmultihash PUBLIC "${multihash_SOURCE_DIR}")
 enable_testing()
 if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     # Binary depends on getopt which is unavailable in Windows
-    add_executable(multihash ipfs/multi/main.cpp)
+    add_executable(multihash multihash/main.cpp)
     target_link_libraries(multihash libmultihash)
     # Component test for whole executable
     add_test(

@@ -1,11 +1,10 @@
 #pragma once
 
-#include <ipfs/multi/Hash.h>
-#include <ipfs/multi/StringView.h>
+#include <multihash/Hash.h>
+#include <multihash/StringView.h>
 #include <istream>
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 /** Interface for a hash digest with encapsulated type */
 /** Functor which hashes an input stream with a given hash type */
@@ -32,5 +31,4 @@ class HashFunction {
 
   std::unique_ptr<Impl> pImpl;
 };
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

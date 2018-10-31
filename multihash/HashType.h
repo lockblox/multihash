@@ -3,8 +3,7 @@
 #include <set>
 #include <string>
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 /** Code values of supported hash types */
 enum class HashCode : unsigned char {
@@ -42,5 +41,4 @@ class HashType {
 };
 
 std::ostream& operator<<(std::ostream& os, const HashCode& hash_code);
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

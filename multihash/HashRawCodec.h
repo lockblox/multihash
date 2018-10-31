@@ -1,10 +1,9 @@
 #pragma once
 
-#include <ipfs/multi/Hash.h>
+#include <multihash/Hash.h>
 #include <vector>
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 /** Functor which converts a hash to and from raw bytes */
 class HashRawCodec {
@@ -24,5 +23,4 @@ class HashRawCodec {
   class Impl;
   const Impl* pImpl;
 };
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

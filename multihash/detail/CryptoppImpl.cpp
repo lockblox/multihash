@@ -3,8 +3,7 @@
 #include <sha.h>
 #include <sha3.h>
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 CryptoppImpl::CryptoppImpl(const HashType& hash_type) {
   switch (hash_type.code()) {
@@ -50,5 +49,4 @@ std::vector<char> CryptoppImpl::digest() {
   hash_->Final(reinterpret_cast<unsigned char*>(digest_.data()));
   return digest_;
 }
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

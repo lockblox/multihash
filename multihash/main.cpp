@@ -1,5 +1,5 @@
 #include <getopt.h>
-#include <ipfs/multi/HashFunction.h>
+#include <multihash/HashFunction.h>
 #include <sys/stat.h>
 #include <array>
 #include <fstream>
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     return 0;
   }
   if (1 == list_flag) {
-    for (auto hash_type : ipfs::multi::HashType::types()) {
+    for (auto hash_type : multihash::HashType::types()) {
       std::cout << hash_type.name() << std::endl;
     }
     return 0;
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
   }
 
   try {
-    auto hash_function = ipfs::multi::HashFunction(algo);
+    auto hash_function = multihash::HashFunction(algo);
 
     std::ios_base::sync_with_stdio(false);  // enable fast io
 
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
   } catch (std::invalid_argument &e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
     std::cout << "Available hash types: " << std::endl;
-    for (auto hash_type : ipfs::multi::HashType::types()) {
+    for (auto hash_type : multihash::HashType::types()) {
       std::cout << hash_type.name() << std::endl;
     }
   }
