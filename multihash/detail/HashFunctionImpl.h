@@ -1,10 +1,9 @@
 #pragma once
 
-#include <ipfs/multi/HashFunction.h>
-#include <ipfs/multi/detail/Algorithm.h>
+#include <multihash/HashFunction.h>
+#include <multihash/detail/Algorithm.h>
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 class HashFunction::Impl {
  public:
@@ -19,5 +18,4 @@ class HashFunction::Impl {
   HashType hash_type_;
   std::unique_ptr<Algorithm> algorithm_;
 };
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

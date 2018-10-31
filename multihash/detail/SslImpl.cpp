@@ -1,7 +1,7 @@
 #include "SslImpl.h"
 #include <stdexcept>
 
-namespace ipfs {
+
 namespace multi {
 
 SslImpl::Cleanup SslImpl::cleanup_ = SslImpl::Cleanup();

@@ -1,8 +1,7 @@
 #include "HashFunctionImpl.h"
 #include "CryptoppImpl.h"
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 HashFunction::Impl::Impl(HashType hash_type)
     : hash_type_(std::move(hash_type)) {
   init();
@@ -70,5 +69,4 @@ Hash HashFunction::Impl::operator()(const string_view input) {
   }
   return Hash(hash_type_, algorithm_->digest());
 }
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

@@ -1,9 +1,8 @@
-#include <ipfs/multi/HashRawCodec.h>
+#include <multihash/HashRawCodec.h>
 #include <iomanip>
-#include "ipfs/multi/detail/HashImpl.h"
+#include "multihash/detail/HashImpl.h"
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 Hash::Hash() : pImpl(new Impl(HashType(), std::vector<char>())) {}
 
@@ -62,5 +61,4 @@ std::ostream& operator<<(std::ostream& os, const Hash& hash) {
   }
   return os;
 }
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

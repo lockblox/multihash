@@ -1,12 +1,11 @@
 #pragma once
 
 #include <cryptlib.h>
-#include <ipfs/multi/HashType.h>
-#include <ipfs/multi/detail/Algorithm.h>
+#include <multihash/HashType.h>
+#include <multihash/detail/Algorithm.h>
 #include <memory>
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 class CryptoppImpl : public Algorithm {
  public:
@@ -19,5 +18,4 @@ class CryptoppImpl : public Algorithm {
   std::unique_ptr<CryptoPP::HashTransformation> hash_;
   std::vector<char> digest_;
 };
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

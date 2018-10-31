@@ -1,9 +1,8 @@
 #pragma once
 
-#include <ipfs/multi/HashType.h>
+#include <multihash/HashType.h>
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 class HashType::Impl {
  public:
@@ -28,5 +27,4 @@ class HashType::Impl {
   const std::string name_;
   const size_t size_;
 };
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

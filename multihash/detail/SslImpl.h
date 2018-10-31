@@ -1,10 +1,10 @@
 #pragma once
 
-#include <ipfs/multi/detail/Algorithm.h>
-#include <ipfs/multi/HashType.h>
+#include <multihash/detail/Algorithm.h>
+#include <multihash/HashType.h>
 #include <openssl/evp.h>
 
-namespace ipfs {
+
 namespace multi {
 
 class SslImpl : public Algorithm {
@@ -53,4 +53,4 @@ class SslImpl : public Algorithm {
   static Cleanup cleanup_;
 };
 }  // namespace multi
-}  // namespace ipfs
+

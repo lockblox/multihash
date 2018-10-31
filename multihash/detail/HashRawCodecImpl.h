@@ -1,9 +1,8 @@
 #pragma once
 
-#include <ipfs/multi/HashRawCodec.h>
+#include <multihash/HashRawCodec.h>
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 class HashRawCodec::Impl {
  public:
@@ -14,5 +13,4 @@ class HashRawCodec::Impl {
  private:
   static Impl instance_;
 };
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

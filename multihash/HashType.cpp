@@ -1,9 +1,8 @@
 #include <algorithm>
 #include <sstream>
-#include "ipfs/multi/detail/HashTypeImpl.h"
+#include "multihash/detail/HashTypeImpl.h"
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 HashType::HashType() : HashType(HashCode::IDENTITY) {}
 
@@ -73,5 +72,4 @@ std::ostream& operator<<(std::ostream& os, const HashCode& hash_code) {
   os << std::hex << static_cast<int>(hash_code);
   return os;
 }
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

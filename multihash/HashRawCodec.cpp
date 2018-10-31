@@ -1,7 +1,6 @@
-#include "ipfs/multi/detail/HashRawCodecImpl.h"
+#include "multihash/detail/HashRawCodecImpl.h"
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 HashRawCodec::HashRawCodec() : pImpl(HashRawCodec::Impl::instance()) {}
 
@@ -21,5 +20,4 @@ std::vector<char> HashRawCodec::operator()(const Hash& hash) const {
 Hash HashRawCodec::operator()(const std::vector<char>& input) const {
   return pImpl->decode(input);
 }
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash

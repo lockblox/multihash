@@ -1,11 +1,10 @@
 #pragma once
 
 #include <cryptlib.h>
-#include <ipfs/multi/StringView.h>
+#include <multihash/StringView.h>
 #include <vector>
 
-namespace ipfs {
-namespace multi {
+namespace multihash {
 
 struct Algorithm {
   virtual size_t block_size() = 0;
@@ -13,5 +12,4 @@ struct Algorithm {
   virtual std::vector<char> digest() = 0;
   virtual ~Algorithm() = default;
 };
-}  // namespace multi
-}  // namespace ipfs
+}  // namespace multihash
