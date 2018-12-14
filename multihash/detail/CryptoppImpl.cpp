@@ -1,5 +1,4 @@
 #include "CryptoppImpl.h"
-#include <blake2.h>
 #include <sha.h>
 #include <sha3.h>
 
@@ -23,16 +22,8 @@ CryptoppImpl::CryptoppImpl(const HashType& hash_type) {
       hash_ = std::make_unique<CryptoPP::SHA3_256>();
       digest_.resize(CryptoPP::SHA3_256::DIGESTSIZE);
       break;
-    case HashCode::BLAKE2B:
-      hash_ = std::make_unique<CryptoPP::BLAKE2b>();
-      digest_.resize(CryptoPP::BLAKE2b::DIGESTSIZE);
-      break;
-    case HashCode::BLAKE2S:
-      hash_ = std::make_unique<CryptoPP::BLAKE2s>();
-      digest_.resize(CryptoPP::BLAKE2s::DIGESTSIZE);
-      break;
     case HashCode::IDENTITY:
-      auto name = hash_type.name();
+      const auto& name = hash_type.name();
       throw std::invalid_argument("Unsupported hash function" + name);
   }
 }
