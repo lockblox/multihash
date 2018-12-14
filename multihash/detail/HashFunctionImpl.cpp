@@ -15,8 +15,6 @@ void HashFunction::Impl::init() {
       algorithm_ = std::make_unique<CryptoppImpl>(hash_type_);
       break;
     case HashCode::SHA3:
-    case HashCode::BLAKE2B:
-    case HashCode::BLAKE2S:
     case HashCode::IDENTITY:
       throw std::out_of_range("No hash function for " + hash_type_.name());
   }

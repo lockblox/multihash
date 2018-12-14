@@ -12,8 +12,6 @@ enum class HashCode : unsigned char {
   SHA2_256 = 0x12,  //"sha2-256"
   SHA2_512 = 0x13,  //"sha2-512"
   SHA3 = 0x14,      //"sha3"
-  BLAKE2B = 0x40,   //"blake2b"
-  BLAKE2S = 0x41    //"blake2s"
 };
 
 /** Interface for a hash Type */
