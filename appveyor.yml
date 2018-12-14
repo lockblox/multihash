@@ -1,0 +1,20 @@
+branches:
+  only:
+    - master
+
+os: Visual Studio 2017
+
+platform:
+  - x86
+  - x64
+
+configuration:
+  - Debug
+  - Release
+
+before_build:
+  - cmake -G"Visual Studio %CMAKE_VS_VERSION%"
+
+build:
+  project: ALL_BUILD.vcxproj
+  verbosity: minimal
