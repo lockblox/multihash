@@ -17,3 +17,6 @@ before_build:
 build:
   project: ALL_BUILD.vcxproj
   verbosity: minimal
+
+cache:
+  - C:/.hunter
