@@ -18,5 +18,8 @@ build:
   project: ALL_BUILD.vcxproj
   verbosity: minimal
 
+test_script:
+  - ctest
+
 cache:
   - C:/.hunter
