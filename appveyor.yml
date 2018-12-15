@@ -19,7 +19,7 @@ build:
   verbosity: minimal
 
 test_script:
-  - ctest
+  - ctest -C Debug
 
 cache:
   - C:/.hunter
