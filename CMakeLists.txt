@@ -21,28 +21,26 @@ if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 endif ()
 
 add_library(libmultihash
-        multihash/Hash.cpp
-        multihash/Hash.h
-        multihash/HashFunction.cpp
-        multihash/HashFunction.h
-        multihash/HashRawCodec.cpp
-        multihash/HashRawCodec.h
-        multihash/HashType.cpp
-        multihash/HashType.h
-        multihash/StringView.cpp
-        multihash/StringView.h
-        multihash/detail/Algorithm.cpp
-        multihash/detail/Algorithm.h
-        multihash/detail/CryptoppImpl.cpp
-        multihash/detail/CryptoppImpl.h
-        multihash/detail/HashFunctionImpl.cpp
-        multihash/detail/HashFunctionImpl.h
-        multihash/detail/HashImpl.cpp
-        multihash/detail/HashImpl.h
-        multihash/detail/HashRawCodecImpl.cpp
-        multihash/detail/HashRawCodecImpl.h
-        multihash/detail/HashTypeImpl.cpp
-        multihash/detail/HashTypeImpl.h)
+        multihash/multihash.cpp
+        multihash/multihash.h
+        multihash/hash.cpp
+        multihash/hash.h
+        multihash/hash_type.cpp
+        multihash/hash_type.h
+        multihash/detail/algorithm.cpp
+        multihash/detail/algorithm.h
+        multihash/detail/cryptopp_impl.cpp
+        multihash/detail/cryptopp_impl.h
+        multihash/detail/hash_impl.cpp
+        multihash/detail/hash_impl.h
+        multihash/detail/multihash_impl.cpp
+        multihash/detail/multihash_impl.h
+        multihash/detail/hash_type_impl.cpp
+        multihash/detail/hash_type_impl.h
+        multihash/multihash.cpp
+        multihash/multihash.h
+        multihash/hash_code.cpp
+        multihash/hash_code.h)
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 target_link_libraries(libmultihash PRIVATE cryptopp-static)
 target_include_directories(libmultihash PUBLIC "${multihash_SOURCE_DIR}")

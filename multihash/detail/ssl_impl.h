@@ -1,13 +1,13 @@
 #pragma once
 
-#include <multihash/detail/Algorithm.h>
-#include <multihash/HashType.h>
+#include <multihash/detail/algorithm.h>
+#include <multihash/hash_type.h>
 #include <openssl/evp.h>
 
 
 namespace multi {
 
-class SslImpl : public Algorithm {
+class ssl_impl : public Algorithm {
  public:
   struct Cleanup {
     ~Cleanup();
@@ -41,8 +41,8 @@ class SslImpl : public Algorithm {
   };
 
   void init() override;
-  explicit SslImpl(const HashType& hash_type);
-  ~SslImpl() override = default;
+  explicit ssl_impl(const HashType& hash_type);
+  ~ssl_impl() override = default;
   size_t block_size() override;
   void update(const string_view& data) override;
   std::vector<char> digest() override;

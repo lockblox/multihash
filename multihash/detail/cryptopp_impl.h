@@ -1,17 +1,17 @@
 #pragma once
 
 #include <cryptlib.h>
-#include <multihash/HashType.h>
-#include <multihash/detail/Algorithm.h>
+#include <multihash/hash_code.h>
+#include <multihash/detail/algorithm.h>
 #include <memory>
 
 namespace multihash {
 
-class CryptoppImpl : public Algorithm {
+class cryptopp_impl : public algorithm {
  public:
-  explicit CryptoppImpl(const HashType& hash_type);
+  explicit cryptopp_impl(hash_code code);
   size_t block_size() override;
-  void update(const string_view& data) override;
+  void update(const std::string_view& data) override;
   std::vector<char> digest() override;
 
  private:
