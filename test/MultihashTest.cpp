@@ -100,7 +100,8 @@ TEST(Multihash, hashing) {
     auto hash_function = multihash::hash(multihash::hash_code::SHA2_256);
     auto hash = hash_function(input_stream);
     {
-      auto expected = static_cast<unsigned char>(multihash::hash_code::SHA2_256);
+      auto expected =
+          static_cast<unsigned char>(multihash::hash_code::SHA2_256);
       auto result = static_cast<unsigned char>(hash.code());
       EXPECT_EQ(expected, result);
     }
@@ -124,7 +125,8 @@ TEST(Multihash, hashing) {
     auto hash_function = multihash::hash(multihash::hash_code::SHA2_512);
     auto hash = hash_function(input_stream);
     {
-      auto expected = static_cast<unsigned char>(multihash::hash_code::SHA2_512);
+      auto expected =
+          static_cast<unsigned char>(multihash::hash_code::SHA2_512);
       auto result = static_cast<unsigned char>(hash.code());
       EXPECT_EQ(expected, result);
     }
