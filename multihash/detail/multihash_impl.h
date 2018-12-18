@@ -20,5 +20,4 @@ class multihash::impl {
   std::vector<char> buffer_;
 };
 
-
 }  // namespace multihash

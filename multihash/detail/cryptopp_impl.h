@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cryptlib.h>
-#include <multihash/hash_code.h>
 #include <multihash/detail/algorithm.h>
+#include <multihash/hash_code.h>
 #include <memory>
 
 namespace multihash {

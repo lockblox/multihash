@@ -1,7 +1,7 @@
 #pragma once
 
-#include <multihash/hash.h>
 #include <multihash/detail/algorithm.h>
+#include <multihash/hash.h>
 
 namespace multihash {
 

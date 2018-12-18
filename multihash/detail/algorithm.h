@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cryptlib.h>
-#include <vector>
 #include <string_view>
+#include <vector>
 
 namespace multihash {
 

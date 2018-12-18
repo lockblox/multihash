@@ -1,11 +1,10 @@
 #pragma once
 
+#include <multihash/hash_code.h>
 #include <set>
 #include <string>
-#include <multihash/hash_code.h>
 
 namespace multihash {
-
 
 /** Interface for a hash Type */
 class hash_type {
