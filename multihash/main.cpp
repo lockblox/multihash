@@ -1,5 +1,6 @@
 #include <getopt.h>
-#include <multihash/HashFunction.h>
+#include <multihash/hash.h>
+#include <multihash/hash_type.h>
 #include <sys/stat.h>
 #include <array>
 #include <fstream>
@@ -13,7 +14,7 @@ int main(int argc, char *argv[]) {
      << "Print cryptographic digests." << std::endl
      << "With no FILE or when file is -, read standard input" << std::endl
      << "    --help               Display help message" << std::endl
-     << "    --hash-type          Algorithm to use, e.g. sha1" << std::endl
+     << "    --hash-type          algorithm to use, e.g. sha1" << std::endl
      << "    --list-hash-types    List available algorithms" << std::endl;
   std::string usage = os.str();
 
@@ -59,7 +60,7 @@ int main(int argc, char *argv[]) {
     return 0;
   }
   if (1 == list_flag) {
-    for (auto hash_type : multihash::HashType::types()) {
+    for (auto hash_type : multihash::hash_type::types()) {
       std::cout << hash_type.name() << std::endl;
     }
     return 0;
@@ -73,7 +74,8 @@ int main(int argc, char *argv[]) {
   }
 
   try {
-    auto hash_function = multihash::HashFunction(algo);
+    auto hash_type = multihash::hash_type(algo);
+    auto hash_function = multihash::hash(hash_type.code());
 
     std::ios_base::sync_with_stdio(false);  // enable fast io
 
@@ -111,7 +113,7 @@ int main(int argc, char *argv[]) {
   } catch (std::invalid_argument &e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
     std::cout << "Available hash types: " << std::endl;
-    for (auto hash_type : multihash::HashType::types()) {
+    for (auto hash_type : multihash::hash_type::types()) {
       std::cout << hash_type.name() << std::endl;
     }
   }

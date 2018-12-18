@@ -1,34 +1,34 @@
-#include "SslImpl.h"
+#include "ssl_impl.h"
 #include <stdexcept>
 
 
 namespace multi {
 
-SslImpl::Cleanup SslImpl::cleanup_ = SslImpl::Cleanup();
+ssl_impl::Cleanup ssl_impl::cleanup_ = ssl_impl::Cleanup();
 
-SslImpl::Cleanup::~Cleanup() { EVP_cleanup(); }
+ssl_impl::Cleanup::~Cleanup() { EVP_cleanup(); }
 
-SslImpl::Context::Context() : md_ctx_(EVP_MD_CTX_create()) {}
+ssl_impl::Context::Context() : md_ctx_(EVP_MD_CTX_create()) {}
 
-SslImpl::Context::Context(const Context& rhs) : md_ctx_(EVP_MD_CTX_create()) {
+ssl_impl::Context::Context(const Context& rhs) : md_ctx_(EVP_MD_CTX_create()) {
   if (EVP_MD_CTX_copy(md_ctx_, rhs.get()) != 1) {
     EVP_MD_CTX_destroy(md_ctx_);
     throw std::runtime_error("Unable to copy hash context");
   }
 }
 
-SslImpl::Context& SslImpl::Context::operator=(Context rhs) {
+ssl_impl::Context& ssl_impl::Context::operator=(Context rhs) {
   this->swap(rhs);
   return *this;
 }
 
-SslImpl::Context::~Context() { EVP_MD_CTX_destroy(md_ctx_); }
+ssl_impl::Context::~Context() { EVP_MD_CTX_destroy(md_ctx_); }
 
-void SslImpl::Context::swap(Context& rhs) { std::swap(md_ctx_, rhs.md_ctx_); }
+void ssl_impl::Context::swap(Context& rhs) { std::swap(md_ctx_, rhs.md_ctx_); }
 
-EVP_MD_CTX* SslImpl::Context::get() const { return md_ctx_; }
+EVP_MD_CTX* ssl_impl::Context::get() const { return md_ctx_; }
 
-SslImpl::DigestType::DigestType(const HashType& hash_type) : evp_md_(nullptr) {
+ssl_impl::DigestType::DigestType(const HashType& hash_type) : evp_md_(nullptr) {
   switch (hash_type.code()) {
     case HashCode::SHA1: {
       evp_md_ = EVP_sha1();
@@ -49,26 +49,26 @@ SslImpl::DigestType::DigestType(const HashType& hash_type) : evp_md_(nullptr) {
   }
 }
 
-const EVP_MD* SslImpl::DigestType::get() const { return evp_md_; }
+const EVP_MD* ssl_impl::DigestType::get() const { return evp_md_; }
 
-int SslImpl::DigestType::digest_size() const {
-  int SslImpl::DigestType::block_size() const {
+int ssl_impl::DigestType::digest_size() const {
+  int ssl_impl::DigestType::block_size() const {
     return EVP_MD_block_size(evp_md_);
   }
 
-  SslImpl::SslImpl(const HashType& hash_type) : type_(DigestType(hash_type)) {
+  ssl_impl::ssl_impl(const HashType& hash_type) : type_(DigestType(hash_type)) {
     if (EVP_DigestInit_ex(context_.get(), type_.get(), nullptr) != 1) {
       throw std::runtime_error("Unable to initialise hash digest function");
     }
   }
 
-  void SslImpl::update(const string_view& data) {
+  void ssl_impl::update(const string_view& data) {
     if (EVP_DigestUpdate(context_.get(), &data[0], data.size()) != 1) {
       throw std::runtime_error("Failed to update digest");
     }
   }
 
-  std::vector<char> SslImpl::digest() {
+  std::vector<char> ssl_impl::digest() {
     Context context(context_);
     std::vector<char> output(type_.digest_size());
     unsigned int digest_size;
@@ -83,6 +83,6 @@ int SslImpl::DigestType::digest_size() const {
     return output;
   }
 
-  size_t SslImpl::block_size() { return type_.block_size(); }
+  size_t ssl_impl::block_size() { return type_.block_size(); }
 }  // namespace multihash
 }  // namespace multi
