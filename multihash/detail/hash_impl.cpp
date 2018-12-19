@@ -56,7 +56,7 @@ multihash hash::impl::operator()(std::string_view input) {
 
   while (size > 0) {
     std::advance(end, size);
-    auto buffer = std::string_view(begin, size);
+    auto buffer = std::string_view(input.data(), size);
     algorithm_->update(buffer);
     begin = end;
     remaining -= size;
