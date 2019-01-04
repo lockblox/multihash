@@ -1,12 +1,19 @@
 sudo: required
+
 services:
     - docker
+
 language: cpp
+
 compiler: gcc
+
 cache:
   directories:
   - $HOME/.hunter
   - $HOME/.ccache
+
+before_install:
+  - pip install --user cpp-coveralls
 
 install:
     - if [ $TRAVIS_OS_NAME == osx ]; then
@@ -14,6 +21,7 @@ install:
            brew install openssl cmake ccache;
            export PATH="/usr/local/opt/ccache/libexec:$PATH";
       fi
+
 script:
     - if [ $TRAVIS_OS_NAME == osx ]; then
           mkdir build;
@@ -23,14 +31,20 @@ script:
           make test;
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then
-          docker run -v $PWD:/root/src:ro 
+          docker run -v $PWD:/root/src:ro
                      -v $HOME:/root --privileged -it lockblox/orthodox;
       fi
+
+after_success:
+  - coveralls --root . -E ".*gtest.*" -E ".*CMakeFiles.*"
+
 branches:
     only:
     - master
+
 notification:
     email: true
+
 os:
 - linux
 - osx
