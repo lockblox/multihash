@@ -36,9 +36,7 @@ script:
       fi
 
 after_success:
-  - coveralls --gcov llvm-cov --gcov-options gcov --root $HOME/build
-              -E ".*gtest.*"
-              -E ".*CMakeFiles.*"
+  - coveralls --gcov llvm-cov --gcov-options gcov
 
 branches:
     only:
