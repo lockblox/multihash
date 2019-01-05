@@ -31,12 +31,16 @@ script:
           make test;
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then
+          mkdir build;
           docker run -v $PWD:/root/src:ro
-                     -v $HOME:/root --privileged -it lockblox/orthodox;
+                     -v $PWD/build:/root/build --privileged -it
+                     lockblox/orthodox;
       fi
 
 after_success:
-  - coveralls --gcov llvm-cov --gcov-options gcov --verbose  -i multihash
+  - if [ $TRAVIS_OS_NAME == linux ]; then
+      coveralls --gcov llvm-cov --gcov-options gcov --verbose -i multihash
+    fi
 
 branches:
     only:
