@@ -39,6 +39,7 @@ script:
 after_success:
   - if [ $TRAVIS_OS_NAME == linux ]; then
       find $HOME -name "*.gcda";
+      cd ${HOME}/src;
       coveralls --gcov llvm-cov --gcov-options gcov --verbose -i multihash
                 --root $HOME/build;
     fi
