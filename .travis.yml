@@ -31,7 +31,8 @@ script:
           make test;
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then
-          mv ${HOME}/build/cpp-ipfs/cpp-multihash ${HOME}/src
+          cd ${HOME}/build;
+          mv cpp-ipfs/cpp-multihash ${HOME}/src;
           docker run -v $HOME:/root --privileged -it lockblox/orthodox;
       fi
 
