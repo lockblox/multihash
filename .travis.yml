@@ -39,7 +39,7 @@ script:
 
 after_success:
   - if [ $TRAVIS_OS_NAME == linux ]; then
-      coveralls --gcov llvm-cov --gcov-options gcov --verbose -i multihash
+      coveralls --gcov llvm-cov --gcov-options gcov --verbose -i multihash;
     fi
 
 branches:
