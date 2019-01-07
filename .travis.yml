@@ -41,7 +41,7 @@ after_success:
       find $HOME -name "*.gcda";
       cd ${HOME}/src;
       pwd;
-      coveralls --gcov llvm-cov --gcov-options gcov --verbose -i multihash
+      coveralls --gcov llvm-cov --gcov-options gcov --verbose -i multihash;
     fi
 
 branches:
