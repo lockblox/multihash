@@ -33,8 +33,7 @@ script:
     - if [ $TRAVIS_OS_NAME == linux ]; then
           cd ${HOME}/build;
           mv -v cpp-ipfs/cpp-multihash ${HOME}/src;
-          docker run -v ${HOME}/src:/home/travis/src
-                     -v ${HOME}/build:/home/travis/build
+          docker run -v ${HOME}:/home/travis --user $(id -u):$(id -g)
                      --privileged -it lockblox/orthodox;
       fi
 
