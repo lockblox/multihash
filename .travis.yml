@@ -12,9 +12,6 @@ cache:
   - $HOME/.hunter
   - $HOME/.ccache
 
-before_install:
-  - pip install --user cpp-coveralls
-
 install:
     - if [ $TRAVIS_OS_NAME == osx ]; then
            brew update;
@@ -31,19 +28,12 @@ script:
           make test;
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then
-          cd ${HOME}/build;
           mv -v cpp-ipfs/cpp-multihash ${HOME}/src;
-          docker run -v ${HOME}:/home/travis --user $(id -u):$(id -g)
+          docker run -v ${HOME}:/root \
+                     -e TRAVIS_JOB_ID="$TRAVIS_JOB_ID" \
+                     -e TRAVIS_BRANCH="$TRAVIS_BRANCH" \
                      --privileged -it lockblox/orthodox;
       fi
-
-after_success:
-  - if [ $TRAVIS_OS_NAME == linux ]; then
-      find ${HOME} -name "*.gcda";
-      cd ${HOME}/src;
-      pwd;
-      coveralls --gcov llvm-cov --gcov-options gcov --verbose -i multihash;
-    fi
 
 branches:
     only:
