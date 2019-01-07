@@ -32,13 +32,15 @@ script:
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then
           cd ${HOME}/build;
-          mv cpp-ipfs/cpp-multihash ${HOME}/src;
-          docker run -v $HOME:/home/travis --privileged -it lockblox/orthodox;
+          mv -v cpp-ipfs/cpp-multihash ${HOME}/src;
+          docker run -v ${HOME}/src:/home/travis/src
+                     -v ${HOME}/build:/home/travis/build
+                     --privileged -it lockblox/orthodox;
       fi
 
 after_success:
   - if [ $TRAVIS_OS_NAME == linux ]; then
-      find $HOME -name "*.gcda";
+      find ${HOME} -name "*.gcda";
       cd ${HOME}/src;
       pwd;
       coveralls --gcov llvm-cov --gcov-options gcov --verbose -i multihash;
