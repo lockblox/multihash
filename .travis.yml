@@ -28,10 +28,12 @@ script:
           make test;
       fi
     - if [ $TRAVIS_OS_NAME == linux ]; then
+          env;
+          echo ${TRAVIS_JOB_ID};
           mv -v $HOME/build/cpp-ipfs/cpp-multihash ${HOME}/src;
           docker run -v ${HOME}:/root \
-                     -e TRAVIS_JOB_ID="$TRAVIS_JOB_ID" \
-                     -e TRAVIS_BRANCH="$TRAVIS_BRANCH" \
+                     -e TRAVIS_JOB_ID="${TRAVIS_JOB_ID}" \
+                     -e TRAVIS_BRANCH="${TRAVIS_BRANCH}" \
                      --privileged -it lockblox/orthodox;
       fi
 
