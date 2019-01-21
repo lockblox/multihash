@@ -162,11 +162,14 @@ TEST(Multihash, Default) {
 }
 
 TEST(Multihash, Inequality) {
-  multihash::hash hash_function;
-  std::string foo("foo");
-  std::string bar("bar");
-  EXPECT_NE(hash_function(std::string_view(foo)),
-            hash_function(std::string_view(bar)));
+  multihash::hash hash;
+  auto foo_hash = hash("foo");
+  auto bar_hash = hash("bar");
+  EXPECT_NE(foo_hash, bar_hash);
+  multihash::multihash mh{};
+  EXPECT_NE(mh, foo_hash);
+  EXPECT_EQ(mh, mh);
+  EXPECT_EQ(foo_hash, foo_hash);
 }
 
 TEST(Multihash, HashConstruction) {

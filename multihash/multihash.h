@@ -9,7 +9,7 @@ namespace multihash {
 class multihash {
  public:
   multihash();
-  multihash(const std::string_view& buffer);
+  explicit multihash(const std::string_view& buffer);
   multihash(hash_code code, const std::string_view& digest);
   multihash& operator=(const multihash& rhs) noexcept;
   multihash(const multihash& rhs);
