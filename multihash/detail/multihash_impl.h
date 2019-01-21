@@ -6,7 +6,7 @@ namespace multihash {
 
 class multihash::impl {
  public:
-  impl() = default;
+  explicit impl(const std::string_view& buffer);
   impl(hash_code code, const std::string_view& digest);
   hash_code code() const;
   std::string_view digest() const;
@@ -17,6 +17,7 @@ class multihash::impl {
   explicit operator std::vector<char>();
 
  private:
+  void init(hash_code code, const std::string_view& digest);
   std::vector<char> buffer_;
 };
 
