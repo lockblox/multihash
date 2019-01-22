@@ -16,10 +16,6 @@ set(CMAKE_CXX_STANDARD 17)
 hunter_add_package(cryptopp)
 find_package(cryptopp CONFIG REQUIRED)
 
-if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra")
-endif ()
-
 add_library(libmultihash
         multihash/multihash.cpp
         multihash/multihash.h
@@ -47,6 +43,7 @@ target_include_directories(libmultihash PUBLIC "${multihash_SOURCE_DIR}")
 
 enable_testing()
 if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+    target_compile_options(libmultihash PRIVATE -Wall -Werror -Wextra)
     # Binary depends on getopt which is unavailable in Windows
     add_executable(multihash multihash/main.cpp)
     target_link_libraries(multihash libmultihash)
