@@ -25,7 +25,7 @@ multihash::multihash(const std::string_view& buffer) {
 }
 
 bool multihash::operator==(const multihash& rhs) const {
-  if (pImpl == nullptr or rhs.pImpl == nullptr) {
+  if (pImpl == nullptr || rhs.pImpl == nullptr) {
     return pImpl == rhs.pImpl;
   }
   return code() == rhs.code() && digest() == rhs.digest();
@@ -36,7 +36,7 @@ bool multihash::operator!=(const multihash& rhs) const {
 }
 
 bool multihash::operator<(const multihash& rhs) const {
-  if (pImpl == nullptr or rhs.pImpl == nullptr) {
+  if (pImpl == nullptr || rhs.pImpl == nullptr) {
     return pImpl < rhs.pImpl;
   }
   auto result = false;
