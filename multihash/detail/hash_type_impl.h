@@ -22,6 +22,7 @@ class hash_type::impl {
   const static impl sha1;
   const static impl sha2_256;
   const static impl sha2_512;
+  const static impl sha3_256;
 
   const hash_code code_;
   const std::string name_;

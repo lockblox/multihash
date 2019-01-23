@@ -19,7 +19,7 @@ cryptopp_impl::cryptopp_impl(hash_code code) {
       hash_ = std::make_unique<CryptoPP::SHA512>();
       digest_.resize(CryptoPP::SHA512::DIGESTSIZE);
       break;
-    case hash_code::SHA3:
+    case hash_code::SHA3_256:
       hash_ = std::make_unique<CryptoPP::SHA3_256>();
       digest_.resize(CryptoPP::SHA3_256::DIGESTSIZE);
       break;

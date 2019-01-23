@@ -9,9 +9,9 @@ void hash::impl::init() {
     case hash_code::SHA1:
     case hash_code::SHA2_256:
     case hash_code::SHA2_512:
+    case hash_code::SHA3_256:
       algorithm_ = std::make_unique<cryptopp_impl>(hash_code_);
       break;
-    case hash_code::SHA3:
     case hash_code::IDENTITY:
       std::string msg = "No hash function for code " +
                         std::to_string(static_cast<char>(hash_code_));

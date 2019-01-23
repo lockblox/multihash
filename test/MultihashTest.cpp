@@ -9,49 +9,6 @@ std::string toHexString(const multihash::multihash &hash) {
   return os.str();
 }
 
-TEST(Multihash, conversions) {
-  /** Looking up a hash type and querying properties */
-  {
-    auto expected("sha1");
-    auto result(multihash::hash_type("sha1").name());
-    EXPECT_EQ(expected, result);
-  }
-
-  {
-    auto expected = static_cast<unsigned char>(multihash::hash_code::SHA1);
-    auto result =
-        static_cast<unsigned char>(multihash::hash_type("sha1").code());
-    EXPECT_EQ(expected, result);
-  }
-
-  {
-    auto expected = static_cast<unsigned char>(multihash::hash_code::SHA1);
-    auto hash_type = multihash::hash_type(multihash::hash_code::SHA1);
-    auto result = static_cast<unsigned char>(hash_type.code());
-    EXPECT_EQ(expected, result);
-  }
-
-  {
-    auto expected = static_cast<unsigned char>(multihash::hash_code::SHA1);
-    auto hash_type = multihash::hash_type("sha1");
-    auto result = static_cast<unsigned char>(hash_type.code());
-    EXPECT_EQ(expected, result);
-  }
-
-  {
-    auto result = multihash::hash_type("sha2-256").size();
-    decltype(result) expected = 32;
-    EXPECT_EQ(expected, result);
-  }
-
-  /** Failing to look up a hash type */
-  { EXPECT_THROW(multihash::hash_type("unknown_hash"), std::invalid_argument); }
-  {
-    EXPECT_THROW(multihash::hash_type(static_cast<multihash::hash_code>(0x84)),
-                 std::invalid_argument);
-  }
-}
-
 TEST(Multihash, hashing) {
   /** Decoding a hashi from raw bytes */
   std::string input("foo");
@@ -140,6 +97,33 @@ TEST(Multihash, hashing) {
     }
   }
   {
+    input_stream.clear();
+    input_stream.seekg(0);
+    auto hash_function = multihash::hash(multihash::hash_code::SHA3_256);
+    auto hash_function2(hash_function);
+    EXPECT_EQ(hash_function, hash_function2);
+    auto hash = hash_function(input_stream);
+    {
+      auto expected =
+          static_cast<unsigned char>(multihash::hash_code::SHA3_256);
+      auto result = static_cast<unsigned char>(hash.code());
+      EXPECT_EQ(expected, result);
+    }
+    {
+      auto expected =
+          "162076d3bc41c9f588f7fcd0d5bf4718f8f84b1c41b20882703100b9eb9413807c0"
+          "1";
+      auto result = toHexString(hash);
+      EXPECT_EQ(expected, result);
+    }
+  }
+
+  {
+    auto hash_type = multihash::hash_type();
+    EXPECT_THROW(multihash::hash{hash_type.code()}, std::out_of_range);
+  }
+
+  {
     auto hash_function = multihash::hash(multihash::hash_code::SHA2_512);
     auto hash_function_b = hash_function;
     EXPECT_EQ(hash_function, hash_function_b);
@@ -170,6 +154,8 @@ TEST(Multihash, Inequality) {
   EXPECT_NE(mh, foo_hash);
   EXPECT_EQ(mh, mh);
   EXPECT_EQ(foo_hash, foo_hash);
+  bar_hash = foo_hash;
+  EXPECT_EQ(foo_hash, bar_hash);
 }
 
 TEST(Multihash, HashConstruction) {
