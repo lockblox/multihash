@@ -42,7 +42,9 @@ multihash hash::impl::operator()(std::istream& input) {
   auto chars_read(input.gcount());
   std::advance(begin, chars_read);
   buffer.erase(begin, end);
-  algorithm_->update(buffer);
+  if (!buffer.empty()) {
+    algorithm_->update(buffer);
+  }
   return digest();
 }
 

@@ -1,4 +1,5 @@
 #include "cryptopp_impl.h"
+#include <cassert>
 #include <multihash/hash_type.h>
 #include <sha.h>
 #include <sha3.h>
@@ -32,6 +33,8 @@ cryptopp_impl::cryptopp_impl(hash_code code) {
 size_t cryptopp_impl::block_size() { return hash_->OptimalBlockSize(); }
 
 void cryptopp_impl::update(const std::string_view& data) {
+  assert(data.data() != nullptr);
+  assert(data.size() > 0);
   hash_->Update(reinterpret_cast<const unsigned char*>(data.data()),
                 data.size());
 }
