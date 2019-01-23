@@ -58,9 +58,9 @@ bool hash_type::operator>(const hash_type& rhs) const {
 }
 
 std::set<hash_type> hash_type::types() {
-  return std::set<hash_type>{hash_type{hash_code::SHA1},
-                             hash_type{hash_code::SHA2_256},
-                             hash_type{hash_code::SHA2_512}};
+  return std::set<hash_type>{
+      hash_type{hash_code::SHA1}, hash_type{hash_code::SHA2_256},
+      hash_type{hash_code::SHA2_512}, hash_type{hash_code::SHA3_256}};
 }
 
 std::ostream& operator<<(std::ostream& os, const hash_type& hash_type) {

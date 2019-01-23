@@ -62,7 +62,10 @@ endif ()
 # Compile and run all unit tests
 hunter_add_package(GTest)
 find_package(GTest CONFIG REQUIRED)
-add_executable(MultihashTest test/MultihashTest.cpp test/main.cpp)
+add_executable( MultihashTest
+                test/MultihashTest.cpp
+                test/HashCodeTest.cpp
+                test/main.cpp )
 target_link_libraries(MultihashTest PUBLIC libmultihash PUBLIC GTest::main)
 set_target_properties(MultihashTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY
         ${CMAKE_CURRENT_BINARY_DIR}/test)
