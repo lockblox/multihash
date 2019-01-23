@@ -1,0 +1,4 @@
+Checks: '*'
+WarningsAsErrors: ''
+HeaderFilterRegex: ''
+FormatStyle: 'file'
