@@ -6,17 +6,17 @@
 namespace multihash {
 
 /** Functor which hashes an input stream with a given hash type */
-class hash {
+class hash_function {
  public:
   using result_type = multihash;
   using argument_type = std::string_view;
 
-  explicit hash(hash_code code = hash_code::SHA2_256);
-  hash(const hash& other);
-  hash& operator=(const hash& rhs);
-  ~hash();
+  explicit hash_function(hash_code code = hash_code::SHA2_256);
+  hash_function(const hash_function& other);
+  hash_function& operator=(const hash_function& rhs);
+  ~hash_function();
 
-  bool operator==(const hash& rhs) const;
+  bool operator==(const hash_function& rhs) const;
 
   multihash operator()(std::istream& input) const;
   multihash operator()(std::string_view input) const;

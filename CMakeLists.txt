@@ -19,16 +19,16 @@ find_package(cryptopp CONFIG REQUIRED)
 add_library(libmultihash
         multihash/multihash.cpp
         multihash/multihash.h
-        multihash/hash.cpp
-        multihash/hash.h
+        multihash/hash_function.cpp
+        multihash/hash_function.h
         multihash/hash_type.cpp
         multihash/hash_type.h
         multihash/detail/algorithm.cpp
         multihash/detail/algorithm.h
         multihash/detail/cryptopp_impl.cpp
         multihash/detail/cryptopp_impl.h
-        multihash/detail/hash_impl.cpp
-        multihash/detail/hash_impl.h
+        multihash/detail/hash_function_impl.cpp
+        multihash/detail/hash_function_impl.h
         multihash/detail/multihash_impl.cpp
         multihash/detail/multihash_impl.h
         multihash/detail/hash_type_impl.cpp

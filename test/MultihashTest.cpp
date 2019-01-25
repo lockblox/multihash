@@ -1,4 +1,4 @@
-#include <multihash/hash.h>
+#include <multihash/hash_function.h>
 #include <multihash/hash_type.h>
 #include <iomanip>
 #include "gtest/gtest.h"
@@ -14,7 +14,7 @@ TEST(Multihash, hashing) {
   std::string input("foo");
   std::istringstream input_stream(input);
   {
-    multihash::hash hash_function(multihash::hash_code::SHA1);
+    multihash::hash_function hash_function(multihash::hash_code::SHA1);
     auto hash = hash_function(input_stream);
     {
       auto expected = static_cast<unsigned char>(multihash::hash_code::SHA1);
@@ -37,7 +37,7 @@ TEST(Multihash, hashing) {
     }
     auto input = os.str();
 
-    multihash::hash hash_function(multihash::hash_code::SHA1);
+    multihash::hash_function hash_function(multihash::hash_code::SHA1);
     auto hash = hash_function(input);
     {
       auto expected = "11147dd3e2edbe26687c037094e7cd3d8f5c5e89e9ed";
@@ -54,7 +54,7 @@ TEST(Multihash, hashing) {
     input_stream.clear();
     input_stream.seekg(0);
 
-    auto hash_function = multihash::hash(multihash::hash_code::SHA2_256);
+    auto hash_function = multihash::hash_function(multihash::hash_code::SHA2_256);
     auto hash = hash_function(input_stream);
     {
       auto expected =
@@ -79,7 +79,7 @@ TEST(Multihash, hashing) {
     input_stream.clear();
     input_stream.seekg(0);
 
-    auto hash_function = multihash::hash(multihash::hash_code::SHA2_512);
+    auto hash_function = multihash::hash_function(multihash::hash_code::SHA2_512);
     auto hash = hash_function(input_stream);
     {
       auto expected =
@@ -99,7 +99,7 @@ TEST(Multihash, hashing) {
   {
     input_stream.clear();
     input_stream.seekg(0);
-    auto hash_function = multihash::hash(multihash::hash_code::SHA3_256);
+    auto hash_function = multihash::hash_function(multihash::hash_code::SHA3_256);
     auto hash_function2(hash_function);
     EXPECT_EQ(hash_function, hash_function2);
     auto hash = hash_function(input_stream);
@@ -120,11 +120,11 @@ TEST(Multihash, hashing) {
 
   {
     auto hash_type = multihash::hash_type();
-    EXPECT_THROW(multihash::hash{hash_type.code()}, std::out_of_range);
+    EXPECT_THROW(multihash::hash_function{hash_type.code()}, std::out_of_range);
   }
 
   {
-    auto hash_function = multihash::hash(multihash::hash_code::SHA2_512);
+    auto hash_function = multihash::hash_function(multihash::hash_code::SHA2_512);
     auto hash_function_b = hash_function;
     EXPECT_EQ(hash_function, hash_function_b);
   }
@@ -132,7 +132,7 @@ TEST(Multihash, hashing) {
 
 TEST(Multihash, encoding) {
   std::istringstream input_stream("foo");
-  multihash::hash hash_function(multihash::hash_code::SHA1);
+  multihash::hash_function hash_function(multihash::hash_code::SHA1);
   auto hash = hash_function(input_stream);
   auto encoded = static_cast<std::vector<char>>(hash);
   auto view = std::string_view(encoded.data(), encoded.size());
@@ -141,12 +141,12 @@ TEST(Multihash, encoding) {
 }
 
 TEST(Multihash, Default) {
-  multihash::hash hash_function;
+  multihash::hash_function hash_function;
   EXPECT_EQ(multihash::hash_code::SHA2_256, hash_function.code());
 }
 
 TEST(Multihash, Inequality) {
-  multihash::hash hash;
+  multihash::hash_function hash;
   auto foo_hash = hash("foo");
   auto bar_hash = hash("bar");
   EXPECT_NE(foo_hash, bar_hash);
@@ -159,7 +159,7 @@ TEST(Multihash, Inequality) {
 }
 
 TEST(Multihash, HashConstruction) {
-  multihash::hash hash_function;
+  multihash::hash_function hash_function;
   std::string foo("foo");
   auto hash = hash_function(foo);
   auto expected = std::string(
