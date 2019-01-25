@@ -1,5 +1,5 @@
 #include <getopt.h>
-#include <multihash/hash.h>
+#include <multihash/hash_function.h>
 #include <multihash/hash_type.h>
 #include <sys/stat.h>
 #include <array>
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 
   try {
     auto hash_type = multihash::hash_type(algo);
-    auto hash_function = multihash::hash(hash_type.code());
+    auto hash_function = multihash::hash_function(hash_type.code());
 
     std::ios_base::sync_with_stdio(false);  // enable fast io
 

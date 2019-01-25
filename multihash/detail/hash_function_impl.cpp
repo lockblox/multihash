@@ -1,10 +1,10 @@
-#include "hash_impl.h"
+#include "hash_function_impl.h"
 #include "cryptopp_impl.h"
 
 namespace multihash {
-hash::impl::impl(hash_code code) : hash_code_(code) { init(); }
+hash_function::impl::impl(hash_code code) : hash_code_(code) { init(); }
 
-void hash::impl::init() {
+void hash_function::impl::init() {
   switch (hash_code_) {
     case hash_code::SHA1:
     case hash_code::SHA2_256:
@@ -19,9 +19,9 @@ void hash::impl::init() {
   }
 }
 
-bool hash::operator==(const hash& rhs) const { return code() == rhs.code(); }
+bool hash_function::operator==(const hash_function& rhs) const { return code() == rhs.code(); }
 
-multihash hash::impl::operator()(std::istream& input) {
+multihash hash_function::impl::operator()(std::istream& input) {
   if (!input.good()) {
     throw std::invalid_argument("hash input is not good");
   }
@@ -48,7 +48,7 @@ multihash hash::impl::operator()(std::istream& input) {
   return digest();
 }
 
-multihash hash::impl::operator()(std::string_view input) {
+multihash hash_function::impl::operator()(std::string_view input) {
   init();
   auto block_size = algorithm_->block_size();
   auto begin = input.begin();
@@ -67,7 +67,7 @@ multihash hash::impl::operator()(std::string_view input) {
   return digest();
 }
 
-multihash hash::impl::digest() {
+multihash hash_function::impl::digest() {
   auto digest = algorithm_->digest();
   auto view = std::string_view(digest.data(), digest.size());
   return multihash(hash_code_, view);

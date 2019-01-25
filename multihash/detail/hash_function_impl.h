@@ -1,11 +1,11 @@
 #pragma once
 
 #include <multihash/detail/algorithm.h>
-#include <multihash/hash.h>
+#include <multihash/hash_function.h>
 
 namespace multihash {
 
-class hash::impl {
+class hash_function::impl {
  public:
   explicit impl(hash_code hash_code);
   ~impl() = default;
