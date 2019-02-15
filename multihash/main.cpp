@@ -1,13 +1,27 @@
 #include <getopt.h>
-#include <multihash/hash_function.h>
-#include <multihash/hash_type.h>
+#include <multihash/function.h>
 #include <sys/stat.h>
 #include <array>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 
-int main(int argc, char *argv[]) {
+namespace {
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, multihash::multihash<T>& multihash) {
+  auto view = std::string_view(multihash.data(), multihash.size());
+  for (auto c : view) {
+    auto uc = uint8_t(c);
+    os << std::hex << std::setfill('0') << std::setw(2);
+    os << static_cast<int>(uc);
+  }
+  return os;
+}
+
+}  // namespace
+
+int main(int argc, char* argv[]) {
   // Declare the supported options.
   std::ostringstream os;
   os << "Usage: multihash [OPTION]... [FILE]..." << std::endl
@@ -60,8 +74,8 @@ int main(int argc, char *argv[]) {
     return 0;
   }
   if (1 == list_flag) {
-    for (auto hash_type : multihash::hash_type::types()) {
-      std::cout << hash_type.name() << std::endl;
+    for (auto [code, name] : multihash::algorithm::codenames()) {
+      std::cout << name << std::endl;
     }
     return 0;
   }
@@ -74,8 +88,8 @@ int main(int argc, char *argv[]) {
   }
 
   try {
-    auto hash_type = multihash::hash_type(algo);
-    auto hash_function = multihash::hash_function(hash_type.code());
+    auto code = multihash::algorithm::code(algo);
+    auto hash_function = multihash::function(code);
 
     std::ios_base::sync_with_stdio(false);  // enable fast io
 
@@ -110,11 +124,11 @@ int main(int argc, char *argv[]) {
         }
       }
     }
-  } catch (std::invalid_argument &e) {
+  } catch (std::invalid_argument& e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
     std::cout << "Available hash types: " << std::endl;
-    for (auto hash_type : multihash::hash_type::types()) {
-      std::cout << hash_type.name() << std::endl;
+    for (auto& [code, name] : multihash::algorithm::codenames()) {
+      std::cout << name << std::endl;
     }
   }
   return 0;

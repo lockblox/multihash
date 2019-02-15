@@ -1,7 +1,6 @@
 #pragma once
 
-#include <multihash/detail/algorithm.h>
-#include <multihash/hash_type.h>
+#include <multihash/algorithm.h>
 #include <openssl/evp.h>
 
 
