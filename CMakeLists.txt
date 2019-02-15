@@ -15,30 +15,27 @@ set(CMAKE_CXX_STANDARD 17)
 
 hunter_add_package(cryptopp)
 find_package(cryptopp CONFIG REQUIRED)
+hunter_add_package(Microsoft.GSL)
+find_package(Microsoft.GSL CONFIG REQUIRED)
 
 add_library(libmultihash
         multihash/multihash.cpp
         multihash/multihash.h
-        multihash/hash_function.cpp
-        multihash/hash_function.h
-        multihash/hash_type.cpp
-        multihash/hash_type.h
-        multihash/detail/algorithm.cpp
-        multihash/detail/algorithm.h
+        multihash/algorithm.cpp
+        multihash/algorithm.h
         multihash/detail/cryptopp_impl.cpp
         multihash/detail/cryptopp_impl.h
-        multihash/detail/hash_function_impl.cpp
-        multihash/detail/hash_function_impl.h
-        multihash/detail/multihash_impl.cpp
-        multihash/detail/multihash_impl.h
-        multihash/detail/hash_type_impl.cpp
-        multihash/detail/hash_type_impl.h
+        multihash/digest.cpp
+        multihash/digest.h
         multihash/multihash.cpp
         multihash/multihash.h
-        multihash/hash_code.cpp
-        multihash/hash_code.h)
+        multihash/static_function.cpp
+        multihash/static_function.h
+        multihash/function.cpp
+        multihash/function.h)
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
-target_link_libraries(libmultihash PRIVATE cryptopp-static)
+target_link_libraries(libmultihash PUBLIC cryptopp-static)
+target_link_libraries(libmultihash PUBLIC Microsoft.GSL::GSL)
 target_include_directories(libmultihash PUBLIC "${multihash_SOURCE_DIR}")
 
 enable_testing()
