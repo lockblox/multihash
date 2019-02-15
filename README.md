@@ -19,8 +19,7 @@ echo -n "foo" | ../bin/multihash --hash-type sha1
 11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33 -
 ```
 
-# Usage
-## libmultihash
+# Overview
 
 At the lowest level, there is a hash algorithm.
 
@@ -39,22 +38,6 @@ registry.
 
 A multihash combines the hash code and digest in a binary payload.
 
-
-```cpp
-auto input = "Hello, World!"s;
-auto hash = multihash::sha3{};
-auto output = multihash::sha3{}(input);
-auto digest_size = multihash::sha3::digest_size();
-```
-
-```cpp
-auto hash_name = "sha3-512";
-auto hash_function = multihash::hash_function(hash_name);
-auto output = hash_function("data");
-std::cout << output.digest() << std::endl;;
-```
-
-multihash::sha3 is an algorithm?
 
 # License
 
