@@ -1,6 +1,7 @@
 #pragma once
 
 #include <multihash/algorithm.h>
+#include <istream>
 
 namespace multihash {
 
