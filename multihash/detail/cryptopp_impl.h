@@ -10,7 +10,6 @@ namespace multihash {
 template <typename Hash>
 class cryptopp_impl : public algorithm {
  public:
-  std::string name() const override;
   void reset() override;
   size_t digest_size() const override;
   size_t block_size() const override;
@@ -66,14 +65,6 @@ std::size_t cryptopp_impl<Hash>::digest(string_span output) {
 template <typename Hash>
 void cryptopp_impl<Hash>::reset() {
   hash_.Restart();
-}
-
-template <typename Hash>
-std::string cryptopp_impl<Hash>::name() const {
-  auto result = hash_.AlgorithmName();
-  std::transform(result.begin(), result.end(), result.begin(),
-                 [](auto c) { return std::tolower(c); });
-  return result;
 }
 
 }  // namespace multihash

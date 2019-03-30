@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
     return 0;
   }
   if (1 == list_flag) {
-    for (auto [code, name] : multihash::algorithm::codenames()) {
+    for (auto name : multihash::code::names()) {
       std::cout << name << std::endl;
     }
     return 0;
@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
   }
 
   try {
-    auto code = multihash::algorithm::code(algo);
+    auto code = multihash::code::from_string(algo);
     auto hash_function = multihash::function(code);
 
     std::ios_base::sync_with_stdio(false);  // enable fast io
@@ -127,7 +127,7 @@ int main(int argc, char* argv[]) {
   } catch (std::invalid_argument& e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
     std::cout << "Available hash types: " << std::endl;
-    for (auto& [code, name] : multihash::algorithm::codenames()) {
+    for (auto name : multihash::code::names()) {
       std::cout << name << std::endl;
     }
   }
