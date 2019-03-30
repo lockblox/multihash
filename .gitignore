@@ -4,4 +4,7 @@
 .vs
 build
 .idea
+.vscode/ipch
+compile_commands.json
+CMakeSettings.json
 cmake-*
