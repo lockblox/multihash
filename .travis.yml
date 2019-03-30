@@ -9,31 +9,60 @@ compiler: gcc
 
 cache:
   directories:
-  - $HOME/.hunter
-  - $HOME/.ccache
+  - ${HOME}/.ccache
+  - ${HOME}/vcpkg
+  - ${HOME}/Library/Caches/Homebrew
 
+addons:
+  homebrew:
+    packages:
+    - cmake
+    - ccache
+    - gcc@7
+ 
 install:
-    - if [ $TRAVIS_OS_NAME == osx ]; then
-           brew update;
-           brew install openssl cmake ccache;
-           export PATH="/usr/local/opt/ccache/libexec:$PATH";
+    - |
+      if [ $TRAVIS_OS_NAME == osx ]; then
+        export CXX=g++-7;
+        export CC=gcc-7;
+        VCPKG_FOUND=`find ${HOME}/vcpkg | wc -l`
+        if [ ${VCPKG_FOUND} -lt 2 ]; then
+          echo "vcpkg not found, installing...";
+          cd ${HOME};
+          git clone https://github.com/cpp-ipfs/vcpkg.git;
+          cd ${HOME}/vcpkg;
+          ./bootstrap-vcpkg.sh;
+          ./vcpkg integrate install;
+          ./vcpkg install gtest cryptopp ms-gsl varint;
+        fi;
+        echo "Using existing vcpkg installation at ${HOME}/vcpkg";
+        cd ${HOME}/vcpkg;
+        git pull origin master;
+        ./vcpkg upgrade;
       fi
+
 
 script:
-    - if [ $TRAVIS_OS_NAME == osx ]; then
-          mkdir build;
-          cd build;
-          cmake ..;
-          make;
-          make test;
+    - |
+      if [ $TRAVIS_OS_NAME == osx ]; then
+        export PATH="/usr/local/opt/ccache/libexec:$PATH";
+        env;
+        cd ${HOME};
+        mkdir build;
+        cd build;
+        export TOOLCHAIN_FILE=${HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake;
+        cmake -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE} ${TRAVIS_BUILD_DIR}
+        make;
+        make test;
       fi
-    - if [ $TRAVIS_OS_NAME == linux ]; then
+    - |
+      if [ $TRAVIS_OS_NAME == linux ]; then
           env;
           mv -v ${PWD} ${HOME}/src;
-          docker run -v ${HOME}:/root
-                     -e TRAVIS_JOB_ID="${TRAVIS_JOB_ID}"
-                     -e TRAVIS_BRANCH="${TRAVIS_BRANCH}"
-                     --privileged -it lockblox/orthodox;
+          docker run -v ${HOME}:/root \
+                     -e TRAVIS_JOB_ID="${TRAVIS_JOB_ID}" \
+                     -e TRAVIS_BRANCH="${TRAVIS_BRANCH}" \
+                     --privileged -it cppipfs/cpp-multihash;
       fi
 
 branches:
