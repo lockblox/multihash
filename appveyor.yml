@@ -20,13 +20,13 @@ install:
   - .\vcpkg install gtest:x86-windows
 
 before_build:
-  - cd %APPVERYOR_BUILD_FOLDER%
+  - cd %APPVEYOR_BUILD_FOLDER%
   - mkdir build
   - cd build
   - cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_TOOLCHAIN_FILE=C:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake ..
 
 build:
-  project: ALL_BUILD.vcxproj
+  project: %APPVEYOR_BUILD_FOLDER%/ALL_BUILD.vcxproj
   verbosity: minimal
 
 test_script:
