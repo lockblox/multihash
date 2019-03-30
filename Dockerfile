@@ -6,4 +6,6 @@ RUN git clone https://github.com/cpp-ipfs/vcpkg.git \
  && ./vcpkg integrate install \
  && ./vcpkg install gtest cryptopp ms-gsl varint
 
+ENV CMAKE_CONFIG_ARGS "-DCMAKE_TOOLCHAIN_FILE=/root/build/vcpkg/scripts/buildsystems/vcpkg.cmake"
+
 COPY . /root/src
