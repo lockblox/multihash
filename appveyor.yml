@@ -9,10 +9,21 @@ configuration:
   - Release
 
 install:
-  - git submodule update --init --recursive
+  - cd C:/projects
+  - if not exist C:/projects/vcpkg (
+      git clone https://github.com/cpp-ipfs/vcpkg.git && 
+      cd vcpkg && 
+      .\bootstrap-vcpkg.bat)
+  - cd C:/projects/vcpkg
+  - .\vcpkg integrate install
+  - .\vcpkg install gtest:x64-windows
+  - .\vcpkg install gtest:x86-windows
 
 before_build:
-  - cmake -G"Visual Studio 15 2017 Win64" .
+  - cd %APPVERYOR_BUILD_FOLDER%
+  - mkdir build
+  - cd build
+  - cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_TOOLCHAIN_FILE=C:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake ..
 
 build:
   project: ALL_BUILD.vcxproj
@@ -22,4 +33,4 @@ test_script:
   - ctest -C %CONFIGURATION%
 
 cache:
-  - C:/.hunter
+  - C:/projects/vcpkg
