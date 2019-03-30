@@ -2,10 +2,10 @@
 
 namespace multihash {
 
-function::function(algorithm::code_type code)
+function::function(code_type code)
     : code_(code), digest_(algorithm::create(code)) {}
 
-algorithm::code_type function::code() const { return code_; }
+code_type function::code() const { return code_; }
 
 std::size_t function::size() {
   using multihash = multihash<std::string>;

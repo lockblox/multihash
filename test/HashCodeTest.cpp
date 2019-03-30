@@ -4,30 +4,23 @@
 #include <sstream>
 
 TEST(hash_type, conversions) {
-  /** Looking up a hash type and querying properties */
   {
-    auto expected("sha-1");
-    auto code = multihash::algorithm::sha1;
-    auto result(multihash::algorithm::create(code)->name());
-    EXPECT_EQ(expected, result);
-  }
-  {
-    auto expected = static_cast<unsigned char>(multihash::algorithm::sha1);
-    auto code = multihash::algorithm::code("sha1");
+    auto expected = static_cast<unsigned char>(multihash::code::sha1);
+    auto code = multihash::code::from_string("sha1");
     auto algo = multihash::algorithm::create(code);
     ASSERT_TRUE(algo);
     EXPECT_EQ(expected, code);
   }
   {
-    auto expected = static_cast<unsigned char>(multihash::algorithm::sha1);
-    auto hash_type = multihash::function(multihash::algorithm::sha1);
+    auto expected = static_cast<unsigned char>(multihash::code::sha1);
+    auto hash_type = multihash::function(multihash::code::sha1);
     auto result = static_cast<unsigned char>(hash_type.code());
     EXPECT_EQ(expected, result);
   }
 
   {
-    auto expected = static_cast<unsigned char>(multihash::algorithm::sha1);
-    auto code = multihash::algorithm::code("sha1");
+    auto expected = static_cast<unsigned char>(multihash::code::sha1);
+    auto code = multihash::code::from_string("sha1");
     EXPECT_EQ(expected, code);
   }
 
@@ -39,7 +32,9 @@ TEST(hash_type, conversions) {
 
   // Failing to look up a hash type
   {
-    EXPECT_THROW(multihash::algorithm::code("unknown_hash"), std::out_of_range);
-    EXPECT_THROW(multihash::algorithm::name((0x84)), std::out_of_range);
+    auto string_input = std::string("unknown hash");
+    EXPECT_THROW(multihash::code::from_string(string_input), std::out_of_range);
+    auto value_input = multihash::code_type(127);
+    EXPECT_THROW(multihash::code::to_string(value_input), std::out_of_range);
   }
 }
