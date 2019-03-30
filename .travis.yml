@@ -3,6 +3,8 @@ sudo: required
 services:
     - docker
 
+osx_image: xcode10.1
+
 language: cpp
 
 compiler: gcc
@@ -40,7 +42,6 @@ install:
         git pull origin master;
         ./vcpkg upgrade;
       fi
-
 
 script:
     - |
