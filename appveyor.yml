@@ -26,7 +26,7 @@ before_build:
   - cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_TOOLCHAIN_FILE=C:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake ..
 
 build:
-  project: %APPVEYOR_BUILD_FOLDER%/ALL_BUILD.vcxproj
+  project: ALL_BUILD.vcxproj
   verbosity: minimal
 
 test_script:
