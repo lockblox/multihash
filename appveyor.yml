@@ -16,8 +16,8 @@ install:
       .\bootstrap-vcpkg.bat)
   - cd C:/projects/vcpkg
   - .\vcpkg integrate install
-  - .\vcpkg install gtest:x64-windows
-  - .\vcpkg install gtest:x86-windows
+  - .\vcpkg --triplet x64-windows install gtest cryptopp ms-gsl varint 
+  - .\vcpkg --triplet x86-windows install gtest cryptopp ms-gsl varint
 
 before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
