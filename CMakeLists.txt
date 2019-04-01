@@ -37,6 +37,10 @@ else()
     target_compile_options(libmultihash PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
 
+if (NOT CMAKE_BUILD_TYPE MATCHES Debug)
+    add_definitions(-DNDEBUG)
+endif()
+
 if(BUILD_TESTING)
     find_package(GTest MODULE REQUIRED)
     add_executable(MultihashTest test/MultihashTest.cpp test/HashCodeTest.cpp test/main.cpp)
