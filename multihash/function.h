@@ -38,9 +38,8 @@ multihash<std::string> function::operator()(Input& input) {
 
 template <typename Input>
 multihash<string_view> function::operator()(Input& input, string_span output) {
-  auto output_size = this->size();
   auto digest_size = digest_.size();
-  assert(output_size <= std::size_t(output.size()));
+  assert(this->size() <= std::size_t(output.size()));
   using multihash = multihash<string_view>;
   auto length = multihash::write(output, code(), digest_size);
   auto span = string_span(&output[length], digest_size);
