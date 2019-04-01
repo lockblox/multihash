@@ -2,6 +2,25 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "buildType",
+            "type": "pickString",
+            "options": [
+                "Release",
+                "Debug"
+            ],
+            "default": "Debug",
+            "description": "Type of build"
+        },
+        {
+            "id": "generator",
+            "type": "pickString",
+            "options": ["Ninja", "Visual Studio 15 2017 Win64", "Visual Studio 15 2017"],
+            "default":"Visual Studio 15 2017 Win64",
+            "description": "Build generator"
+        }
+    ],
     "tasks": [
         {
             "label": "cmake build",
@@ -31,10 +50,9 @@
             "args": [
                 "-B",
                 "${config:cmake.buildRoot}/${workspaceRootFolderName}",
-                "-DMSVC_TOOLSET_VERSION=150",
-                "-DCMAKE_GENERATOR_PLATFORM=x64",
-                "-DCMAKE_BUILD_TYPE=Debug",
+                "-G${input:generator}",
                 "-DCMAKE_TOOLCHAIN_FILE=${config:cmake.toolchainFile}",
+                "-DCMAKE_BUILD_TYPE=${input:buildType}",
                 "${workspaceFolder}"
             ],
             "presentation": {
