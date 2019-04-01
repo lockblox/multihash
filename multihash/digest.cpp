@@ -37,7 +37,7 @@ std::size_t digest::operator()(std::istream& input, string_span output) {
     }
   }
   // final update to hash with partially filled vector
-  auto chars_read(input.gcount());
+  auto chars_read = int(input.gcount());
   std::advance(begin, chars_read);
   buffer.erase(begin, end);
   if (!buffer.empty()) {
