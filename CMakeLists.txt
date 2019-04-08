@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 3.1)
 project(multihash VERSION 1.0 LANGUAGES CXX)
 include(CTest)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
@@ -83,7 +81,10 @@ install(TARGETS libmultihash
         INCLUDES DESTINATION include
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib/static)
+        ARCHIVE DESTINATION lib)
+install(DIRECTORY multihash DESTINATION include
+FILES_MATCHING PATTERN "*.h"
+PATTERN "detail/*" EXCLUDE)
 
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
