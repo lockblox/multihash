@@ -97,10 +97,3 @@ install(FILES "${multihash_BINARY_DIR}/multihashConfigVersion.cmake"
               "${multihash_BINARY_DIR}/multihashConfig.cmake"
         DESTINATION share/cmake/multihash)
 
-install(TARGETS libmultihash
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        RUNTIME DESTINATION bin)
-install(DIRECTORY ipfs DESTINATION include
-        FILES_MATCHING PATTERN "*.h"
-        PATTERN "*Impl.h" EXCLUDE)
