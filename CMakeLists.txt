@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(multihash LANGUAGES CXX)
+project(multihash VERSION 1.0 LANGUAGES CXX)
 include(CTest)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
@@ -29,8 +29,10 @@ add_library(libmultihash
             multihash/code.cpp 
             multihash/code.h)
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
+target_include_directories(libmultihash PUBLIC 
+                           $<BUILD_INTERFACE:${multihash_SOURCE_DIR}>
+                           $<INSTALL_INTERFACE:include>)
 target_link_libraries(libmultihash PUBLIC cryptopp-static)
-target_include_directories(libmultihash PUBLIC "${multihash_SOURCE_DIR}")
 if (MSVC) 
     target_compile_options(libmultihash PRIVATE /W4 /WX /MP)
 else() 
@@ -69,6 +71,31 @@ if(BUILD_TESTING)
         )
     endif()
 endif()
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${multihash_BINARY_DIR}/multihashConfigVersion.cmake"
+    VERSION ${PACKAGE_VERSION}
+    COMPATIBILITY AnyNewerVersion)
+
+install(TARGETS libmultihash
+        EXPORT multihashTargets
+        INCLUDES DESTINATION include
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib/static)
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    "${multihash_SOURCE_DIR}/cmake/multihashConfig.cmake"
+    "${multihash_BINARY_DIR}/multihashConfig.cmake"
+    INSTALL_DESTINATION share/cmake/multihash
+)
+
+install(EXPORT multihashTargets DESTINATION share/cmake/multihash)
+install(FILES "${multihash_BINARY_DIR}/multihashConfigVersion.cmake"
+              "${multihash_BINARY_DIR}/multihashConfig.cmake"
+        DESTINATION share/cmake/multihash)
 
 install(TARGETS libmultihash
         LIBRARY DESTINATION lib
