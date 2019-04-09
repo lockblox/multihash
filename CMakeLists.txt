@@ -10,17 +10,12 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(cryptopp CONFIG REQUIRED)
 
 add_library(libmultihash
-            multihash/multihash.cpp
-            multihash/multihash.h
             multihash/algorithm.cpp
             multihash/algorithm.h
-            multihash/detail/cryptopp_impl.cpp
             multihash/detail/cryptopp_impl.h
             multihash/digest.cpp
             multihash/digest.h
-            multihash/multihash.cpp
             multihash/multihash.h
-            multihash/static_function.cpp
             multihash/static_function.h
             multihash/function.cpp
             multihash/function.h 
@@ -43,7 +38,13 @@ endif()
 
 if(BUILD_TESTING)
     find_package(GTest MODULE REQUIRED)
-    add_executable(MultihashTest test/MultihashTest.cpp test/HashCodeTest.cpp test/main.cpp)
+    add_executable(MultihashTest 
+                   test/MultihashTest.cpp 
+                   test/HashCodeTest.cpp 
+                   test/main.cpp 
+                   multihash/static_function.cpp
+                   multihash/detail/cryptopp_impl.cpp
+                   multihash/multihash.cpp)
     target_link_libraries(MultihashTest PRIVATE libmultihash GTest::GTest GTest::Main)
     add_test(NAME GTest COMMAND MultihashTest)
     if (MSVC) 
@@ -83,8 +84,7 @@ install(TARGETS libmultihash
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 install(DIRECTORY multihash DESTINATION include
-FILES_MATCHING PATTERN "*.h"
-PATTERN "detail/*" EXCLUDE)
+FILES_MATCHING PATTERN "multihash/*.h")
 
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
