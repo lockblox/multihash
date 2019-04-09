@@ -9,18 +9,20 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(cryptopp CONFIG REQUIRED)
 
+set(HEADER_FILES 
+    multihash/algorithm.h;
+    multihash/digest.h;
+    multihash/multihash.h;
+    multihash/function.h;
+    multihash/static_function.h)
 add_library(libmultihash
             multihash/algorithm.cpp
-            multihash/algorithm.h
             multihash/detail/cryptopp_impl.h
             multihash/digest.cpp
-            multihash/digest.h
-            multihash/multihash.h
-            multihash/static_function.h
             multihash/function.cpp
-            multihash/function.h 
             multihash/code.cpp 
-            multihash/code.h)
+            multihash/code.h
+            ${HEADER_FILES})
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 target_include_directories(libmultihash PUBLIC 
                            $<BUILD_INTERFACE:${multihash_SOURCE_DIR}>
@@ -83,8 +85,7 @@ install(TARGETS libmultihash
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
-install(DIRECTORY multihash DESTINATION include
-FILES_MATCHING PATTERN "multihash/*.h")
+install(FILES ${HEADER_FILES} DESTINATION include/multihash)
 
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
