@@ -14,6 +14,7 @@ set(HEADER_FILES
     multihash/digest.h;
     multihash/multihash.h;
     multihash/function.h;
+    multihash/code.h;
     multihash/static_function.h)
 add_library(libmultihash
             multihash/algorithm.cpp
@@ -21,7 +22,7 @@ add_library(libmultihash
             multihash/digest.cpp
             multihash/function.cpp
             multihash/code.cpp 
-            multihash/code.h
+            multihash/multihash.cpp
             ${HEADER_FILES})
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 target_include_directories(libmultihash PUBLIC 
@@ -45,8 +46,7 @@ if(BUILD_TESTING)
                    test/HashCodeTest.cpp 
                    test/main.cpp 
                    multihash/static_function.cpp
-                   multihash/detail/cryptopp_impl.cpp
-                   multihash/multihash.cpp)
+                   multihash/detail/cryptopp_impl.cpp)
     target_link_libraries(MultihashTest PRIVATE libmultihash GTest::GTest GTest::Main)
     add_test(NAME GTest COMMAND MultihashTest)
     if (MSVC) 

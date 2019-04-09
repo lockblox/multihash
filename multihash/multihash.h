@@ -52,23 +52,21 @@ class multihash {
   static multihash create(string_span output, code_type code,
                           string_view digest);
 
-  /** Write a multihash header into output */
-  static std::size_t write(string_span output, code_type code,
-                           std::size_t digest_size);
-
-  /** Write multihash into output */
-  static std::size_t write(string_span output, code_type code,
-                           string_view digest_size);
-
-  static constexpr std::size_t size(code_type code, string_view digest);
-  static constexpr std::size_t size(code_type code, std::size_t digest);
-
   /** Determine whether the given buffer contains a valid multihash */
   static std::pair<bool, std::string> validate(string_view buffer);
 
  private:
   Container data_;
 };
+
+constexpr std::size_t size(code_type code, string_view digest);
+constexpr std::size_t size(code_type code, std::size_t digest);
+
+/** Write a multihash header into output */
+std::size_t write(string_span output, code_type code, std::size_t digest_size);
+
+/** Write multihash into output */
+std::size_t write(string_span output, code_type code, string_view digest_size);
 
 /** IMPLEMENTATION */
 
@@ -136,49 +134,12 @@ multihash<Container>& multihash<Container>::operator=(Buffer data) {
 }
 
 template <typename Container>
-std::size_t multihash<Container>::write(string_span output, code_type code,
-                                        std::size_t digest_size) {
-  assert(std::size_t(output.size()) >= size(code, digest_size));
-  auto length = sizeof(code) + 1;
-  auto it = output.begin();
-  std::copy(&code, &code + sizeof(code), it);
-  it += sizeof(code);
-  *it = char(digest_size);
-  return length;
-}
-
-template <typename Container>
-std::size_t multihash<Container>::write(string_span output, code_type code,
-                                        string_view digest) {
-  assert(std::size_t(output.size()) >= size(code, digest));
-  auto size = write(output, code, digest.size());
-  auto it = output.begin() + size;
-  std::copy(digest.begin(), digest.end(), it);
-  size += digest.size();
-  return size;
-}
-
-template <typename Container>
 multihash<Container> multihash<Container>::create(string_span output,
                                                   code_type code,
                                                   string_view digest) {
   write(output, code, digest);
   auto data = Container(output.data(), output.size());
   return multihash(data);
-}
-
-template <typename Container>
-constexpr std::size_t multihash<Container>::size(code_type code,
-                                                 string_view digest) {
-  assert(digest.size() < 127);
-  return sizeof(code) + digest.size() + 1;
-}
-
-template <typename Container>
-constexpr std::size_t multihash<Container>::size(code_type code,
-                                                 std::size_t digest_size) {
-  assert(digest_size < 127);
-  return sizeof(code) + 1 + digest_size;
 }
 
 template <typename Container>
