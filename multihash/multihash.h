@@ -1,6 +1,7 @@
 #pragma once
 
 #include <multihash/algorithm.h>
+#include <varint/varint.h>
 #include <cassert>
 #include <iomanip>
 #include <memory>
@@ -16,6 +17,25 @@ class multihash {
  public:
   /** Construct a multihash view from data */
   explicit multihash(Container data);
+
+  /** Create a multihash from components */
+  template <typename T>
+  multihash(typename std::enable_if<
+                std::is_same<varint::static_capacity_tag,
+                             typename varint::container_traits<
+                                 Container>::capacity_type>::value &&
+                    std::is_same<T, Container>::value,
+                code_type>::type code,
+            string_view digest, T data);
+
+  template <typename T>
+  multihash(typename std::enable_if<
+                std::is_same<varint::dynamic_capacity_tag,
+                             typename varint::container_traits<
+                                 Container>::capacity_type>::value &&
+                    std::is_convertible<T, string_view>::value,
+                code_type>::type code,
+            T digest);
 
   /** Assign from another multihash */
   multihash& operator=(const multihash& rhs) = default;
@@ -48,10 +68,6 @@ class multihash {
   /** Perform element-wise comparison with another multihash */
   bool operator>(const multihash& rhs) const;
 
-  /** Create a multihash from components */
-  static multihash create(string_span output, code_type code,
-                          string_view digest);
-
   /** Determine whether the given buffer contains a valid multihash */
   static std::pair<bool, std::string> validate(string_view buffer);
 
@@ -60,7 +76,7 @@ class multihash {
 };
 
 constexpr std::size_t size(code_type code, string_view digest);
-constexpr std::size_t size(code_type code, std::size_t digest);
+constexpr std::size_t size(code_type code, std::size_t digest_size);
 
 /** Write a multihash header into output */
 std::size_t write(string_span output, code_type code, std::size_t digest_size);
@@ -76,13 +92,45 @@ multihash<Container>::multihash(Container data) : data_(std::move(data)) {
 }
 
 template <typename Container>
+template <typename T>
+multihash<Container>::multihash(
+    typename std::enable_if<
+        std::is_same<varint::dynamic_capacity_tag,
+                     typename varint::container_traits<
+                         Container>::capacity_type>::value &&
+            std::is_convertible<T, string_view>::value,
+        code_type>::type code,
+    T digest) {
+  assert(digest.size() < 128);
+  data_.reserve(digest.size() + 1);
+  data_.push_back(code);
+  data_.push_back(char(digest.size()));
+  std::copy(digest.begin(), digest.end(), std::back_inserter(data_));
+}
+
+template <typename Container>
+template <typename T>
+multihash<Container>::multihash(
+    typename std::enable_if<
+        std::is_same<varint::static_capacity_tag,
+                     typename varint::container_traits<
+                         Container>::capacity_type>::value &&
+            std::is_same<T, Container>::value,
+        code_type>::type code,
+    string_view digest, T data)
+    : data_(std::move(data)) {
+  auto output = string_span(data_);
+  write(output, code, digest);
+}
+
+template <typename Container>
 code_type multihash<Container>::code() const {
   return static_cast<code_type>(data_[0]);
 }
 
 template <typename Container>
 std::string_view multihash<Container>::digest() const {
-  auto view = std::string_view(&data()[2], data().size() - 2);
+  auto view = std::string_view(&data_[2], data_.size() - 2);
   return view;
 }
 
@@ -123,7 +171,7 @@ bool multihash<Container>::operator>(const multihash& rhs) const {
 
 template <typename Container>
 std::size_t multihash<Container>::digest_size() const {
-  return data().size() - 3;
+  return data_.size() - 2;
 }
 
 template <typename Container>
@@ -131,15 +179,6 @@ template <typename Buffer>
 multihash<Container>& multihash<Container>::operator=(Buffer data) {
   data_ = Container(data.data(), data.size());
   return *this;
-}
-
-template <typename Container>
-multihash<Container> multihash<Container>::create(string_span output,
-                                                  code_type code,
-                                                  string_view digest) {
-  write(output, code, digest);
-  auto data = Container(output.data(), output.size());
-  return multihash(data);
 }
 
 template <typename Container>
@@ -164,6 +203,16 @@ std::pair<bool, std::string> multihash<Container>::validate(
     }
   }
   return result;
+}
+
+constexpr std::size_t size(code_type code, string_view digest) {
+  assert(digest.size() < 127);
+  return sizeof(code) + digest.size() + 1;
+}
+
+constexpr std::size_t size(code_type code, std::size_t digest_size) {
+  assert(digest_size < 127);
+  return sizeof(code) + 1 + digest_size;
 }
 
 }  // namespace multihash

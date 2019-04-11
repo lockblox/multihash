@@ -181,4 +181,22 @@ TEST(Multihash, HashConstruction) {
   EXPECT_EQ(hash_function(foo), hash_function(foo));
   EXPECT_EQ(hash, hash_function(foo));
   EXPECT_EQ(expected, toHexString(hash_function(foo)));
+
+  char code = 0x02;
+  auto expected_view = std::string_view(expected);
+  auto buffer = std::string{};
+  buffer.resize(expected.size() + 2);
+  auto view = multihash::string_span(buffer);
+  {
+    multihash::multihash<multihash::string_span> h(code, expected_view, view);
+    EXPECT_EQ(code, h.code());
+    EXPECT_EQ(expected.size(), h.digest_size());
+    EXPECT_EQ(expected, h.digest());
+  }
+  {
+    multihash::multihash<std::string> h(code, expected_view);
+    EXPECT_EQ(code, h.code());
+    EXPECT_EQ(expected.size(), h.digest_size());
+    EXPECT_EQ(expected, h.digest());
+  }
 }
