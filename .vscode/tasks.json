@@ -16,12 +16,30 @@
         {
             "id": "generator",
             "type": "pickString",
-            "options": ["Ninja", "Visual Studio 15 2017 Win64", "Visual Studio 15 2017"],
-            "default":"Visual Studio 15 2017 Win64",
+            "options": [
+                "Ninja",
+                "Visual Studio 15 2017 Win64",
+                "Visual Studio 15 2017"
+            ],
+            "default": "Visual Studio 15 2017 Win64",
             "description": "Build generator"
         }
     ],
     "tasks": [
+        {
+            "label": "cmake test",
+            "type": "shell",
+            "command": "ctest",
+            "args": [
+                "-C",
+                "Debug",
+                "--output-on-failure"
+            ],
+            "options": {
+                "cwd": "${config:cmake.buildRoot}/${workspaceRootFolderName}"
+            },
+            "problemMatcher": []
+        },
         {
             "label": "cmake build",
             "type": "shell",
