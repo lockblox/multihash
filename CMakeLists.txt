@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 project(multihash VERSION 1.0 LANGUAGES CXX)
 include(CTest)
@@ -48,7 +48,7 @@ if(BUILD_TESTING)
                    multihash/static_function.cpp
                    multihash/detail/cryptopp_impl.cpp)
     target_link_libraries(MultihashTest PRIVATE libmultihash GTest::GTest GTest::Main)
-    add_test(NAME GTest COMMAND MultihashTest)
+    gtest_discover_tests(MultihashTest)
     if (MSVC) 
         target_compile_options(MultihashTest PRIVATE /W4 /WX /MP)
     else() 
