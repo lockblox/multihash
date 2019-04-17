@@ -33,7 +33,8 @@ TEST(Multihash, hashing) {
     std::string input("foo");
     std::istringstream input_stream(input);
     {
-      auto hash = multihash::function(multihash::code::sha1)(input);
+      auto hash = multihash::function(multihash::code::sha1)(input.begin(),
+                                                             input.end());
       {
         auto expected = static_cast<unsigned char>(multihash::code::sha1);
         auto result = static_cast<unsigned char>(hash.code());
@@ -49,7 +50,8 @@ TEST(Multihash, hashing) {
     input_stream.seekg(0);
     {
       auto hash_function = multihash::function(multihash::code::sha2_256);
-      auto hash = hash_function(input_stream);
+      auto hash = hash_function(std::istream_iterator<char>(input_stream),
+                                std::istream_iterator<char>());
       {
         auto expected = static_cast<unsigned char>(multihash::code::sha2_256);
         auto result = static_cast<unsigned char>(hash.code());
@@ -63,7 +65,7 @@ TEST(Multihash, hashing) {
         EXPECT_EQ(expected, result);
 
         // hash again
-        hash = hash_function(input);
+        hash = hash_function(input.begin(), input.end());
         result = toHexString(hash);
         EXPECT_EQ(expected, result);
       }
@@ -72,7 +74,8 @@ TEST(Multihash, hashing) {
     input_stream.seekg(0);
     {
       auto hash_function = multihash::function(multihash::code::sha2_512);
-      auto hash = hash_function(input_stream);
+      auto hash = hash_function(std::istream_iterator<char>(input_stream),
+                                std::istream_iterator<char>());
       {
         auto expected = static_cast<unsigned char>(multihash::code::sha2_512);
         auto result = static_cast<unsigned char>(hash.code());
@@ -91,7 +94,8 @@ TEST(Multihash, hashing) {
     input_stream.seekg(0);
     {
       auto hash_function = multihash::function(multihash::code::sha3_256);
-      auto hash = hash_function(input_stream);
+      auto hash = hash_function(std::istream_iterator<char>(input_stream),
+                                std::istream_iterator<char>());
       {
         auto expected = static_cast<unsigned char>(multihash::code::sha3_256);
         auto result = static_cast<unsigned char>(hash.code());
@@ -118,13 +122,13 @@ TEST(Multihash, hashing) {
       }
       auto input = os.str();
       multihash::function hash_function(multihash::code::sha1);
-      auto hash = hash_function(input);
+      auto hash = hash_function(input.begin(), input.end());
       auto expected = "11147dd3e2edbe26687c037094e7cd3d8f5c5e89e9ed";
       auto result = toHexString(hash);
       EXPECT_EQ(expected, result);
 
       // hash again
-      hash = hash_function(input);
+      hash = hash_function(input.begin(), input.end());
       result = toHexString(hash);
       EXPECT_EQ(expected, result);
     }
@@ -134,7 +138,8 @@ TEST(Multihash, hashing) {
 TEST(Multihash, encoding) {
   std::istringstream input_stream("foo");
   multihash::function hash_function(multihash::code::sha1);
-  auto hash = hash_function(input_stream);
+  auto hash = hash_function(std::istream_iterator<char>(input_stream),
+                            std::istream_iterator<char>());
   auto view = std::string_view(hash.data(), hash.size());
   auto decoded = multihash::multihash(view);
   EXPECT_EQ(hash, decoded);
@@ -147,8 +152,10 @@ TEST(Multihash, Default) {
 
 TEST(Multihash, Inequality) {
   multihash::function hash;
-  auto foo_hash = hash("foo");
-  auto bar_hash = hash("bar");
+  std::string foo = "foo";
+  auto foo_hash = hash(foo.begin(), foo.end());
+  std::string bar = "bar";
+  auto bar_hash = hash(bar.begin(), bar.end());
   EXPECT_NE(foo_hash, bar_hash);
   multihash::multihash mh{std::string{"blah"}};
   EXPECT_NE(mh, foo_hash);
@@ -161,7 +168,7 @@ TEST(Multihash, Inequality) {
 TEST(Multihash, HashConstruction) {
   multihash::function hash_function;
   std::string foo("foo");
-  auto hash = hash_function(foo);
+  auto hash = hash_function(foo.begin(), foo.end());
   auto expected = std::string(
       "12202c26b46b68ffc68ff99b453c1d3041341"
       "3422d706483bfa0f98a5e886266e7ae");
@@ -178,9 +185,10 @@ TEST(Multihash, HashConstruction) {
     EXPECT_EQ(hash_copied, hash);
   }
 
-  EXPECT_EQ(hash_function(foo), hash_function(foo));
-  EXPECT_EQ(hash, hash_function(foo));
-  EXPECT_EQ(expected, toHexString(hash_function(foo)));
+  EXPECT_EQ(hash_function(foo.begin(), foo.end()),
+            hash_function(foo.begin(), foo.end()));
+  EXPECT_EQ(hash, hash_function(foo.begin(), foo.end()));
+  EXPECT_EQ(expected, toHexString(hash_function(foo.begin(), foo.end())));
 
   char code = 0x02;
   auto expected_view = std::string_view(expected);

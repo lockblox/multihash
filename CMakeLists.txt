@@ -15,7 +15,8 @@ set(HEADER_FILES
     multihash/multihash.h;
     multihash/function.h;
     multihash/code.h;
-    multihash/static_function.h)
+    multihash/static_function.h
+    multihash/is_contiguous_iterator.h)
 add_library(libmultihash
             multihash/algorithm.cpp
             multihash/detail/cryptopp_impl.h
@@ -23,6 +24,7 @@ add_library(libmultihash
             multihash/function.cpp
             multihash/code.cpp 
             multihash/multihash.cpp
+            multihash/is_contiguous_iterator.cpp
             ${HEADER_FILES})
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 target_include_directories(libmultihash PUBLIC 

@@ -9,13 +9,14 @@ class function {
  public:
   explicit function(code_type code = code::sha2_256);
 
-  /** Compute the hash of input */
-  template <typename Input>
-  multihash<std::string> operator()(Input& input);
+  /** Compute the hash of an input range */
+  template <typename InputIterator>
+  multihash<std::string> operator()(InputIterator first, InputIterator last);
 
-  /** Write the hash of input into a buffer */
-  template <typename Input>
-  multihash<string_span> operator()(Input& input, string_span output);
+  /** Write the hash of an input range into output */
+  template <typename InputIterator, typename OutputIterator>
+  OutputIterator operator()(InputIterator first, InputIterator last,
+                            OutputIterator output);
 
   /** Returns the code of this hash */
   code_type code() const;
@@ -28,23 +29,19 @@ class function {
   digest digest_;
 };
 
-template <typename Input>
-multihash<std::string> function::operator()(Input& input) {
-  auto output = std::string(size(), 0);
-  auto span = string_span(output);
-  (*this)(input, span);
-  return multihash(output);
+template <typename InputIterator>
+multihash<std::string> function::operator()(InputIterator first,
+                                            InputIterator last) {
+  return multihash<std::string>{code(), digest_(first, last)};
 }
 
-template <typename Input>
-multihash<string_span> function::operator()(Input& input, string_span output) {
-  auto digest_size = digest_.size();
-  assert(this->size() <= std::size_t(output.size()));
-  auto length = ::multihash::write(output, code(), digest_size);
-  auto span = string_span(&output[length], digest_size);
-  digest_(input, span);
-  auto view = string_view(&output[length], digest_size);
-  return multihash<string_span>(code(), view, output);
+template <typename InputIterator, typename OutputIterator>
+OutputIterator function::operator()(InputIterator first, InputIterator last,
+                                    OutputIterator output) {
+  output++ = code();
+  output++ = size();
+  digest_(first, last, output);
+  return output;
 }
 
 }  // namespace multihash
