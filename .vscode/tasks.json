@@ -84,15 +84,25 @@
             "problemMatcher": []
         },
         {
+            "label": "docker build",
+            "type": "shell",
+            "command": "docker",
+            "args": [
+                "build",
+                "-t",
+                "cppipfs/cpp-multihash",
+                "${workspaceFolder}"
+            ]
+        },
+        {
             "label": "docker run",
+            "dependsOn": "docker build",
             "type": "shell",
             "windows": {
                 "command": "docker",
                 "args": [
                     "run",
                     "--rm",
-                    "-v",
-                    "${workspaceFolder}:/root/src:ro",
                     "--privileged",
                     "-it",
                     "cppipfs/cpp-multihash"
