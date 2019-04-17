@@ -100,8 +100,8 @@ int main(int argc, char* argv[]) {
 
     auto num_files = filenames.size();
     if ((num_files == 1 && (filenames.front() == "-")) or num_files == 0) {
-      std::istream_iterator<char> first(std::cin);
-      std::istream_iterator<char> last;
+      std::istreambuf_iterator<char> first(std::cin);
+      std::istreambuf_iterator<char> last;
       auto hash = hash_function(first, last);
       std::cout << hash << " -" << std::endl;
     } else {
@@ -117,8 +117,8 @@ int main(int argc, char* argv[]) {
           continue;
         }
         std::ifstream filestream(filename);
-        std::istream_iterator<char> first(filestream);
-        std::istream_iterator<char> last;
+        std::istreambuf_iterator<char> first(filestream);
+        std::istreambuf_iterator<char> last;
         if (filestream.good()) {
           auto hash = hash_function(first, last);
           std::cout << hash << " " << filename << std::endl;
