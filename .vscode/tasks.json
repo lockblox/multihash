@@ -92,7 +92,12 @@
                 "-t",
                 "cppipfs/cpp-multihash",
                 "${workspaceFolder}"
-            ]
+            ],
+            "options": {
+                "env": {
+                    "DOCKER_BUILDKIT": "1"
+                }
+            }
         },
         {
             "label": "docker run",
