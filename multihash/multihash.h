@@ -55,8 +55,6 @@ class multihash {
   const char* data() const;
   /** Returns the size of the buffer in bytes */
   std::size_t size() const;
-  /** Returns the size of the digest in bytes */
-  std::size_t digest_size() const;
 
   /** Perform element-wise comparison with another multihash */
   template <typename OtherContainer>
@@ -79,10 +77,13 @@ constexpr std::size_t size(code_type code, string_view digest);
 constexpr std::size_t size(code_type code, std::size_t digest_size);
 
 /** Write a multihash header into output */
-std::size_t write(string_span output, code_type code, std::size_t digest_size);
+template <typename OutputIterator>
+OutputIterator write(code_type code, std::size_t digest_size,
+                     OutputIterator output);
 
 /** Write multihash into output */
-std::size_t write(string_span output, code_type code, string_view digest_size);
+template <typename OutputIterator>
+OutputIterator write(code_type code, string_view digest, OutputIterator output);
 
 /** IMPLEMENTATION */
 
@@ -120,7 +121,7 @@ multihash<Container>::multihash(
     string_view digest, T data)
     : data_(std::move(data)) {
   auto output = string_span(data_);
-  write(output, code, digest);
+  write(code, digest, output.begin());
 }
 
 template <typename Container>
@@ -170,11 +171,6 @@ bool multihash<Container>::operator>(const multihash& rhs) const {
 }
 
 template <typename Container>
-std::size_t multihash<Container>::digest_size() const {
-  return data_.size() - 2;
-}
-
-template <typename Container>
 template <typename Buffer>
 multihash<Container>& multihash<Container>::operator=(Buffer data) {
   data_ = Container(data.data(), data.size());
@@ -215,4 +211,21 @@ constexpr std::size_t size(code_type code, std::size_t digest_size) {
   return sizeof(code) + 1 + digest_size;
 }
 
+template <typename OutputIterator>
+OutputIterator write(code_type code, std::size_t digest_size,
+                     OutputIterator output) {
+  assert(code < 128);
+  assert(digest_size < 128);
+  *output++ = code;
+  *output++ = char(digest_size);
+  return output;
+}
+
+template <typename OutputIterator>
+OutputIterator write(code_type code, string_view digest,
+                     OutputIterator output) {
+  output = write(code, digest.size(), output);
+  std::copy(digest.begin(), digest.end(), output);
+  return output;
+}
 }  // namespace multihash

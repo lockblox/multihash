@@ -198,13 +198,13 @@ TEST(Multihash, HashConstruction) {
   {
     multihash::multihash<multihash::string_span> h(code, expected_view, view);
     EXPECT_EQ(code, h.code());
-    EXPECT_EQ(expected.size(), h.digest_size());
+    EXPECT_EQ(expected.size(), h.digest().size());
     EXPECT_EQ(expected, h.digest());
   }
   {
     multihash::multihash<std::string> h(code, expected_view);
     EXPECT_EQ(code, h.code());
-    EXPECT_EQ(expected.size(), h.digest_size());
+    EXPECT_EQ(expected.size(), h.digest().size());
     EXPECT_EQ(expected, h.digest());
   }
 }
