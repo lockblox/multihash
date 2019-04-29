@@ -20,22 +20,22 @@ class multihash {
 
   /** Create a multihash from components */
   template <typename T>
-  multihash(typename std::enable_if<
-                std::is_same<varint::static_capacity_tag,
-                             typename varint::container_traits<
-                                 Container>::capacity_type>::value &&
-                    std::is_same<T, Container>::value,
-                code_type>::type code,
-            string_view digest, T data);
+  multihash(
+      typename std::enable_if<std::is_same<varint::detail::static_extent_t,
+                                           typename varint::detail::extent_type<
+                                               Container>::type>::value &&
+                                  std::is_same<T, Container>::value,
+                              code_type>::type code,
+      string_view digest, T data);
 
   template <typename T>
-  multihash(typename std::enable_if<
-                std::is_same<varint::dynamic_capacity_tag,
-                             typename varint::container_traits<
-                                 Container>::capacity_type>::value &&
-                    std::is_convertible<T, string_view>::value,
-                code_type>::type code,
-            T digest);
+  multihash(
+      typename std::enable_if<std::is_same<varint::detail::dynamic_extent_t,
+                                           typename varint::detail::extent_type<
+                                               Container>::type>::value &&
+                                  std::is_convertible<T, string_view>::value,
+                              code_type>::type code,
+      T digest);
 
   /** Assign from another multihash */
   multihash& operator=(const multihash& rhs) = default;
@@ -71,10 +71,12 @@ class multihash {
 
  private:
   Container data_;
+  varint::uleb128<std::string_view> code_;
 };
 
-constexpr std::size_t size(code_type code, string_view digest);
-constexpr std::size_t size(code_type code, std::size_t digest_size);
+inline std::size_t size(code_type code, string_view digest);
+
+inline std::size_t size(code_type code, std::size_t digest_size);
 
 /** Write a multihash header into output */
 template <typename OutputIterator>
@@ -88,45 +90,52 @@ OutputIterator write(code_type code, string_view digest, OutputIterator output);
 /** IMPLEMENTATION */
 
 template <typename Container>
-multihash<Container>::multihash(Container data) : data_(std::move(data)) {
+multihash<Container>::multihash(Container data)
+    : data_(std::move(data)),
+      code_(std::string_view(&data_[0], varint::codecs::uleb128::size(
+                                            data_.begin(), data_.end()))) {
   static_assert(std::is_same<char, typename Container::value_type>::value);
 }
 
 template <typename Container>
 template <typename T>
 multihash<Container>::multihash(
-    typename std::enable_if<
-        std::is_same<varint::dynamic_capacity_tag,
-                     typename varint::container_traits<
-                         Container>::capacity_type>::value &&
-            std::is_convertible<T, string_view>::value,
-        code_type>::type code,
+    typename std::enable_if<std::is_same<varint::detail::dynamic_extent_t,
+                                         typename varint::detail::extent_type<
+                                             Container>::type>::value &&
+                                std::is_convertible<T, string_view>::value,
+                            code_type>::type code,
     T digest) {
   assert(digest.size() < 128);
   data_.reserve(digest.size() + 1);
-  data_.push_back(code);
+  auto code_view = static_cast<std::string_view>(code);
+  std::copy(code_view.begin(), code_view.end(), std::back_inserter(data_));
   data_.push_back(char(digest.size()));
   std::copy(digest.begin(), digest.end(), std::back_inserter(data_));
+  code_view = std::string_view(&data_[0], code_view.size());
+  code_ = code_type(code_view);
 }
 
 template <typename Container>
 template <typename T>
 multihash<Container>::multihash(
-    typename std::enable_if<
-        std::is_same<varint::static_capacity_tag,
-                     typename varint::container_traits<
-                         Container>::capacity_type>::value &&
-            std::is_same<T, Container>::value,
-        code_type>::type code,
+    typename std::enable_if<std::is_same<varint::detail::static_extent_t,
+                                         typename varint::detail::extent_type<
+                                             Container>::type>::value &&
+                                std::is_same<T, Container>::value,
+                            code_type>::type code,
     string_view digest, T data)
     : data_(std::move(data)) {
   auto output = string_span(data_);
   write(code, digest, output.begin());
+  auto code_view = static_cast<std::string_view>(code);
+  code_view = std::string_view(&data_[0], code_view.size());
+  code_ = code_type(code_view);
 }
 
 template <typename Container>
 code_type multihash<Container>::code() const {
-  return static_cast<code_type>(data_[0]);
+  return code_;
 }
 
 template <typename Container>
@@ -201,22 +210,24 @@ std::pair<bool, std::string> multihash<Container>::validate(
   return result;
 }
 
-constexpr std::size_t size(code_type code, string_view digest) {
+std::size_t size(code_type code, string_view digest) {
+  auto code_view = static_cast<std::string_view>(code);
   assert(digest.size() < 127);
-  return sizeof(code) + digest.size() + 1;
+  return code_view.size() + digest.size() + 1;
 }
 
-constexpr std::size_t size(code_type code, std::size_t digest_size) {
+std::size_t size(code_type code, std::size_t digest_size) {
+  auto code_view = static_cast<std::string_view>(code);
   assert(digest_size < 127);
-  return sizeof(code) + 1 + digest_size;
+  return code_view.size() + 1 + digest_size;
 }
 
 template <typename OutputIterator>
 OutputIterator write(code_type code, std::size_t digest_size,
                      OutputIterator output) {
-  assert(code < 128);
   assert(digest_size < 128);
-  *output++ = code;
+  auto code_view = static_cast<std::string_view>(code);
+  output = std::copy(code_view.begin(), code_view.end(), output);
   *output++ = char(digest_size);
   return output;
 }

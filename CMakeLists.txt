@@ -44,7 +44,7 @@ endif()
 if(BUILD_TESTING)
     find_package(GTest MODULE REQUIRED)
     add_executable(MultihashTest 
-                   test/MultihashTest.cpp 
+                   test/multihash_test.cpp 
                    test/HashCodeTest.cpp 
                    test/main.cpp 
                    multihash/static_function.cpp

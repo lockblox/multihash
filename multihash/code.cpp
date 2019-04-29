@@ -3,16 +3,16 @@
 #include <iterator>
 #include <map>
 
-namespace {
-
-std::map<multihash::code::value_type, std::string> codenames{
-    {multihash::code::sha1, "sha1"},
-    {multihash::code::sha2_256, "sha2-256"},
-    {multihash::code::sha2_512, "sha2-512"},
-    {multihash::code::sha3_256, "sha3-256"}};
-}
-
 namespace multihash {
+
+namespace {
+std::map<code_type, std::string, std::less<>> codenames{
+    {static_cast<code_type>(multihash::code::sha1), "sha1"},
+    {static_cast<code_type>(multihash::code::sha2_256), "sha2-256"},
+    {static_cast<code_type>(multihash::code::sha2_512), "sha2-512"},
+    {static_cast<code_type>(multihash::code::sha3_256), "sha3-256"}};
+} // namespace
+
 namespace code {
 
 value_type from_string(const std::string& name) {

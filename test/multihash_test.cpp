@@ -28,7 +28,7 @@ std::string toHexString(const multihash::multihash<Container>& hash) {
 
 }  // namespace
 
-TEST(Multihash, hashing) {
+TEST(multihash, hashing) {
   {
     std::string input("foo");
     std::istringstream input_stream(input);
@@ -115,7 +115,7 @@ TEST(Multihash, hashing) {
     {
       auto source_chars =
           std::string("All work and no play makes Jack a dull boy.\n");
-      auto repeat_count = 1000000;
+      auto repeat_count = 237;
       std::stringstream os;
       for (auto i = 0; i < repeat_count; ++i) {
         os << source_chars;
@@ -123,8 +123,8 @@ TEST(Multihash, hashing) {
       auto input = os.str();
       multihash::function hash_function(multihash::code::sha1);
       auto hash = hash_function(input.begin(), input.end());
-      auto expected = "11147dd3e2edbe26687c037094e7cd3d8f5c5e89e9ed";
-      auto result = toHexString(hash);
+      auto expected = "1114da96826ae365682f4123273c88e81479e899d8ac";
+          auto result = toHexString(hash);
       EXPECT_EQ(expected, result);
 
       // hash again
@@ -135,7 +135,7 @@ TEST(Multihash, hashing) {
   }
 }
 
-TEST(Multihash, encoding) {
+TEST(multihash, encoding) {
   std::istringstream input_stream("foo");
   multihash::function hash_function(multihash::code::sha1);
   auto hash = hash_function(std::istream_iterator<char>(input_stream),
@@ -145,12 +145,12 @@ TEST(Multihash, encoding) {
   EXPECT_EQ(hash, decoded);
 }
 
-TEST(Multihash, Default) {
+TEST(multihash, default_values) {
   multihash::function hash_function;
   EXPECT_EQ(multihash::code::sha2_256, hash_function.code());
 }
 
-TEST(Multihash, Inequality) {
+TEST(multihash, inequality) {
   multihash::function hash;
   std::string foo = "foo";
   auto foo_hash = hash(foo.begin(), foo.end());
@@ -165,7 +165,7 @@ TEST(Multihash, Inequality) {
   EXPECT_EQ(foo_hash, bar_hash);
 }
 
-TEST(Multihash, HashConstruction) {
+TEST(multihash, hash_construction) {
   multihash::function hash_function;
   std::string foo("foo");
   auto hash = hash_function(foo.begin(), foo.end());
@@ -190,19 +190,22 @@ TEST(Multihash, HashConstruction) {
   EXPECT_EQ(hash, hash_function(foo.begin(), foo.end()));
   EXPECT_EQ(expected, toHexString(hash_function(foo.begin(), foo.end())));
 
-  char code = 0x02;
+  auto code = varint::uleb128<std::string>(0x02u);
+  auto code_view = static_cast<std::string_view>(code);
   auto expected_view = std::string_view(expected);
   auto buffer = std::string{};
   buffer.resize(expected.size() + 2);
   auto view = multihash::string_span(buffer);
   {
-    multihash::multihash<multihash::string_span> h(code, expected_view, view);
+    multihash::multihash<multihash::string_span> h(
+        static_cast<multihash::code_type>(code_view), expected_view, view);
     EXPECT_EQ(code, h.code());
     EXPECT_EQ(expected.size(), h.digest().size());
     EXPECT_EQ(expected, h.digest());
   }
   {
-    multihash::multihash<std::string> h(code, expected_view);
+    multihash::multihash<std::string> h(static_cast<multihash::code_type>(code_view),
+                                        expected_view);
     EXPECT_EQ(code, h.code());
     EXPECT_EQ(expected.size(), h.digest().size());
     EXPECT_EQ(expected, h.digest());

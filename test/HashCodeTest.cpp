@@ -3,9 +3,9 @@
 #include <multihash/static_function.h>
 #include <sstream>
 
-TEST(hash_type, conversions) {
+TEST(multihash, hash_type) {
   {
-    auto expected = static_cast<unsigned char>(multihash::code::sha1);
+    auto expected = multihash::code::sha1;
     auto code = multihash::code::from_string("sha1");
     auto algo = multihash::algorithm::create(code);
     ASSERT_TRUE(algo);
@@ -19,7 +19,7 @@ TEST(hash_type, conversions) {
   }
 
   {
-    auto expected = static_cast<unsigned char>(multihash::code::sha1);
+    auto expected = multihash::code::sha1;
     auto code = multihash::code::from_string("sha1");
     EXPECT_EQ(expected, code);
   }
@@ -34,7 +34,9 @@ TEST(hash_type, conversions) {
   {
     auto string_input = std::string("unknown hash");
     EXPECT_THROW(multihash::code::from_string(string_input), std::out_of_range);
-    auto value_input = multihash::code_type(127);
+    auto code_buffer = std::vector<char>{127u};
+    auto code_view = std::string_view(&code_buffer[0], code_buffer.size());
+    auto value_input = multihash::code_type(code_view);
     EXPECT_THROW(multihash::code::to_string(value_input), std::out_of_range);
   }
 }

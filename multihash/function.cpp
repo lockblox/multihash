@@ -3,7 +3,7 @@
 namespace multihash {
 
 function::function(code_type code)
-    : code_(code), digest_(algorithm::create(code)) {}
+    : code_(std::move(code)), digest_(algorithm::create(code)) {}
 
 code_type function::code() const { return code_; }
 

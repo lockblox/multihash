@@ -38,7 +38,7 @@ multihash<std::string> function::operator()(InputIterator first,
 template <typename InputIterator, typename OutputIterator>
 OutputIterator function::operator()(InputIterator first, InputIterator last,
                                     OutputIterator output) {
-  output++ = code();
+  output = std::copy(code.begin(), code.end(), output);
   output++ = size();
   digest_(first, last, output);
   return output;
