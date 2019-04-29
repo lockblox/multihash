@@ -95,7 +95,8 @@
         "env": {
           "DOCKER_BUILDKIT": "1"
         }
-      }
+      },
+      "problemMatcher": []
     },
     {
       "label": "docker run",
