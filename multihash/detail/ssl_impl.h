@@ -3,8 +3,8 @@
 #include <multihash/algorithm.h>
 #include <openssl/evp.h>
 
-
-namespace multi {
+namespace multihash {
+namespace detail {
 
 class ssl_impl : public Algorithm {
  public:
@@ -51,5 +51,6 @@ class ssl_impl : public Algorithm {
   const DigestType type_;
   static Cleanup cleanup_;
 };
-}  // namespace multi
 
+}  // namespace detail
+}  // namespace multihash

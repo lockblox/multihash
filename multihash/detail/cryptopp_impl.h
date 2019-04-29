@@ -6,6 +6,7 @@
 #include <cctype>
 
 namespace multihash {
+namespace detail {
 
 template <typename Hash>
 class cryptopp_impl : public algorithm {
@@ -67,4 +68,5 @@ void cryptopp_impl<Hash>::reset() {
   hash_.Restart();
 }
 
+}  // namespace detail
 }  // namespace multihash
