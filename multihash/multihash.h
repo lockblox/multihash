@@ -71,7 +71,7 @@ class multihash {
 
  private:
   Container data_;
-  varint::uleb128<std::string_view> code_;
+  code_type code_;
 };
 
 inline std::size_t size(code_type code, string_view digest);

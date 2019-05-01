@@ -124,7 +124,7 @@ TEST(multihash, hashing) {
       multihash::function hash_function(multihash::code::sha1);
       auto hash = hash_function(input.begin(), input.end());
       auto expected = "1114da96826ae365682f4123273c88e81479e899d8ac";
-          auto result = toHexString(hash);
+      auto result = toHexString(hash);
       EXPECT_EQ(expected, result);
 
       // hash again
@@ -190,22 +190,20 @@ TEST(multihash, hash_construction) {
   EXPECT_EQ(hash, hash_function(foo.begin(), foo.end()));
   EXPECT_EQ(expected, toHexString(hash_function(foo.begin(), foo.end())));
 
-  auto code = varint::uleb128<std::string>(0x02u);
-  auto code_view = static_cast<std::string_view>(code);
+  auto varint = multihash::code::varint_type<0x02u>{};
+  auto code = multihash::code::from_value(varint);
   auto expected_view = std::string_view(expected);
   auto buffer = std::string{};
   buffer.resize(expected.size() + 2);
   auto view = multihash::string_span(buffer);
   {
-    multihash::multihash<multihash::string_span> h(
-        static_cast<multihash::code_type>(code_view), expected_view, view);
+    multihash::multihash<multihash::string_span> h(code, expected_view, view);
     EXPECT_EQ(code, h.code());
     EXPECT_EQ(expected.size(), h.digest().size());
     EXPECT_EQ(expected, h.digest());
   }
   {
-    multihash::multihash<std::string> h(static_cast<multihash::code_type>(code_view),
-                                        expected_view);
+    multihash::multihash<std::string> h(code, expected_view);
     EXPECT_EQ(code, h.code());
     EXPECT_EQ(expected.size(), h.digest().size());
     EXPECT_EQ(expected, h.digest());
