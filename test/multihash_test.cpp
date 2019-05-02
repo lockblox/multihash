@@ -190,7 +190,7 @@ TEST(multihash, hash_construction) {
   EXPECT_EQ(hash, hash_function(foo.begin(), foo.end()));
   EXPECT_EQ(expected, toHexString(hash_function(foo.begin(), foo.end())));
 
-  auto varint = multihash::code::varint_type<0x02u>{};
+  auto varint = multihash::const_varint<0x02u>{};
   auto code = multihash::code::from_value(varint);
   auto expected_view = std::string_view(expected);
   auto buffer = std::string{};

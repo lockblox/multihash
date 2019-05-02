@@ -62,7 +62,7 @@ int ssl_impl::DigestType::digest_size() const {
     }
   }
 
-  void ssl_impl::update(const string_view& data) {
+  void ssl_impl::update(const std::string_view& data) {
     if (EVP_DigestUpdate(context_.get(), &data[0], data.size()) != 1) {
       throw std::runtime_error("Failed to update digest");
     }

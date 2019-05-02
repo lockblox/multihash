@@ -43,7 +43,7 @@ class ssl_impl : public Algorithm {
   explicit ssl_impl(const HashType& hash_type);
   ~ssl_impl() override = default;
   size_t block_size() override;
-  void update(const string_view& data) override;
+  void update(const std::string_view& data) override;
   std::vector<char> digest() override;
 
  private:

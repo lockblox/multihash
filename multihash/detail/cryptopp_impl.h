@@ -14,7 +14,7 @@ class cryptopp_impl : public algorithm {
   void reset() override;
   size_t digest_size() const override;
   size_t block_size() const override;
-  void update(string_view input) override;
+  void update(std::string_view input) override;
   std::size_t digest(string_span output) override;
 
  private:
@@ -50,7 +50,7 @@ size_t cryptopp_impl<Hash>::block_size() const {
 }
 
 template <typename Hash>
-void cryptopp_impl<Hash>::update(string_view input) {
+void cryptopp_impl<Hash>::update(std::string_view input) {
   assert(input.data() != nullptr);
   assert(!input.empty());
   hash_.Update(reinterpret_cast<const unsigned char*>(input.data()),

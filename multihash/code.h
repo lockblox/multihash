@@ -5,42 +5,36 @@
 
 namespace multihash {
 
-namespace code {
+template <typename Container>
+using varint_type = varint::uleb128<Container>;
+using varint_view = varint_type<std::string_view>;
 
 template <std::size_t N>
-using varint_type = const varint::array<varint::codecs::uleb128, N>;
+using const_varint = const varint::array<varint::codecs::uleb128, N>;
 
-using value_type = varint::uleb128<std::string_view>;
+namespace code {
+
+using varint_view = varint_view;
 
 /** Convert a code value into a string */
-std::string to_string(value_type value);
+std::string to_string(varint_view value);
 
 /** Convert a string into a code value */
-value_type from_string(const std::string& name);
+varint_view from_string(const std::string& name);
 
 /** Convert a varint into a code value */
-template <typename Container>
-constexpr value_type from_value(const varint::uleb128<Container>& value) {
-  return static_cast<value_type>(static_cast<std::string_view>(value));
+template <typename T>
+varint_view from_value(const T& value) {
+  return static_cast<varint_view>(static_cast<std::string_view>(value));
 }
 
-namespace literals {
-const auto identity = varint_type<0>{};
-const auto sha1 = varint_type<0x11>{};
-const auto sha2_256 = varint_type<0x12>{};
-const auto sha2_512 = varint_type<0x13>{};
-const auto sha3_256 = varint_type<0x16>{};
-}  // namespace literals
-
-extern const value_type identity;
-extern const value_type sha1;
-extern const value_type sha2_256;
-extern const value_type sha2_512;
-extern const value_type sha3_256;
+extern const varint_view identity;
+extern const varint_view sha1;
+extern const varint_view sha2_256;
+extern const varint_view sha2_512;
+extern const varint_view sha3_256;
 
 std::set<std::string> names();
 }  // namespace code
-
-using code_type = code::value_type;
 
 }  // namespace multihash

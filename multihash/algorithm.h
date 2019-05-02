@@ -9,7 +9,6 @@
 
 namespace multihash {
 
-using string_view = std::string_view;
 using string_span = gsl::span<char>;
 
 class algorithm {
@@ -18,7 +17,7 @@ class algorithm {
   virtual void reset() = 0;
   virtual std::size_t digest_size() const = 0;
   virtual std::size_t block_size() const = 0;
-  virtual void update(string_view data) = 0;
+  virtual void update(std::string_view data) = 0;
   virtual std::size_t digest(string_span output) = 0;
 
   class factory {
@@ -27,10 +26,10 @@ class algorithm {
     virtual std::unique_ptr<algorithm> create() = 0;
   };
 
-  static std::unique_ptr<algorithm> create(code_type code);
+  static std::unique_ptr<algorithm> create(varint_view code);
 
  private:
-  static std::map<code_type, factory*> factories_;
+  static std::map<varint_view, factory*> factories();
 };
 
 }  // namespace multihash

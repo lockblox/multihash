@@ -7,7 +7,7 @@ namespace multihash {
 
 class function {
  public:
-  explicit function(code_type code = code::sha2_256);
+  explicit function(varint_view code = code::sha2_256);
 
   /** Compute the hash of an input range */
   template <typename InputIterator>
@@ -19,13 +19,13 @@ class function {
                             OutputIterator output);
 
   /** Returns the code of this hash */
-  code_type code() const;
+  varint_view code() const;
 
   /** Returns the size of the multihash */
   std::size_t size();
 
  private:
-  code_type code_;
+  varint_view code_;
   digest digest_;
 };
 
@@ -38,9 +38,7 @@ multihash<std::string> function::operator()(InputIterator first,
 template <typename InputIterator, typename OutputIterator>
 OutputIterator function::operator()(InputIterator first, InputIterator last,
                                     OutputIterator output) {
-  auto code_view = static_cast<std::string_view>(code());
-  output = std::copy(code_view.begin(), code_view.end(), output);
-  output++ = size();
+  output = write(code(), size(), output);
   digest_(first, last, output);
   return output;
 }

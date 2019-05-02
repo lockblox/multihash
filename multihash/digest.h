@@ -47,7 +47,7 @@ std::string digest::operator()(InputIterator first, InputIterator last) {
     for (auto i = 0u; first != last && i < chunk_size; ++i, ++first) {
       buffer.emplace_back(*first);
     }
-    auto view = string_view(buffer.data(), buffer.size());
+    auto view = std::string_view(buffer.data(), buffer.size());
     algorithm_->update(view);
     buffer.clear();
   }
