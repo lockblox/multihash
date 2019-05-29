@@ -13,14 +13,34 @@ Multihash is delivered as
 
 ## Build
 
+### Building with Docker
+
+The supplied dockerfile provides a reproducable build image which can be used to compile the source:
 ```bash
-mkdir build
-cd build
-cmake ..
-make
-echo -n "foo" | ../bin/multihash --hash-type sha1
-11140beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33 -
+docker build -t lockblox/multihash multihash
+docker run -it --rm -v multihash:/root/src lockblox/multihash 
 ```
+
+### Building Manually
+
+#### Installing Prerequisites
+
+Multihash requires some dependencies to be provided before building, which are provided via vcpkg as follows:
+```bash
+ git clone https://github.com/lockblox/vcpkg.git \
+ cd vcpkg \
+ ./bootstrap-vcpkg.sh \
+ ./vcpkg integrate install \
+ ./vcpkg install gtest cryptopp ms-gsl varint
+```
+
+#### Building with CMake ####
+
+Multihash uses cmake for builds. In order for cmake to find the required dependency, the `-DCMAKE_TOOLCHAIN_FILE` option should be supplied, for example:
+```bash
+ cmake -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" ../multihash
+ cmake --build .
+ ```
 
 ## Usage
 
