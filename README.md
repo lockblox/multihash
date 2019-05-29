@@ -15,7 +15,8 @@ Multihash is delivered as
 
 ### Building with Docker
 
-The supplied dockerfile provides a reproducable build image which can be used to compile the source:
+The supplied dockerfile produces a reproducable build image which can be used to compile the source:
+
 ```bash
 docker build -t lockblox/multihash multihash
 docker run -it --rm -v multihash:/root/src lockblox/multihash 
@@ -25,7 +26,8 @@ docker run -it --rm -v multihash:/root/src lockblox/multihash
 
 #### Installing Prerequisites
 
-Multihash requires some dependencies to be provided before building, which are provided via vcpkg as follows:
+Multihash requires some dependencies to be met before building, which are provided via vcpkg as follows:
+
 ```bash
  git clone https://github.com/lockblox/vcpkg.git \
  cd vcpkg \
@@ -34,9 +36,10 @@ Multihash requires some dependencies to be provided before building, which are p
  ./vcpkg install gtest cryptopp ms-gsl varint
 ```
 
-#### Building with CMake ####
+#### Building with CMake
 
-Multihash uses cmake for builds. In order for cmake to find the required dependency, the `-DCMAKE_TOOLCHAIN_FILE` option should be supplied, for example:
+Multihash uses cmake for builds. In order for cmake to find the required dependencies, the `-DCMAKE_TOOLCHAIN_FILE` option should be supplied, for example:
+
 ```bash
  cmake -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" ../multihash
  cmake --build .
@@ -58,9 +61,9 @@ registered under a unique hash code identifier.
 auto code = multihash::code::sha3_256;
 auto algorithm = multihash::algorithm::create(code);
 auto buffer = std::string{"hello, world"};
-algorithm_->update(buffer);
+algorithm->update(buffer);
 auto result = std::string(256, '=');
-algorithm_->digest(result);
+algorithm->digest(result);
 ```
 
 ### Digest
