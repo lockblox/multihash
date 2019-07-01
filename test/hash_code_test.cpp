@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <multihash/function.h>
-#include <multihash/static_function.h>
 #include <sstream>
 
 TEST(multihash, hash_type) {
@@ -25,8 +24,8 @@ TEST(multihash, hash_type) {
   }
 
   {
-    auto result = multihash::sha2_256{}.size();
-    decltype(result) expected = 32;
+    auto result = multihash::function{}.size();
+    decltype(result) expected = 34;
     EXPECT_EQ(expected, result);
   }
 

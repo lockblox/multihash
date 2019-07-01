@@ -15,8 +15,7 @@ set(HEADER_FILES
     multihash/multihash.h;
     multihash/function.h;
     multihash/code.h;
-    multihash/static_function.h
-    multihash/is_contiguous_iterator.h)
+        multihash/is_contiguous_iterator.h)
 add_library(libmultihash
             multihash/algorithm.cpp
             multihash/detail/cryptopp_impl.h
@@ -46,9 +45,8 @@ if(BUILD_TESTING)
     add_executable(MultihashTest 
                    test/multihash_test.cpp 
                    test/hash_code_test.cpp 
-                   test/main.cpp 
-                   multihash/static_function.cpp
-                   multihash/detail/cryptopp_impl.cpp)
+                   test/main.cpp
+            multihash/detail/cryptopp_impl.cpp)
     target_link_libraries(MultihashTest PRIVATE libmultihash GTest::GTest GTest::Main)
     gtest_discover_tests(MultihashTest)
     if (MSVC) 
