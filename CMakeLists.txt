@@ -11,7 +11,6 @@ find_package(cryptopp CONFIG REQUIRED)
 
 set(HEADER_FILES 
     multihash/algorithm.h;
-    multihash/digest.h;
     multihash/multihash.h;
     multihash/function.h;
     multihash/code.h;
@@ -19,7 +18,6 @@ set(HEADER_FILES
 add_library(libmultihash
             multihash/algorithm.cpp
             multihash/detail/cryptopp_impl.h
-            multihash/digest.cpp
             multihash/function.cpp
             multihash/code.cpp 
             multihash/multihash.cpp

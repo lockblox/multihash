@@ -1,5 +1,4 @@
 #pragma once
-#include <multihash/digest.h>
 #include <multihash/multihash.h>
 #include <cassert>
 
@@ -7,7 +6,12 @@ namespace multihash {
 
 class function {
  public:
-  explicit function(varint_view code = code::sha2_256);
+  /** Creates a multihash function
+   *
+   * @param code Unique identifier for the hash function
+   * @param multiformat If true, include hash ID in the output
+   */
+  explicit function(varint_view code = code::sha2_256, bool multiformat = true);
 
   /** Compute the hash of an input range */
   template <typename InputIterator>
@@ -26,20 +30,37 @@ class function {
 
  private:
   varint_view code_;
-  digest digest_;
+  bool multiformat_;
+  std::unique_ptr<algorithm> algorithm_;
 };
 
 template <typename InputIterator>
 multihash<std::string> function::operator()(InputIterator first,
                                             InputIterator last) {
-  return multihash<std::string>{code(), digest_(first, last)};
+  auto result = std::string();
+  result.reserve(size());
+  (*this)(first, last, std::back_inserter(result));
+  return multihash<std::string>{result};
 }
 
 template <typename InputIterator, typename OutputIterator>
 OutputIterator function::operator()(InputIterator first, InputIterator last,
                                     OutputIterator output) {
-  output = write(code(), size(), output);
-  digest_(first, last, output);
+  if (multiformat_) output = write(code(), algorithm_->digest_size(), output);
+  algorithm_->reset();
+  auto buffer = std::vector<char>{};
+  auto chunk_size = algorithm_->block_size();
+  buffer.reserve(chunk_size);
+  while (first != last) {
+    for (auto i = 0u; first != last && i < chunk_size; ++i, ++first) {
+      buffer.emplace_back(*first);
+    }
+    auto view = std::string_view(buffer.data(), buffer.size());
+    algorithm_->update(view);
+    buffer.clear();
+  }
+  auto result = algorithm_->digest();
+  std::copy(result.begin(), result.end(), output);
   return output;
 }
 

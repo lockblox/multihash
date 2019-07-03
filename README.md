@@ -66,24 +66,9 @@ auto result = std::string(256, '=');
 algorithm->digest(result);
 ```
 
-### Digest
-
-A `multihash::digest` functor uses the methods of a hash algorithm to compute the
-hash of data and can be used where a plain (non-multihash) digest is required.
-
-A `multihash::digest` can be created directly from an algorithm or via the factory
-registry.
-
-```cpp
-auto input = std::string{"hello, world"};
-auto output = std::string{};
-auto digest = multihash::digest(algorithm)(input.begin(), input.end(),
-                                           std::back_inserter(output));
-```
-
 ### Function
 
-A `multihash::function` is a hash functor which combines a `multihash::code` and a `multihash::digest` to create a `multihash::multihash` object proper.
+A `multihash::function` is a hash functor which operates on iterator pairs.
 
 ```cpp
 auto multihash = multihash::function(code)(input.begin(), input.end());
