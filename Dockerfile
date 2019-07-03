@@ -10,3 +10,6 @@ RUN cd ${HOME} \
 ENV CMAKE_CONFIG_ARGS "-DCMAKE_TOOLCHAIN_FILE=/root/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 COPY . /root/src
+
+# Ensure test file does not have DOS line endings
+RUN cat /root/src/test/foo | sed 's/\r//' > /root/src/test/foo
