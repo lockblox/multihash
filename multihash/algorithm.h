@@ -19,6 +19,7 @@ class algorithm {
   virtual std::size_t block_size() const = 0;
   virtual void update(std::string_view data) = 0;
   virtual std::size_t digest(string_span output) = 0;
+  std::string digest();
 
   class factory {
    public:

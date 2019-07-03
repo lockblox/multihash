@@ -23,4 +23,11 @@ std::unique_ptr<algorithm> algorithm::create(varint_view code) {
   return factory->create();
 }
 
+std::string algorithm::digest() {
+  auto result = std::string(digest_size(), 0);
+  auto span = string_span(result);
+  digest(span);
+  return result;
+}
+
 }  // namespace multihash
