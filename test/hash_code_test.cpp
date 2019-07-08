@@ -32,10 +32,11 @@ TEST(multihash, hash_type) {
   // Failing to look up a hash type
   {
     auto string_input = std::string("unknown hash");
-    EXPECT_THROW(multihash::code::from_string(string_input), std::out_of_range);
+    EXPECT_THROW(multihash::code::from_string(string_input),
+                 std::invalid_argument);
     auto code_buffer = std::vector<char>{127u};
     auto code_view = std::string_view(&code_buffer[0], code_buffer.size());
-    auto value_input = multihash::varint_view(code_view);
+    auto value_input = multihash::code_type(code_view);
     EXPECT_THROW(multihash::code::to_string(value_input), std::out_of_range);
   }
 }

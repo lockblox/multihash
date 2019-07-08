@@ -27,10 +27,10 @@ class algorithm {
     virtual std::unique_ptr<algorithm> create() = 0;
   };
 
-  static std::unique_ptr<algorithm> create(varint_view code);
+  static std::unique_ptr<algorithm> create(code_type code);
 
  private:
-  static std::map<varint_view, factory*> factories();
+  static std::map<code_type, factory*> factories();
 };
 
 }  // namespace multihash

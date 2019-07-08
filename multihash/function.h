@@ -1,5 +1,5 @@
 #pragma once
-#include <multihash/multihash.h>
+#include <multihash/digest.h>
 #include <cassert>
 
 namespace multihash {
@@ -11,11 +11,11 @@ class function {
    * @param code Unique identifier for the hash function
    * @param multiformat If true, include hash ID in the output
    */
-  explicit function(varint_view code = code::sha2_256, bool multiformat = true);
+  explicit function(code_type code = code::sha2_256, bool multiformat = true);
 
   /** Compute the hash of an input range */
   template <typename InputIterator>
-  multihash<std::string> operator()(InputIterator first, InputIterator last);
+  digest<std::string> operator()(InputIterator first, InputIterator last);
 
   /** Write the hash of an input range into output */
   template <typename InputIterator, typename OutputIterator>
@@ -23,24 +23,24 @@ class function {
                             OutputIterator output);
 
   /** Returns the code of this hash */
-  varint_view code() const;
+  code_type code() const;
 
   /** Returns the size of the multihash */
   std::size_t size();
 
  private:
-  varint_view code_;
+  code_type code_;
   bool multiformat_;
   std::unique_ptr<algorithm> algorithm_;
 };
 
 template <typename InputIterator>
-multihash<std::string> function::operator()(InputIterator first,
-                                            InputIterator last) {
+digest<std::string> function::operator()(InputIterator first,
+                                         InputIterator last) {
   auto result = std::string();
   result.reserve(size());
   (*this)(first, last, std::back_inserter(result));
-  return multihash<std::string>{result};
+  return digest<std::string>{result};
 }
 
 template <typename InputIterator, typename OutputIterator>

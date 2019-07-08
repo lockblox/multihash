@@ -7,32 +7,30 @@ namespace multihash {
 
 template <typename Container>
 using varint_type = varint::uleb128<Container>;
-using varint_view = varint_type<std::string_view>;
+using code_type = varint_type<std::string_view>;
 
 template <std::size_t N>
 using const_varint = const varint::array<varint::codecs::uleb128, N>;
 
 namespace code {
 
-using varint_view = varint_view;
-
 /** Convert a code value into a string */
-std::string to_string(varint_view value);
+std::string to_string(code_type value);
 
 /** Convert a string into a code value */
-varint_view from_string(const std::string& name);
+code_type from_string(const std::string& name);
 
 /** Convert a varint into a code value */
 template <typename T>
-varint_view from_value(const T& value) {
-  return static_cast<varint_view>(static_cast<std::string_view>(value));
+code_type from_value(const T& value) {
+  return static_cast<code_type>(static_cast<std::string_view>(value));
 }
 
-extern const varint_view identity;
-extern const varint_view sha1;
-extern const varint_view sha2_256;
-extern const varint_view sha2_512;
-extern const varint_view sha3_256;
+extern const code_type identity;
+extern const code_type sha1;
+extern const code_type sha2_256;
+extern const code_type sha2_512;
+extern const code_type sha3_256;
 
 std::set<std::string> names();
 }  // namespace code

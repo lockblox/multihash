@@ -11,17 +11,15 @@ find_package(cryptopp CONFIG REQUIRED)
 
 set(HEADER_FILES 
     multihash/algorithm.h;
-    multihash/multihash.h;
+    multihash/digest.h;
     multihash/function.h;
     multihash/code.h;
-        multihash/is_contiguous_iterator.h)
+    )
 add_library(libmultihash
             multihash/algorithm.cpp
             multihash/detail/cryptopp_impl.h
             multihash/function.cpp
-            multihash/code.cpp 
-            multihash/multihash.cpp
-            multihash/is_contiguous_iterator.cpp
+            multihash/code.cpp
             ${HEADER_FILES})
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 target_include_directories(libmultihash PUBLIC 
@@ -44,7 +42,7 @@ if(BUILD_TESTING)
                    test/multihash_test.cpp 
                    test/hash_code_test.cpp 
                    test/main.cpp
-            multihash/detail/cryptopp_impl.cpp)
+                   multihash/detail/cryptopp_impl.cpp)
     target_link_libraries(MultihashTest PRIVATE libmultihash GTest::GTest GTest::Main)
     gtest_discover_tests(MultihashTest)
     if (MSVC) 

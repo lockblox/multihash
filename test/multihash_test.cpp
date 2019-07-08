@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
+#include <multihash/digest.h>
 #include <multihash/function.h>
-#include <multihash/multihash.h>
 #include <iomanip>
 
 using namespace std::string_literals;
@@ -9,7 +9,7 @@ namespace {
 
 template <typename Container>
 std::ostream& operator<<(std::ostream& os,
-                         const multihash::multihash<Container>& hash) {
+                         const multihash::digest<Container>& hash) {
   auto data = std::string_view(hash.data(), hash.size());
   for (auto c : data) {
     auto uc = uint8_t(c);
@@ -20,7 +20,7 @@ std::ostream& operator<<(std::ostream& os,
 }
 
 template <typename Container>
-std::string toHexString(const multihash::multihash<Container>& hash) {
+std::string toHexString(const multihash::digest<Container>& hash) {
   std::ostringstream os;
   os << hash;
   return os.str();
@@ -141,7 +141,7 @@ TEST(multihash, encoding) {
   auto hash = hash_function(std::istream_iterator<char>(input_stream),
                             std::istream_iterator<char>());
   auto view = std::string_view(hash.data(), hash.size());
-  auto decoded = multihash::multihash(view);
+  auto decoded = multihash::digest(view);
   EXPECT_EQ(hash, decoded);
 }
 
@@ -157,7 +157,7 @@ TEST(multihash, inequality) {
   std::string bar = "bar";
   auto bar_hash = hash(bar.begin(), bar.end());
   EXPECT_NE(foo_hash, bar_hash);
-  multihash::multihash mh{std::string{"blah"}};
+  multihash::digest mh{std::string{"blah"}};
   EXPECT_NE(mh, foo_hash);
   EXPECT_EQ(mh, mh);
   EXPECT_EQ(foo_hash, foo_hash);
@@ -180,7 +180,7 @@ TEST(multihash, hash_construction) {
     EXPECT_EQ(hash_copied, hash);
   }
   {  // copy construction
-    multihash::multihash hash_copied(hash);
+    multihash::digest hash_copied(hash);
     EXPECT_EQ(expected, toHexString(hash));
     EXPECT_EQ(hash_copied, hash);
   }
@@ -197,15 +197,15 @@ TEST(multihash, hash_construction) {
   buffer.resize(expected.size() + 2);
   auto view = multihash::string_span(buffer);
   {
-    multihash::multihash<multihash::string_span> h(code, expected_view, view);
+    multihash::digest<multihash::string_span> h(code, expected_view, view);
     EXPECT_EQ(code, h.code());
-    EXPECT_EQ(expected.size(), h.digest().size());
-    EXPECT_EQ(expected, h.digest());
+    EXPECT_EQ(expected.size(), h.value().size());
+    EXPECT_EQ(expected, h.value());
   }
   {
-    multihash::multihash<std::string> h(code, expected_view);
+    multihash::digest<std::string> h(code, expected_view);
     EXPECT_EQ(code, h.code());
-    EXPECT_EQ(expected.size(), h.digest().size());
-    EXPECT_EQ(expected, h.digest());
+    EXPECT_EQ(expected.size(), h.value().size());
+    EXPECT_EQ(expected, h.value());
   }
 }
