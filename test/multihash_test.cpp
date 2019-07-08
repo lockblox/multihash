@@ -209,3 +209,8 @@ TEST(multihash, hash_construction) {
     EXPECT_EQ(expected, h.value());
   }
 }
+
+TEST(multihash, digest) {
+ multihash::digest digest;
+ EXPECT_TRUE(digest.empty());
+}

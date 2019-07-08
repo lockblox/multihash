@@ -15,10 +15,13 @@ namespace multihash {
 template <typename Container = std::string>
 class digest {
  public:
-  /** Construct a multihash view from data */
+  /** Constructs an empty digest */
+  digest() = default;
+
+  /** Constructs a digest from a data buffer */
   explicit digest(Container data);
 
-  /** Create a multihash from components */
+  /** Creates a multihash from components */
   template <typename T>
   digest(
       typename std::enable_if<std::is_same<varint::detail::static_extent_t,
@@ -28,6 +31,7 @@ class digest {
                               code_type>::type code,
       std::string_view digest, T data);
 
+  /** Creates a multihash from components */
   template <typename T>
   digest(
       typename std::enable_if<
@@ -38,16 +42,18 @@ class digest {
           code_type>::type code,
       T digest);
 
-  /** Assign from another multihash */
+  /** Assigns from another multihash */
   digest& operator=(const digest& rhs) = default;
 
-  /** Copy construct from another multihash */
+  /** Creates a digest from a copy */
   digest(const digest& rhs) = default;
 
-  /** Assign the contents of a buffer to this multihash */
+  /** Assigns the contents of a buffer to this digest */
   template <typename Buffer>
   digest& operator=(Buffer data);
 
+  /** Checks if the digest is empty */
+  constexpr bool empty() const;
   /** Returns the hash code used to generate the digest */
   code_type code() const;
   /** Returns the digest */
@@ -57,18 +63,18 @@ class digest {
   /** Returns the size of the buffer in bytes */
   std::size_t size() const;
 
-  /** Perform element-wise comparison with another multihash */
+  /** Performs element-wise comparison with another multihash */
   template <typename OtherContainer>
   bool operator==(const digest<OtherContainer>& rhs) const;
-  /** Perform element-wise comparison with another multihash */
+  /** Performs element-wise comparison with another multihash */
   bool operator!=(const digest& rhs) const;
-  /** Perform element-wise comparison with another multihash */
+  /** Performs element-wise comparison with another multihash */
   bool operator<(const digest& rhs) const;
-  /** Perform element-wise comparison with another multihash */
+  /** Performs element-wise comparison with another multihash */
   bool operator>(const digest& rhs) const;
 
  private:
-  /** Re-calculate offsets for code and size */
+  /** Re-calculates offsets for code and size */
   void reset_view(code_type code, std::size_t digest_size);
 
   Container data_;          /**< Raw buffer data */
@@ -78,18 +84,18 @@ class digest {
   std::string_view view_;   /**< View onto entire buffer */
 };
 
-/** Compute the minimum required size to encode a code and digest */
+/** Computes the minimum required size to encode a code and digest */
 inline std::size_t size(code_type code, std::string_view digest);
 
-/** Compute the minimum required size to encode a code and digest */
+/** Computes the minimum required size to encode a code and digest */
 inline std::size_t size(code_type code, std::size_t digest_size);
 
-/** Write a multihash header into output */
+/** Writes a multihash header into output */
 template <typename OutputIterator>
 OutputIterator write(code_type code, std::size_t digest_size,
                      OutputIterator output);
 
-/** Write multihash into output */
+/** Writes multihash into output */
 template <typename OutputIterator>
 OutputIterator write(code_type code, std::string_view digest,
                      OutputIterator output);
@@ -210,6 +216,11 @@ void digest<Container>::reset_view(code_type code, std::size_t digest_size) {
   digest_ = std::string_view(size_view.data(), digest_size);
   view_ = std::string_view(data_.data(),
                            code_view.size() + size_view.size() + digest_size);
+}
+
+template <typename Container>
+constexpr bool digest<Container>::empty() const {
+  return data_.empty();
 }
 
 std::size_t size(code_type code, std::string_view digest) {
