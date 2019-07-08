@@ -211,6 +211,6 @@ TEST(multihash, hash_construction) {
 }
 
 TEST(multihash, digest) {
- multihash::digest digest;
- EXPECT_TRUE(digest.empty());
+  multihash::digest digest{};
+  EXPECT_TRUE(digest.empty());
 }
