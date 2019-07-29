@@ -1,1 +1,1 @@
-#include <multihash/multihash.h>
+#include <multihash/digest.h>

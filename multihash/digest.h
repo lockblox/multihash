@@ -52,6 +52,9 @@ class digest {
   template <typename Buffer>
   digest& operator=(Buffer data);
 
+  /** Returns a std::string_view encapsulating the entire multihash buffer */
+  operator std::string_view() const;
+
   /** Checks if the digest is empty */
   constexpr bool empty() const;
   /** Returns the hash code used to generate the digest */
@@ -221,6 +224,11 @@ void digest<Container>::reset_view(code_type code, std::size_t digest_size) {
 template <typename Container>
 constexpr bool digest<Container>::empty() const {
   return data_.empty();
+}
+
+template <typename Container>
+digest<Container>::operator std::string_view() const {
+  return std::string_view(data(), size());
 }
 
 std::size_t size(code_type code, std::string_view digest) {

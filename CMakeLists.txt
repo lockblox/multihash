@@ -20,6 +20,7 @@ add_library(libmultihash
             multihash/detail/cryptopp_impl.h
             multihash/function.cpp
             multihash/code.cpp
+            multihash/digest.cpp
             ${HEADER_FILES})
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 target_include_directories(libmultihash PUBLIC 
