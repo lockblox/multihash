@@ -53,7 +53,7 @@ class digest {
   digest& operator=(Buffer data);
 
   /** Returns a std::string_view encapsulating the entire multihash buffer */
-  explicit operator std::string_view() const;
+  operator std::string_view() const;
 
   /** Checks if the digest is empty */
   constexpr bool empty() const;
