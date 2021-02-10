@@ -10,18 +10,18 @@ option(BUILD_TESTING "Build unit tests" ON)
 
 find_package(cryptopp CONFIG REQUIRED)
 
-set(HEADER_FILES 
-    multihash/algorithm.h;
-    multihash/digest.h;
-    multihash/function.h;
-    multihash/code.h;
+set(HEADER_FILES
+        multihash/algorithm.h;
+        multihash/digest_info.h;
+        multihash/function.h;
+        multihash/code.h;
         )
 add_library(libmultihash
             multihash/algorithm.cpp
             multihash/detail/cryptopp_impl.h
             multihash/function.cpp
-            multihash/code.cpp
-            multihash/digest.cpp
+        multihash/code.cpp
+        multihash/digest_info.cpp
         ${HEADER_FILES})
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 target_include_directories(libmultihash PUBLIC 

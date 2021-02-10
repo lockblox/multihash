@@ -13,17 +13,17 @@ namespace multihash {
  *
  * Ownership of the underlying data is determined by the template parameter */
 template <typename Container = std::string>
-class digest {
+class digest_info {
  public:
-  /** Constructs an empty digest */
-  digest() = default;
+  /** Constructs an empty digest_info */
+  digest_info() = default;
 
-  /** Constructs a digest from a data buffer */
-  explicit digest(Container data);
+  /** Constructs a digest_info from a data buffer */
+  explicit digest_info(Container data);
 
   /** Creates a multihash from components */
   template <typename T>
-  digest(
+  digest_info(
       typename std::enable_if<std::is_same<varint::detail::static_extent_t,
                                            typename varint::detail::extent_type<
                                                Container>::type>::value &&
@@ -33,7 +33,7 @@ class digest {
 
   /** Creates a multihash from components */
   template <typename T>
-  digest(
+  digest_info(
       typename std::enable_if<
           std::is_same<
               varint::detail::dynamic_extent_t,
@@ -42,15 +42,15 @@ class digest {
           code_type>::type code,
       T digest);
 
-  /** Assigns from another multihash */
-  digest& operator=(const digest& rhs) = default;
+  /** Assigns from another digest_info */
+  digest_info& operator=(const digest_info& rhs) = default;
 
-  /** Creates a digest from a copy */
-  digest(const digest& rhs) = default;
+  /** Creates a digest_info from a copy */
+  digest_info(const digest_info& rhs) = default;
 
-  /** Assigns the contents of a buffer to this digest */
+  /** Assigns the contents of a buffer to this digest_info */
   template <typename Buffer>
-  digest& operator=(Buffer data);
+  digest_info& operator=(Buffer data);
 
   /** Returns a std::string_view encapsulating the entire multihash buffer */
   operator std::string_view() const;
@@ -68,13 +68,13 @@ class digest {
 
   /** Performs element-wise comparison with another multihash */
   template <typename OtherContainer>
-  bool operator==(const digest<OtherContainer>& rhs) const;
+  bool operator==(const digest_info<OtherContainer>& rhs) const;
   /** Performs element-wise comparison with another multihash */
-  bool operator!=(const digest& rhs) const;
+  bool operator!=(const digest_info& rhs) const;
   /** Performs element-wise comparison with another multihash */
-  bool operator<(const digest& rhs) const;
+  bool operator<(const digest_info& rhs) const;
   /** Performs element-wise comparison with another multihash */
-  bool operator>(const digest& rhs) const;
+  bool operator>(const digest_info& rhs) const;
 
  private:
   /** Re-calculates offsets for code and size */
@@ -108,7 +108,7 @@ OutputIterator write(code_type code, std::string_view digest,
 /******************************************************************************/
 
 template <typename Container>
-digest<Container>::digest(Container data)
+digest_info<Container>::digest_info(Container data)
     : data_(std::move(data)),
       code_(std::string_view(data_.data(), data_.size())),
       size_(std::string_view(
@@ -127,7 +127,7 @@ digest<Container>::digest(Container data)
 
 template <typename Container>
 template <typename T>
-digest<Container>::digest(
+digest_info<Container>::digest_info(
     typename std::enable_if<std::is_same<varint::detail::dynamic_extent_t,
                                          typename varint::detail::extent_type<
                                              Container>::type>::value &&
@@ -140,7 +140,7 @@ digest<Container>::digest(
 
 template <typename Container>
 template <typename T>
-digest<Container>::digest(
+digest_info<Container>::digest_info(
     typename std::enable_if<std::is_same<varint::detail::static_extent_t,
                                          typename varint::detail::extent_type<
                                              Container>::type>::value &&
@@ -157,29 +157,30 @@ digest<Container>::digest(
 }
 
 template <typename Container>
-code_type digest<Container>::code() const {
+code_type digest_info<Container>::code() const {
   return code_;
 }
 
 template <typename Container>
-std::string_view digest<Container>::value() const {
+std::string_view digest_info<Container>::value() const {
   auto view = std::string_view(&data_[2], data_.size() - 2);
   return view;
 }
 
 template <typename Container>
-const char* digest<Container>::data() const {
+const char* digest_info<Container>::data() const {
   return data_.data();
 }
 
 template <typename Container>
-std::size_t digest<Container>::size() const {
+std::size_t digest_info<Container>::size() const {
   return data_.size();
 }
 
 template <typename Container>
 template <typename OtherContainer>
-bool digest<Container>::operator==(const digest<OtherContainer>& rhs) const {
+bool digest_info<Container>::operator==(
+    const digest_info<OtherContainer>& rhs) const {
   auto begin = std::begin(data_);
   auto length = std::min(size(), rhs.size());
   auto rhs_view = std::string_view(rhs.data(), rhs.size());
@@ -187,29 +188,30 @@ bool digest<Container>::operator==(const digest<OtherContainer>& rhs) const {
 }
 
 template <typename Container>
-bool digest<Container>::operator!=(const digest& rhs) const {
+bool digest_info<Container>::operator!=(const digest_info& rhs) const {
   return !(*this == rhs);
 }
 
 template <typename Container>
-bool digest<Container>::operator<(const digest& rhs) const {
+bool digest_info<Container>::operator<(const digest_info& rhs) const {
   return data_ < rhs.data_;
 }
 
 template <typename Container>
-bool digest<Container>::operator>(const digest& rhs) const {
+bool digest_info<Container>::operator>(const digest_info& rhs) const {
   return data_ > rhs.data_;
 }
 
 template <typename Container>
 template <typename Buffer>
-digest<Container>& digest<Container>::operator=(Buffer data) {
+digest_info<Container>& digest_info<Container>::operator=(Buffer data) {
   data_ = Container(data.data(), data.size());
   return *this;
 }
 
 template <typename Container>
-void digest<Container>::reset_view(code_type code, std::size_t digest_size) {
+void digest_info<Container>::reset_view(code_type code,
+                                        std::size_t digest_size) {
   auto code_view = static_cast<std::string_view>(code);
   code_view = std::string_view(data_.data(), code_view.size());
   auto size_view = std::string_view(code_view.data(),
@@ -222,12 +224,12 @@ void digest<Container>::reset_view(code_type code, std::size_t digest_size) {
 }
 
 template <typename Container>
-constexpr bool digest<Container>::empty() const {
+constexpr bool digest_info<Container>::empty() const {
   return data_.empty();
 }
 
 template <typename Container>
-digest<Container>::operator std::string_view() const {
+digest_info<Container>::operator std::string_view() const {
   return std::string_view(data(), size());
 }
 
