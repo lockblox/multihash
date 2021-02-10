@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(multihash VERSION 1.0 LANGUAGES CXX)
-include(CTest)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
+
+option(BUILD_TESTING "Build unit tests" ON)
 
 find_package(cryptopp CONFIG REQUIRED)
 
@@ -14,14 +15,14 @@ set(HEADER_FILES
     multihash/digest.h;
     multihash/function.h;
     multihash/code.h;
-    )
+        )
 add_library(libmultihash
             multihash/algorithm.cpp
             multihash/detail/cryptopp_impl.h
             multihash/function.cpp
             multihash/code.cpp
             multihash/digest.cpp
-            ${HEADER_FILES})
+        ${HEADER_FILES})
 set_target_properties(libmultihash PROPERTIES OUTPUT_NAME multihash)
 target_include_directories(libmultihash PUBLIC 
                            $<BUILD_INTERFACE:${multihash_SOURCE_DIR}>
