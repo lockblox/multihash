@@ -2,15 +2,13 @@ FROM lockblox/orthodox:latest
 
 RUN apt-get install dos2unix
 
-RUN cd ${HOME} \
- && git clone https://github.com/cpp-ipfs/vcpkg.git \
- && cd vcpkg \
- && ./bootstrap-vcpkg.sh \
- && ./vcpkg integrate install \
- && ./vcpkg install gtest cryptopp ms-gsl \
+RUN cd ${VCPKG_ROOT} \
+ && git remote add lockblox https://github.com/lockblox/vcpkg.git \
+ && git config user.name "engineering" \
+ && git config user.email "engineering@lockblox.com" \
+ && git pull lockblox master \
+ && ./vcpkg install cryptopp ms-gsl \
  && ./vcpkg install --head varint
-
-ENV CMAKE_CONFIG_ARGS "-DCMAKE_TOOLCHAIN_FILE=/root/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 COPY . /root/src
 
