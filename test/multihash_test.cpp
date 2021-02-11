@@ -200,14 +200,14 @@ TEST(multihash, hash_construction) {
   {
     multihash::digest_info<multihash::string_span> h(code, expected_view, view);
     EXPECT_EQ(code, h.code());
-    EXPECT_EQ(expected.size(), h.value().size());
-    EXPECT_EQ(expected, h.value());
+    EXPECT_EQ(expected.size(), h.digest().size());
+    EXPECT_EQ(expected, h.digest());
   }
   {
     multihash::digest_info<std::string> h(code, expected_view);
     EXPECT_EQ(code, h.code());
-    EXPECT_EQ(expected.size(), h.value().size());
-    EXPECT_EQ(expected, h.value());
+    EXPECT_EQ(expected.size(), h.digest().size());
+    EXPECT_EQ(expected, h.digest());
   }
 }
 

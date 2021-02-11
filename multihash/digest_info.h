@@ -60,7 +60,7 @@ class digest_info {
   /** Returns the hash code used to generate the digest */
   code_type code() const;
   /** Returns the digest */
-  std::string_view value() const;
+  std::string_view digest() const;
   /** Returns a pointer to the beginning of the buffer */
   const char* data() const;
   /** Returns the size of the buffer in bytes */
@@ -162,7 +162,7 @@ code_type digest_info<Container>::code() const {
 }
 
 template <typename Container>
-std::string_view digest_info<Container>::value() const {
+std::string_view digest_info<Container>::digest() const {
   auto view = std::string_view(&data_[2], data_.size() - 2);
   return view;
 }
