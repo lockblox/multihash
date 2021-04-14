@@ -14,7 +14,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(HEADER_FILES
         multihash/algorithm.h;
-        multihash/digest_info.h;
+        multihash/multihash.h;
         multihash/function.h;
         multihash/code.h;)
 add_library(libmultihash
@@ -22,7 +22,7 @@ add_library(libmultihash
         multihash/detail/cryptopp_impl.h
         multihash/function.cpp
         multihash/code.cpp
-        multihash/digest_info.cpp
+        multihash/multihash.cpp
         ${HEADER_FILES})
 target_include_directories(libmultihash PUBLIC
         $<BUILD_INTERFACE:${multihash_SOURCE_DIR}>

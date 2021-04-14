@@ -9,8 +9,7 @@
 namespace {
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os,
-                         multihash::digest_info<T>& multihash) {
+std::ostream& operator<<(std::ostream& os, multihash::multihash<T>& multihash) {
   auto view = std::string_view(multihash.data(), multihash.size());
   for (auto c : view) {
     auto uc = uint8_t(c);

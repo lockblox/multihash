@@ -2,6 +2,7 @@
 
 #include <multihash/algorithm.h>
 #include <varint/varint.h>
+
 #include <cassert>
 #include <iomanip>
 #include <memory>
@@ -13,17 +14,17 @@ namespace multihash {
  *
  * Ownership of the underlying data is determined by the template parameter */
 template <typename Container = std::string>
-class digest_info {
+class multihash {
  public:
-  /** Constructs an empty digest_info */
-  digest_info() = default;
+  /** Constructs an empty multihash */
+  multihash() = default;
 
-  /** Constructs a digest_info from a data buffer */
-  explicit digest_info(Container data);
+  /** Constructs a multihash from a data buffer */
+  explicit multihash(Container data);
 
   /** Creates a multihash from components */
   template <typename T>
-  digest_info(
+  multihash(
       typename std::enable_if<std::is_same<varint::detail::static_extent_t,
                                            typename varint::detail::extent_type<
                                                Container>::type>::value &&
@@ -33,7 +34,7 @@ class digest_info {
 
   /** Creates a multihash from components */
   template <typename T>
-  digest_info(
+  multihash(
       typename std::enable_if<
           std::is_same<
               varint::detail::dynamic_extent_t,
@@ -42,15 +43,15 @@ class digest_info {
           code_type>::type code,
       T digest);
 
-  /** Assigns from another digest_info */
-  digest_info& operator=(const digest_info& rhs) = default;
+  /** Assigns from another multihash */
+  multihash& operator=(const multihash& rhs) = default;
 
-  /** Creates a digest_info from a copy */
-  digest_info(const digest_info& rhs) = default;
+  /** Creates a multihash from a copy */
+  multihash(const multihash& rhs) = default;
 
-  /** Assigns the contents of a buffer to this digest_info */
+  /** Assigns the contents of a buffer to this multihash */
   template <typename Buffer>
-  digest_info& operator=(Buffer data);
+  multihash& operator=(Buffer data);
 
   /** Returns a std::string_view encapsulating the entire multihash buffer */
   operator std::string_view() const;
@@ -68,13 +69,13 @@ class digest_info {
 
   /** Performs element-wise comparison with another multihash */
   template <typename OtherContainer>
-  bool operator==(const digest_info<OtherContainer>& rhs) const;
+  bool operator==(const multihash<OtherContainer>& rhs) const;
   /** Performs element-wise comparison with another multihash */
-  bool operator!=(const digest_info& rhs) const;
+  bool operator!=(const multihash& rhs) const;
   /** Performs element-wise comparison with another multihash */
-  bool operator<(const digest_info& rhs) const;
+  bool operator<(const multihash& rhs) const;
   /** Performs element-wise comparison with another multihash */
-  bool operator>(const digest_info& rhs) const;
+  bool operator>(const multihash& rhs) const;
 
  private:
   /** Re-calculates offsets for code and size */
@@ -108,7 +109,7 @@ OutputIterator write(code_type code, std::string_view digest,
 /******************************************************************************/
 
 template <typename Container>
-digest_info<Container>::digest_info(Container data)
+multihash<Container>::multihash(Container data)
     : data_(std::move(data)),
       code_(std::string_view(data_.data(), data_.size())),
       size_(std::string_view(
@@ -127,7 +128,7 @@ digest_info<Container>::digest_info(Container data)
 
 template <typename Container>
 template <typename T>
-digest_info<Container>::digest_info(
+multihash<Container>::multihash(
     typename std::enable_if<std::is_same<varint::detail::dynamic_extent_t,
                                          typename varint::detail::extent_type<
                                              Container>::type>::value &&
@@ -140,7 +141,7 @@ digest_info<Container>::digest_info(
 
 template <typename Container>
 template <typename T>
-digest_info<Container>::digest_info(
+multihash<Container>::multihash(
     typename std::enable_if<std::is_same<varint::detail::static_extent_t,
                                          typename varint::detail::extent_type<
                                              Container>::type>::value &&
@@ -157,30 +158,30 @@ digest_info<Container>::digest_info(
 }
 
 template <typename Container>
-code_type digest_info<Container>::code() const {
+code_type multihash<Container>::code() const {
   return code_;
 }
 
 template <typename Container>
-std::string_view digest_info<Container>::digest() const {
+std::string_view multihash<Container>::digest() const {
   auto view = std::string_view(&data_[2], data_.size() - 2);
   return view;
 }
 
 template <typename Container>
-const char* digest_info<Container>::data() const {
+const char* multihash<Container>::data() const {
   return data_.data();
 }
 
 template <typename Container>
-std::size_t digest_info<Container>::size() const {
+std::size_t multihash<Container>::size() const {
   return data_.size();
 }
 
 template <typename Container>
 template <typename OtherContainer>
-bool digest_info<Container>::operator==(
-    const digest_info<OtherContainer>& rhs) const {
+bool multihash<Container>::operator==(
+    const multihash<OtherContainer>& rhs) const {
   auto begin = std::begin(data_);
   auto length = std::min(size(), rhs.size());
   auto rhs_view = std::string_view(rhs.data(), rhs.size());
@@ -188,30 +189,29 @@ bool digest_info<Container>::operator==(
 }
 
 template <typename Container>
-bool digest_info<Container>::operator!=(const digest_info& rhs) const {
+bool multihash<Container>::operator!=(const multihash& rhs) const {
   return !(*this == rhs);
 }
 
 template <typename Container>
-bool digest_info<Container>::operator<(const digest_info& rhs) const {
+bool multihash<Container>::operator<(const multihash& rhs) const {
   return data_ < rhs.data_;
 }
 
 template <typename Container>
-bool digest_info<Container>::operator>(const digest_info& rhs) const {
+bool multihash<Container>::operator>(const multihash& rhs) const {
   return data_ > rhs.data_;
 }
 
 template <typename Container>
 template <typename Buffer>
-digest_info<Container>& digest_info<Container>::operator=(Buffer data) {
+multihash<Container>& multihash<Container>::operator=(Buffer data) {
   data_ = Container(data.data(), data.size());
   return *this;
 }
 
 template <typename Container>
-void digest_info<Container>::reset_view(code_type code,
-                                        std::size_t digest_size) {
+void multihash<Container>::reset_view(code_type code, std::size_t digest_size) {
   auto code_view = static_cast<std::string_view>(code);
   code_view = std::string_view(data_.data(), code_view.size());
   auto size_view = std::string_view(code_view.data(),
@@ -224,12 +224,12 @@ void digest_info<Container>::reset_view(code_type code,
 }
 
 template <typename Container>
-constexpr bool digest_info<Container>::empty() const {
+constexpr bool multihash<Container>::empty() const {
   return data_.empty();
 }
 
 template <typename Container>
-digest_info<Container>::operator std::string_view() const {
+multihash<Container>::operator std::string_view() const {
   return std::string_view(data(), size());
 }
 

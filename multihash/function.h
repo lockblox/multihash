@@ -1,5 +1,5 @@
 #pragma once
-#include <multihash/digest_info.h>
+#include <multihash/multihash.h>
 
 #include <cassert>
 
@@ -16,7 +16,7 @@ class function {
 
   /** Compute the hash of an input range */
   template <typename InputIterator>
-  digest_info<std::string> operator()(InputIterator first, InputIterator last);
+  multihash<std::string> operator()(InputIterator first, InputIterator last);
 
   /** Write the hash of an input range into output */
   template <typename InputIterator, typename OutputIterator>
@@ -36,12 +36,12 @@ class function {
 };
 
 template <typename InputIterator>
-digest_info<std::string> function::operator()(InputIterator first,
-                                              InputIterator last) {
+multihash<std::string> function::operator()(InputIterator first,
+                                            InputIterator last) {
   auto result = std::string();
   result.reserve(size());
   (*this)(first, last, std::back_inserter(result));
-  return digest_info<std::string>{result};
+  return multihash<std::string>{result};
 }
 
 template <typename InputIterator, typename OutputIterator>

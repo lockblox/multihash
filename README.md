@@ -76,11 +76,11 @@ auto multihash = multihash::function(code)(input.begin(), input.end());
 
 ### Multihash
 
-A `multihash::multihash` combines the hash code and digest_info in a binary payload.
+A `multihash::multihash` combines the hash code and multihash in a binary payload.
 
 ```cpp
 auto code = multihash.code();
-auto digest_info = multihash.digest_info();
+auto multihash = multihash.multihash();
 ```
 
 ## License

@@ -1,7 +1,6 @@
 #include "ssl_impl.h"
 #include <stdexcept>
 
-
 namespace multi {
 
 ssl_impl::Cleanup ssl_impl::cleanup_ = ssl_impl::Cleanup();
