@@ -14,11 +14,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(HEADER_FILES
         multihash/algorithm.h;
+        multihash/algorithm_identifier.h
         multihash/multihash.h;
         multihash/function.h;
         multihash/code.h;)
 add_library(libmultihash
         multihash/algorithm.cpp
+        multihash/algorithm_identifier.cpp
         multihash/detail/cryptopp_impl.h
         multihash/function.cpp
         multihash/code.cpp

@@ -1,0 +1,1 @@
+#include <multihash/algorithm_identifier.h>
