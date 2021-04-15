@@ -2,6 +2,12 @@
 
 namespace multihash {
 
+algorithm_factory::algorithm_factory(algorithm_identifier identifier,
+                                     std::string name,
+                                     algorithm_factory::function_type function)
+    : algorithm_factory(static_cast<algorithm_identifier_type>(identifier),
+                        std::move(name), std::move(function)) {}
+
 algorithm_factory::algorithm_factory(algorithm_identifier_type identifier,
                                      std::string name,
                                      algorithm_factory::function_type function)

@@ -15,6 +15,9 @@ class algorithm_factory {
   using function_type = std::function<std::unique_ptr<algorithm>(void)>;
 
   /** Create a uniquely identified algorithm factory */
+  algorithm_factory(algorithm_identifier identifier, std::string name,
+                    function_type function);
+  /** Create a uniquely identified algorithm factory */
   algorithm_factory(algorithm_identifier_type identifier, std::string name,
                     function_type function);
 

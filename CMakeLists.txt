@@ -16,6 +16,7 @@ set(HEADER_FILES
         multihash/algorithm.h;
         multihash/algorithm_identifier.h
         multihash/algorithm_factory.h
+        multihash/algorithm_registry.h
         multihash/multihash.h;
         multihash/function.h;
         multihash/code.h;)
@@ -23,6 +24,7 @@ add_library(libmultihash
         multihash/algorithm.cpp
         multihash/algorithm_identifier.cpp
         multihash/algorithm_factory.cpp
+        multihash/algorithm_registry.cpp
         multihash/detail/cryptopp_impl.h
         multihash/function.cpp
         multihash/code.cpp

@@ -11,6 +11,6 @@ enum class algorithm_identifier {
   sha3_256 = 0x16
 };
 
-using algorithm_identifier_type = std::underlying_type<algorithm_identifier>;
+using algorithm_identifier_type = std::underlying_type_t<algorithm_identifier>;
 
 }  // namespace multihash
