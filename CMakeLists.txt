@@ -66,12 +66,11 @@ if (MSVC)
     target_compile_options(libmultihash PRIVATE /W4 /WX /MP)
 else ()
     if (BUILD_COVERAGE)
-        if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             set(COVERAGE_FLAGS "--coverage")
-        endif ()
     endif ()
     target_compile_options(libmultihash PRIVATE -Wall -Wextra -pedantic -Werror
             ${COVERAGE_FLAGS})
+    target_link_options(libmultihash PRIVATE ${COVERAGE_FLAGS})
 endif ()
 if (NOT CMAKE_BUILD_TYPE MATCHES Debug)
     add_definitions(-DNDEBUG)
@@ -93,6 +92,7 @@ if (BUILD_TESTING)
     else ()
         target_compile_options(multihash_test PRIVATE -Wall -Wextra -pedantic
                 -Werror ${COVERAGE_FLAGS})
+        target_link_options(multihash_test PRIVATE ${COVERAGE_FLAGS})
         target_link_libraries(multihash_test PRIVATE ${COVERAGE_FLAGS})
     endif ()
 
@@ -101,6 +101,7 @@ if (BUILD_TESTING)
         # Binary depends on getopt which is unavailable in Windows
         add_executable(multihash multihash/main.cpp)
         target_link_libraries(multihash libmultihash)
+        target_link_options(multihash PRIVATE ${COVERAGE_FLAGS})
         # Component test for whole executable
         add_test(
                 NAME multihash_bin_test WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
