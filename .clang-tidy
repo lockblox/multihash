@@ -1,4 +1,4 @@
-Checks: '*'
+Checks: '*,-fuchsia-*,-llvmlibc-*'
 WarningsAsErrors: ''
 HeaderFilterRegex: ''
 FormatStyle: 'file'
