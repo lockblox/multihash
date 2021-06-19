@@ -22,24 +22,6 @@ class cryptopp_impl : public algorithm {
 };
 
 template <typename Hash>
-class cryptopp_factory : public algorithm::factory {
- public:
-  std::unique_ptr<algorithm> create() override;
-  static cryptopp_factory& instance();
-};
-
-template <typename Hash>
-std::unique_ptr<algorithm> cryptopp_factory<Hash>::create() {
-  return std::make_unique<cryptopp_impl<Hash>>();
-}
-
-template <typename Hash>
-cryptopp_factory<Hash>& cryptopp_factory<Hash>::instance() {
-  static cryptopp_factory instance_;
-  return instance_;
-}
-
-template <typename Hash>
 size_t cryptopp_impl<Hash>::digest_size() const {
   return Hash::DIGESTSIZE;
 }

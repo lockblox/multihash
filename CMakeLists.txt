@@ -17,17 +17,13 @@ set(HEADER_FILES
         multihash/algorithm_identifier.h
         multihash/algorithm_factory.h
         multihash/algorithm_registry.h
-        multihash/multihash.h;
-        multihash/function.h;
-        multihash/code.h;)
+        multihash/multihash.h;)
 add_library(libmultihash
         multihash/algorithm.cpp
         multihash/algorithm_identifier.cpp
         multihash/algorithm_factory.cpp
         multihash/algorithm_registry.cpp
         multihash/detail/cryptopp_impl.h
-        multihash/function.cpp
-        multihash/code.cpp
         multihash/multihash.cpp
         ${HEADER_FILES})
 target_include_directories(libmultihash PUBLIC
@@ -82,9 +78,9 @@ if (BUILD_TESTING)
     find_package(GTest MODULE REQUIRED)
     add_executable(multihash_test
             test/multihash_test.cpp
-            test/hash_code_test.cpp
+            test/algorithm_registry_test.cpp
             test/main.cpp
-            multihash/detail/cryptopp_impl.cpp)
+            multihash/detail/cryptopp_impl.cpp test/algorithm_test.cpp test/multihash_test.h)
     target_link_libraries(multihash_test PRIVATE libmultihash GTest::GTest GTest::Main)
     gtest_discover_tests(multihash_test)
     if (MSVC)

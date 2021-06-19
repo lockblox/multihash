@@ -1,6 +1,8 @@
 #include <getopt.h>
-#include <multihash/function.h>
+#include <multihash/algorithm_registry.h>
+#include <multihash/multihash.h>
 #include <sys/stat.h>
+
 #include <array>
 #include <fstream>
 #include <iostream>
@@ -8,15 +10,20 @@
 
 namespace {
 
-template <typename T>
-std::ostream& operator<<(std::ostream& os, multihash::multihash<T>& multihash) {
-  auto view = std::string_view(multihash.data(), multihash.size());
-  for (auto c : view) {
-    auto uc = uint8_t(c);
+template <typename InputIterator>
+std::ostream& print_hex(std::ostream& os, InputIterator first,
+                        InputIterator last) {
+  for (; first != last; ++first) {
+    auto uc = uint8_t(*first);
     os << std::hex << std::setfill('0') << std::setw(2);
     os << static_cast<int>(uc);
   }
   return os;
+}
+
+void output_hash_types(std::ostream& os) {
+  auto& factories = multihash::algorithm_registry::default_instance();
+  for (const auto& factory : factories) os << factory.name() << std::endl;
 }
 
 }  // namespace
@@ -74,9 +81,7 @@ int main(int argc, char* argv[]) {
     return 0;
   }
   if (1 == list_flag) {
-    for (auto name : multihash::code::names()) {
-      std::cout << name << std::endl;
-    }
+    output_hash_types(std::cout);
     return 0;
   }
 
@@ -88,8 +93,9 @@ int main(int argc, char* argv[]) {
   }
 
   try {
-    auto code = multihash::code::from_string(algo);
-    auto hash_function = multihash::function(code);
+    auto& registry = multihash::algorithm_registry::default_instance();
+    auto& factory = registry.at(algo);
+    auto algorithm = factory.make_algorithm();
 
     std::ios_base::sync_with_stdio(false);  // enable fast io
 
@@ -102,8 +108,8 @@ int main(int argc, char* argv[]) {
     if ((num_files == 1 && (filenames.front() == "-")) or num_files == 0) {
       std::istreambuf_iterator<char> first(std::cin);
       std::istreambuf_iterator<char> last;
-      auto hash = hash_function(first, last);
-      std::cout << hash << " -" << std::endl;
+      auto digest = algorithm->digest(first, last);
+      std::cout << digest << " -" << std::endl;
     } else {
       for (auto filename : filenames) {
         struct stat stat_record;
@@ -120,8 +126,13 @@ int main(int argc, char* argv[]) {
         std::istreambuf_iterator<char> first(filestream);
         std::istreambuf_iterator<char> last;
         if (filestream.good()) {
-          auto hash = hash_function(first, last);
-          std::cout << hash << " " << filename << std::endl;
+          auto digest = algorithm->digest(first, last);
+          auto identifier = varint::uleb128<std::string>{factory.identifier()};
+          auto id_view =
+              multihash::code_type{static_cast<std::string_view>(identifier)};
+          auto multihash_digest =
+              multihash::multihash<std::string>{id_view, digest};
+          print_hex(std::cout, multihash_digest.begin(), multihash_digest.end());
         } else {
           std::cerr << "multihash: " << filename << ": "
                     << "Permission denied" << std::endl;
@@ -131,9 +142,7 @@ int main(int argc, char* argv[]) {
   } catch (std::invalid_argument& e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
     std::cout << "Available hash types: " << std::endl;
-    for (auto name : multihash::code::names()) {
-      std::cout << name << std::endl;
-    }
+    output_hash_types(std::cout);
   }
   return 0;
 }
