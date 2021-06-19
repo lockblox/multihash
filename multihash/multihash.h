@@ -10,6 +10,10 @@
 
 namespace multihash {
 
+template <typename Container>
+using varint_type = varint::uleb128<Container>;
+using code_type = varint_type<std::string_view>;
+
 /** Provides a view onto a multihash buffer.
  *
  * Ownership of the underlying data is determined by the template parameter */
@@ -24,24 +28,25 @@ class multihash {
 
   /** Creates a multihash from components */
   template <typename T>
-  multihash(
-      typename std::enable_if<std::is_same<varint::detail::static_extent_t,
-                                           typename varint::detail::extent_type<
-                                               Container>::type>::value &&
-                                  std::is_same<T, Container>::value,
-                              code_type>::type code,
-      std::string_view digest, T data);
+  multihash(typename std::enable_if_t<
+                std::is_same_v<
+                    varint::detail::static_extent_t,
+                    typename varint::detail::extent_type<Container>::type> &&
+                    std::is_same_v<T, Container>,
+                code_type>
+                code,
+            std::string_view digest, T data);
 
   /** Creates a multihash from components */
   template <typename T>
-  multihash(
-      typename std::enable_if<
-          std::is_same<
-              varint::detail::dynamic_extent_t,
-              typename varint::detail::extent_type<Container>::type>::value &&
-              std::is_convertible<T, std::string_view>::value,
-          code_type>::type code,
-      T digest);
+  multihash(typename std::enable_if_t<
+                std::is_same_v<
+                    varint::detail::dynamic_extent_t,
+                    typename varint::detail::extent_type<Container>::type> &&
+                    std::is_convertible_v<T, std::string_view>,
+                code_type>
+                code,
+            T digest);
 
   /** Assigns from another multihash */
   multihash& operator=(const multihash& rhs) = default;
@@ -49,12 +54,8 @@ class multihash {
   /** Creates a multihash from a copy */
   multihash(const multihash& rhs) = default;
 
-  /** Assigns the contents of a buffer to this multihash */
-  template <typename Buffer>
-  multihash& operator=(Buffer data);
-
-  /** Returns a std::string_view encapsulating the entire multihash buffer */
-  operator std::string_view() const;
+ /** Returns a std::string_view encapsulating the entire multihash buffer */
+  explicit operator std::string_view() const;
 
   /** Checks if the digest is empty */
   constexpr bool empty() const;
@@ -66,6 +67,11 @@ class multihash {
   const char* data() const;
   /** Returns the size of the buffer in bytes */
   std::size_t size() const;
+
+  using const_iterator = typename Container::const_iterator;
+
+  const_iterator begin() const;
+  const_iterator end() const;
 
   /** Performs element-wise comparison with another multihash */
   template <typename OtherContainer>
@@ -129,11 +135,12 @@ multihash<Container>::multihash(Container data)
 template <typename Container>
 template <typename T>
 multihash<Container>::multihash(
-    typename std::enable_if<std::is_same<varint::detail::dynamic_extent_t,
-                                         typename varint::detail::extent_type<
-                                             Container>::type>::value &&
-                                std::is_convertible<T, std::string_view>::value,
-                            code_type>::type code,
+    typename std::enable_if_t<
+        std::is_same_v<varint::detail::dynamic_extent_t,
+                       typename varint::detail::extent_type<Container>::type> &&
+            std::is_convertible_v<T, std::string_view>,
+        code_type>
+        code,
     T digest) {
   write(code, digest, std::back_inserter(data_));
   reset_view(code, digest.size());
@@ -142,11 +149,12 @@ multihash<Container>::multihash(
 template <typename Container>
 template <typename T>
 multihash<Container>::multihash(
-    typename std::enable_if<std::is_same<varint::detail::static_extent_t,
-                                         typename varint::detail::extent_type<
-                                             Container>::type>::value &&
-                                std::is_same<T, Container>::value,
-                            code_type>::type code,
+    typename std::enable_if_t<
+        std::is_same_v<varint::detail::static_extent_t,
+                       typename varint::detail::extent_type<Container>::type> &&
+            std::is_same_v<T, Container>,
+        code_type>
+        code,
     std::string_view digest, T data)
     : data_(std::move(data)) {
   assert(varint::codecs::uleb128::size(digest.size()) +
@@ -179,6 +187,16 @@ std::size_t multihash<Container>::size() const {
 }
 
 template <typename Container>
+typename Container::const_iterator multihash<Container>::begin() const {
+  return data_.begin();
+}
+
+template <typename Container>
+typename Container::const_iterator multihash<Container>::end() const {
+  return data_.end();
+}
+
+template <typename Container>
 template <typename OtherContainer>
 bool multihash<Container>::operator==(
     const multihash<OtherContainer>& rhs) const {
@@ -201,13 +219,6 @@ bool multihash<Container>::operator<(const multihash& rhs) const {
 template <typename Container>
 bool multihash<Container>::operator>(const multihash& rhs) const {
   return data_ > rhs.data_;
-}
-
-template <typename Container>
-template <typename Buffer>
-multihash<Container>& multihash<Container>::operator=(Buffer data) {
-  data_ = Container(data.data(), data.size());
-  return *this;
 }
 
 template <typename Container>
